@@ -1,14 +1,11 @@
-import { useState, useCallback } from 'react'
-import { useToast } from '../../hooks/useToast'
+import { useCallback, useState } from 'react'
 import { createTema } from '../../services/temas'
 import TemaPanelEntrada from './TemaPanelEntrada'
-import ToastContainer from '../../components/ToastContainer'
 
 /**
  * Vista principal del módulo de temas con entrada por lotes y edición
  */
 export default function TemaPage() {
-  const { toasts, showToast, removeToast } = useToast()
   const [isLoading, setIsLoading] = useState(false)
 
   // Crear nuevo tema
@@ -22,29 +19,17 @@ export default function TemaPage() {
       })
 
       if (!response.ok) {
-        showToast({
-          type: 'error',
-          message: response.error || 'Error al crear el tema',
-          duration: 5000
-        })
         return { ok: false, error: response.error }
       }
-
-      showToast({
-        type: 'success',
-        message: 'Tema creado correctamente',
-        duration: 3000
-      })
 
       return { ok: true, data: response.data }
     } catch (error) {
       const message = 'Error de conexión al crear tema'
-      showToast({ type: 'error', message, duration: 5000 })
       return { ok: false, error: message }
     } finally {
       setIsLoading(false)
     }
-  }, [showToast])
+  }, [])
 
   return (
     <div className="min-h-screen bg-gray-50 p-6">
@@ -70,9 +55,6 @@ export default function TemaPage() {
           </p>
         </div>
       </div>
-
-      {/* Contenedor de toasts */}
-      <ToastContainer toasts={toasts} onRemoveToast={removeToast} />
     </div>
   )
 }

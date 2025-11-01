@@ -1,28 +1,22 @@
-import { useApp } from '../context/AppContext'
+import { Moon, Sun } from 'lucide-react'
+import { useApp } from '../hooks/useApp'
 
 export default function ThemeToggle() {
   const { userPreferences, toggleTheme } = useApp()
+  const isDarkMode = userPreferences.theme === 'dark'
   
   return (
     <button
       onClick={toggleTheme}
-      style={{
-        background: 'none',
-        border: 'none',
-        cursor: 'pointer',
-        padding: '8px',
-        borderRadius: '50%',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        fontSize: '20px',
-        color: 'var(--text-primary)',
-        transition: 'all 0.3s ease'
-      }}
-      title={`Cambiar a modo ${userPreferences.theme === 'light' ? 'oscuro' : 'claro'}`}
-      aria-label={`Cambiar a modo ${userPreferences.theme === 'light' ? 'oscuro' : 'claro'}`}
+      className="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
+      title={`Cambiar a modo ${isDarkMode ? 'claro' : 'oscuro'}`}
+      aria-label={`Cambiar a modo ${isDarkMode ? 'claro' : 'oscuro'}`}
     >
-      {userPreferences.theme === 'light' ? '🌙' : '☀️'}
+      {isDarkMode ? (
+        <Sun className="h-5 w-5 text-yellow-500" />
+      ) : (
+        <Moon className="h-5 w-5 text-gray-700 dark:text-gray-300" />
+      )}
     </button>
   )
 }

@@ -69,31 +69,21 @@ export function getErrorMessage(error, fallbackMessage = null) {
  * @param {Object} options - Opciones de manejo
  * @param {Function} options.onError - Callback para manejar el error
  * @param {Function} options.onRetry - Callback para reintentar
- * @param {boolean} options.showToast - Si mostrar toast (default: true)
- * @param {string} options.context - Contexto del error para logging
  */
 export function handleError(error, options = {}) {
   const {
-    onError,
-    showToast = true,
-    context = 'Unknown'
+    onError
   } = options
 
   const errorMessage = getErrorMessage(error)
   const errorType = classifyError(error)
-
-  // Logging para debugging
-  console.error(`[${context}] Error (${errorType}):`, error)
 
   // Callback personalizado
   if (onError) {
     onError(errorMessage, errorType)
   }
 
-  // Mostrar toast si está habilitado
-  if (showToast && window.showToast) {
-    window.showToast(errorMessage, 'error')
-  }
+  // Los toasts ya no se usan en la aplicación
 
   return {
     message: errorMessage,

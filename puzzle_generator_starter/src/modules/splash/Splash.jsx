@@ -1,34 +1,42 @@
-import { motion } from 'framer-motion'
-import NavigationMenu from '../../components/NavigationMenu'
+import { motion } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
 
-export default function Splash(){
-  const containerStyle = {
-    minHeight:'100vh', width:'100%',
-    display:'flex', alignItems:'center', justifyContent:'center',
-    background:'radial-gradient(ellipse at top, #e2e8f0, #cbd5e1)'
-  }
+export default function Splash() {
+  const navigate = useNavigate();
+
+  const handleStart = () => {
+    navigate('/temas');
+  };
 
   return (
-    <div style={containerStyle}>
+    <div className="h-screen w-full bg-slate-900 text-slate-100 flex items-center justify-center p-4 overflow-hidden">
       <motion.div
-        initial={{ opacity:0, scale:0.98 }}
-        animate={{ opacity:1, scale:1 }}
-        transition={{ duration:0.35, ease:[0.22,1,0.36,1] }}
-        style={{ width: '100%', maxWidth: '1400px', padding:'0 24px' }}
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8, ease: [0.4, 0, 0.2, 1] }}
+        className="text-center flex flex-col items-center"
       >
-        <div style={{ textAlign:'center', marginBottom: '40px' }}>
-          <h1 style={{ fontSize:48, fontWeight:800, letterSpacing:'-0.02em' }}>Puzzle Generator</h1>
-          <p style={{ marginTop:12, color:'#334155' }}>Creador de Puzzles — rápido, modular y bonito.</p>
-        </div>
+        <h1 className="text-6xl md:text-8xl font-extrabold tracking-tighter bg-clip-text text-transparent bg-gradient-to-r from-slate-100 to-slate-400 py-2">
+          Caza Palabras
+        </h1>
 
-        <NavigationMenu />
+        <p className="max-w-xl mx-auto my-6 text-lg text-slate-400">
+          Herramienta inteligente para diseñar, diagramar y exportar sopas de letras. Comienza a crear tu próximo puzzle en segundos.
+        </p>
 
-        <div style={{ textAlign:'center', marginTop: '20px' }}>
-          <p style={{ color:'#64748b', fontSize: '14px' }}>
-            💡 <strong>Flujo recomendado:</strong> Temas → Diagramación → APIs (opcional)
-          </p>
+        <motion.button
+          whileHover={{ scale: 1.05, boxShadow: '0 0 25px rgba(37, 99, 235, 0.5)' }}
+          whileTap={{ scale: 0.95 }}
+          onClick={handleStart}
+          className="px-10 py-4 font-semibold text-white bg-gradient-to-r from-teal-500 to-blue-600 rounded-lg shadow-lg focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 focus:ring-offset-slate-900 transition-all duration-300"
+        >
+          Empezar a Crear
+        </motion.button>
+
+        <div className="mt-16 text-sm text-slate-600">
+          <p>Versión 2.0 - Edición Inteligente</p>
         </div>
       </motion.div>
     </div>
-  )
+  );
 }

@@ -1,11 +1,13 @@
-import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom'
 import { AnimatePresence } from 'framer-motion'
-import { lazy, Suspense } from 'react'
-import { AppProvider } from './context/AppContext'
-import { AccessibilityProvider } from './context/AccessibilityContext'
-import NetBadge from './components/NetBadge'
-import AccessibilityControls from './components/AccessibilityControls'
+import { Search } from 'lucide-react'
+import { lazy, Suspense, useEffect } from 'react'
+import { BrowserRouter, Route, Routes, useLocation } from 'react-router-dom'
+import CommandPalette from './components/CommandPalette'
 import ErrorBoundary from './components/ErrorBoundary'
+import { AccessibilityProvider } from './context/AccessibilityContext'
+import { AppProvider } from './context/AppContext'
+import { useApp } from './hooks/useApp'
+import Layout from './Layout'
 
 // Lazy loading de componentes para mejor performance
 const Splash = lazy(() => import('./modules/splash/Splash'))
@@ -36,7 +38,7 @@ function AnimatedRoutes(){
           <Routes location={location} key={location.pathname}>
             <Route path="/" element={<Splash />} />
             <Route path="/temas" element={<Temas />} />
-            <Route path="/diagramacion/:id" element={<Diagramacion />} />
+            <Route path="/diagramacion" element={<Diagramacion />} />
             <Route path="/panel-apis" element={<PanelAPIs />} />
           </Routes>
         </Suspense>
@@ -45,14 +47,45 @@ function AnimatedRoutes(){
   )
 }
 
+function AppContent() {
+  const { setCommandPaletteOpen } = useApp();
+
+  // Listener para el atajo de teclado
+  useEffect(() => {
+    const handler = (e) => {
+      if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+        e.preventDefault();
+        setCommandPaletteOpen(isOpen => !isOpen);
+      }
+    };
+    window.addEventListener('keydown', handler);
+    return () => window.removeEventListener('keydown', handler);
+  }, [setCommandPaletteOpen]);
+
+  return (
+    <>
+      <CommandPalette />
+      <Layout>
+        <AnimatedRoutes />
+      </Layout>
+      {/* Botón para abrir el menú de comandos */}
+      <button
+        onClick={() => setCommandPaletteOpen(true)}
+        className="fixed bottom-6 right-6 bg-blue-600 text-white p-3 rounded-full shadow-lg hover:bg-blue-700 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500"
+        title="Abrir menú de comandos (Ctrl+K)"
+      >
+        <Search size={22} />
+      </button>
+    </>
+  );
+}
+
 export default function AppRouter(){
   return (
     <BrowserRouter>
       <AppProvider>
         <AccessibilityProvider>
-          <NetBadge />
-          <AccessibilityControls />
-          <AnimatedRoutes />
+          <AppContent />
         </AccessibilityProvider>
       </AppProvider>
     </BrowserRouter>

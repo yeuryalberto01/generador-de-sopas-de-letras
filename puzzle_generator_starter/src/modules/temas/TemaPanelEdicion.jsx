@@ -1,5 +1,5 @@
-import { useState, useCallback, useEffect } from 'react'
-import { validateWord, findDuplicates } from '../../utils/parseWords'
+import { useCallback, useEffect, useState } from 'react'
+import { findDuplicates, validateWord } from '../../utils/parseWords'
 
 /**
  * Componente para editar una palabra individual
@@ -214,16 +214,16 @@ export default function TemaPanelEdicion({
   isLoading = false
 }) {
   const [editingWordIndex, setEditingWordIndex] = useState(null)
-  const [localTema, setLocalTema] = useState(tema)
-  const [lastSaved, setLastSaved] = useState(tema)
-  const [titleDraft, setTitleDraft] = useState(tema?.title || '')
+  const [localTema, setLocalTema] = useState(tema || { nombre: '', words: [] })
+  const [lastSaved, setLastSaved] = useState(tema || { nombre: '', words: [] })
+  const [titleDraft, setTitleDraft] = useState(tema?.nombre || '')
 
   // Sincronizar con prop cambios
   useEffect(() => {
     if (tema) {
       setLocalTema(tema)
       setLastSaved(tema)
-      setTitleDraft(tema.nombre || '')
+      setTitleDraft(tema?.nombre || '')
     }
   }, [tema])
 
@@ -321,10 +321,10 @@ export default function TemaPanelEdicion({
         </div>
         
         <div className="flex items-center gap-4 text-sm text-gray-500">
-          <span>ID: {tema.id}</span>
+          <span>ID: {tema?.id || 'N/A'}</span>
           <span>•</span>
           <span>
-            Actualizado: {new Date(tema.updated_at || Date.now()).toLocaleString()}
+            Actualizado: {new Date(tema?.updated_at || Date.now()).toLocaleString()}
           </span>
         </div>
       </div>

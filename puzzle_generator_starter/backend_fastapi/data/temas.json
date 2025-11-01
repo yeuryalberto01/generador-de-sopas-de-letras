@@ -1,23 +1,5 @@
 [
   {
-    "id": "674f7474-64d4-4a86-aaff-678a3170656f",
-    "nombre": "Animales",
-    "descripcion": "Palabras relacionadas con animales",
-    "words": [
-      "perro",
-      "gato",
-      "elefante",
-      "leon",
-      "tigre",
-      "oso",
-      "conejo",
-      "raton",
-      "vaca",
-      "caballo"
-    ],
-    "updated_at": "2025-11-01T06:19:52.829856+00:00"
-  },
-  {
     "id": "ca372b0d-42e7-45bf-9334-09aab584dff1",
     "nombre": "los",
     "descripcion": "",
@@ -26,5 +8,17 @@
       "les"
     ],
     "updated_at": "2025-11-01T06:32:33.735341+00:00"
+  },
+  {
+    "id": "4e1e1df3-5faa-4bbe-bfae-07118049e1c5",
+    "nombre": "animales de la selva",
+    "descripcion": "",
+    "words": [
+      "sol",
+      "lina",
+      "perla",
+      "pardo"
+    ],
+    "updated_at": "2025-11-01T10:34:03.393193+00:00"
   }
 ]

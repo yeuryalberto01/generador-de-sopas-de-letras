@@ -1,0 +1,53 @@
+/* =====================================================================
+   SKIN FILE - DEFINE AQUÍ LA PALETA DE COLORES Y ESTILOS GLOBALES
+   ===================================================================== */
+
+/* 
+  Se usan valores RGB para poder aplicar opacidad con Tailwind (ej: bg-surface/50)
+*/
+
+:root {
+  /* Fondos - Alto Contraste */
+  --color-bg-surface: 255 255 255; /* white */
+  --color-bg-card: 249 250 251; /* gray-50 */
+  --color-bg-panel-expanded: 243 244 246; /* gray-100 */
+  --color-bg-input: 255 255 255; /* white */
+
+  /* Texto - Alto Contraste */
+  --color-text-primary: 17 24 39; /* gray-900 */
+  --color-text-secondary: 107 114 128; /* gray-500 */
+  --color-text-accent: 49 46 229; /* indigo-600 */
+
+  /* Bordes */
+  --color-border-primary: 229 231 235; /* gray-200 */
+  --color-border-secondary: 209 213 219; /* gray-300 */
+  --color-border-focus: 49 46 229; /* indigo-600 */
+
+  /* Botones y Acentos */
+  --color-accent-primary: 37 99 235; /* blue-600 */
+  --color-accent-primary-hover: 29 78 216; /* blue-700 */
+  --color-accent-text: 255 255 255; /* white */
+}
+
+.dark {
+  /* Fondos - Alto Contraste */
+  --color-bg-surface: 0 0 0; /* black */
+  --color-bg-card: 17 24 39; /* gray-900 */
+  --color-bg-panel-expanded: 31 41 55; /* gray-800 */
+  --color-bg-input: 55 65 81; /* gray-700 */
+
+  /* Texto - Alto Contraste */
+  --color-text-primary: 255 255 255; /* white */
+  --color-text-secondary: 156 163 175; /* gray-400 */
+  --color-text-accent: 129 140 248; /* indigo-400 */
+
+  /* Bordes */
+  --color-border-primary: 55 65 81; /* gray-700 */
+  --color-border-secondary: 75 85 99; /* gray-600 */
+  --color-border-focus: 99 102 241; /* indigo-500 */
+
+  /* Botones y Acentos */
+  --color-accent-primary: 59 130 246; /* blue-500 */
+  --color-accent-primary-hover: 96 165 250; /* blue-400 */
+  --color-accent-text: 255 255 255; /* white */
+}

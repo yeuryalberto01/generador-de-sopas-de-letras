@@ -1,29 +1,8 @@
+@import './skin.css';
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
-/* Variables CSS para sistema de temas */
-body.light-theme {
-  --bg-primary: #ffffff;
-  --bg-secondary: #f8fafc;
-  --text-primary: #1e293b;
-  --text-secondary: #64748b;
-  --border-color: #e2e8f0;
-  --accent-color: #3b82f6;
-  --error-color: #ef4444;
-  --success-color: #10b981;
-}
-
-body.dark-theme {
-  --bg-primary: #0f172a;
-  --bg-secondary: #1e293b;
-  --text-primary: #f1f5f9;
-  --text-secondary: #94a3b8;
-  --border-color: #334155;
-  --accent-color: #60a5fa;
-  --error-color: #f87171;
-  --success-color: #34d399;
-}
 
 /* Variables para accesibilidad */
 :root {
@@ -51,10 +30,7 @@ body.dark-theme {
 
 /* Aplicar variables CSS a elementos base */
 body {
-  background-color: var(--bg-primary);
-  color: var(--text-primary);
-  transition: background-color var(--animation-duration) var(--animation-timing), 
-              color var(--animation-duration) var(--animation-timing);
+  @apply bg-white text-gray-900 dark:bg-gray-900 dark:text-gray-100 transition-colors duration-300;
 }
 
 /* Skip Navigation para accesibilidad */
@@ -147,23 +123,4 @@ body{margin:0;font-family:ui-sans-serif,system-ui,Segoe UI,Roboto,Helvetica,Aria
   background-color: rgba(0, 0, 0, 0.7) !important;
 }
 
-/* Mejoras de contraste para toasts */
-.toast {
-  border-left: 4px solid !important;
-}
 
-.toast-success {
-  border-left-color: var(--success-color) !important;
-}
-
-.toast-error {
-  border-left-color: var(--error-color) !important;
-}
-
-.toast-warning {
-  border-left-color: #f59e0b !important;
-}
-
-.toast-info {
-  border-left-color: var(--accent-color) !important;
-}
