@@ -1,0 +1,9 @@
+/* tailwindcss */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html,body,#root{height:100%;}
+body{margin:0;font-family:ui-sans-serif,system-ui,Segoe UI,Roboto,Helvetica,Arial;}
+/* Utilidades mínimas para que se vea decente aun sin Tailwind */
+.button-primary{border-radius:12px;padding:12px 18px;font-weight:600;cursor:pointer;}
