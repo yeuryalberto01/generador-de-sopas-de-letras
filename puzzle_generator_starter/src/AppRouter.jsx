@@ -71,7 +71,7 @@ function AppContent() {
       {/* Botón para abrir el menú de comandos */}
       <button
         onClick={() => setCommandPaletteOpen(true)}
-        className="fixed bottom-6 right-6 bg-blue-600 text-white p-3 rounded-full shadow-lg hover:bg-blue-700 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500"
+        className="fixed bottom-6 left-6 bg-blue-600 text-white p-3 rounded-full shadow-lg hover:bg-blue-700 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500"
         title="Abrir menú de comandos (Ctrl+K)"
       >
         <Search size={22} />
