@@ -123,7 +123,7 @@ export default function Temas() {
   };
 
   return (
-    <div className="min-h-screen bg-surface p-6 transition-colors duration-300">
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 p-6 transition-colors duration-300">
       <div className="max-w-7xl mx-auto">
         <div className="flex items-center justify-between mb-6">
           <h1 className="text-3xl font-bold text-text-primary">Gestión de Temas</h1>
@@ -152,7 +152,7 @@ export default function Temas() {
           <button
             disabled={!selectedId || loading.load}
             onClick={() => nav(`/diagramacion/${selectedId}`)}
-            className="bg-gray-900 dark:bg-gray-100 text-white dark:text-gray-900 px-6 py-3 rounded-lg font-medium hover:bg-gray-700 dark:hover:bg-gray-300 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors flex items-center gap-2 shadow-lg"
+            className="bg-blue-600 dark:bg-blue-500 text-white px-6 py-3 rounded-lg font-medium hover:bg-blue-700 dark:hover:bg-blue-600 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors flex items-center gap-2 shadow-lg"
           >
             Continuar
           </button>
