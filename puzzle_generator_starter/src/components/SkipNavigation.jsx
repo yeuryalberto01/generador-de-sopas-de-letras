@@ -1,17 +1,10 @@
-import { useEffect, useRef } from 'react'
+import { useEffect } from 'react'
 
 /**
  * Componente Skip Navigation para accesibilidad
  * Permite a usuarios de teclado saltar al contenido principal
  */
 export default function SkipNavigation() {
-  const mainContentRef = useRef(null)
-
-  const focusMainContent = () => {
-    if (mainContentRef.current) {
-      mainContentRef.current.focus()
-    }
-  }
 
   // Asegurar que el contenido principal tenga un ID
   useEffect(() => {
@@ -39,9 +32,6 @@ export default function SkipNavigation() {
       >
         Saltar al contenido principal
       </a>
-      
-      {/* Referencia para el contenido principal */}
-      <div ref={mainContentRef} tabIndex={-1} style={{ outline: 'none' }} />
     </>
   )
 }

@@ -76,12 +76,12 @@ export default function TemaPanelEntrada({
                    (!parsingResult || parsingResult.valid)
 
   return (
-    <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 h-full">
-      <h2 className="text-2xl font-bold text-gray-900 mb-6">Crear Nuevo Tema</h2>
+    <div className="bg-surface rounded-2xl shadow-sm border border-border-primary p-6 h-full">
+      <h2 className="text-2xl font-bold text-text-primary mb-6">Crear Nuevo Tema</h2>
       
       {/* Input de título */}
       <div className="mb-6">
-        <label htmlFor="tema-title" className="block text-sm font-semibold text-gray-700 mb-2">
+        <label htmlFor="tema-title" className="block text-sm font-semibold text-text-secondary mb-2">
           Título del tema *
         </label>
         <input
@@ -93,7 +93,7 @@ export default function TemaPanelEntrada({
           className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 ${
             titleError 
               ? 'border-red-500 bg-red-50' 
-              : 'border-gray-300 hover:border-gray-400 focus:border-blue-500'
+              : 'border-border-secondary hover:border-gray-400 focus:border-blue-500'
           }`}
           aria-required="true"
           aria-invalid={titleError}
@@ -109,7 +109,7 @@ export default function TemaPanelEntrada({
 
       {/* Textarea para lote de palabras */}
       <div className="mb-6">
-        <label htmlFor="batch-input" className="block text-sm font-semibold text-gray-700 mb-2">
+        <label htmlFor="batch-input" className="block text-sm font-semibold text-text-secondary mb-2">
           Lote de palabras
         </label>
         <textarea
@@ -122,18 +122,18 @@ export default function TemaPanelEntrada({
           className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 resize-none ${
             wordsError 
               ? 'border-red-500 bg-red-50' 
-              : 'border-gray-300 hover:border-gray-400 focus:border-blue-500'
+              : 'border-border-secondary hover:border-gray-400 focus:border-blue-500'
           }`}
           aria-describedby="batch-help batch-preview"
         />
-        <div id="batch-help" className="mt-2 text-sm text-gray-500 flex items-center gap-1">
+        <div id="batch-help" className="mt-2 text-sm text-text-secondary flex items-center gap-1">
           <span>💡</span>
           <span>Presiona Enter para parsear, Ctrl+Enter para crear</span>
         </div>
         
         {/* Vista previa del parsing */}
         {parsingResult && (
-          <div id="batch-preview" className="mt-4 p-4 bg-gray-50 rounded-xl border border-gray-200">
+          <div id="batch-preview" className="mt-4 p-4 bg-gray-50 dark:bg-slate-800 rounded-xl border border-border-primary">
             <p className={`text-sm font-medium flex items-center gap-2 ${
               parsingResult.valid ? 'text-green-600' : 'text-amber-600'
             }`}>
@@ -141,7 +141,7 @@ export default function TemaPanelEntrada({
               {parsingResult.message}
             </p>
             {parsingResult.stats && (
-              <div className="mt-2 text-xs text-gray-600 grid grid-cols-2 gap-1">
+              <div className="mt-2 text-xs text-text-secondary grid grid-cols-2 gap-1">
                 <span>Total detectadas: <strong>{parsingResult.stats.totalDetected}</strong></span>
                 <span>Válidas: <strong className="text-green-600">{parsingResult.stats.validWords}</strong></span>
                 <span>Duplicadas: <strong className="text-amber-600">{parsingResult.stats.duplicatesCount}</strong></span>
@@ -187,7 +187,7 @@ export default function TemaPanelEntrada({
         <button
           onClick={handleClear}
           type="button"
-          className="px-6 py-3 border-2 border-gray-300 text-gray-700 rounded-xl font-semibold hover:bg-gray-50 hover:border-gray-400 transition-all duration-200"
+          className="px-6 py-3 border-2 border-border-secondary text-text-primary rounded-xl font-semibold hover:bg-gray-50 hover:border-gray-400 transition-all duration-200"
           aria-label="Limpiar formulario"
         >
           🗑️ Limpiar

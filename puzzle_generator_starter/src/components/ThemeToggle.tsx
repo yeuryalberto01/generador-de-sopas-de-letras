@@ -1,10 +1,18 @@
-import { Moon, Sun } from 'lucide-react'
-import { useApp } from '../hooks/useApp'
+import { Moon, Sun } from 'lucide-react';
+import { useContext } from 'react';
+import { AppContext } from '../context/AppContext';
+import type { FC } from 'react';
 
-export default function ThemeToggle() {
-  const { userPreferences, toggleTheme } = useApp()
-  const isDarkMode = userPreferences.theme === 'dark'
-  
+const ThemeToggle: FC = () => {
+  const context = useContext(AppContext);
+
+  if (!context) {
+    throw new Error('ThemeToggle must be used within an AppProvider');
+  }
+
+  const { userPreferences, toggleTheme } = context;
+  const isDarkMode = userPreferences.theme === 'dark';
+
   return (
     <button
       onClick={toggleTheme}
@@ -18,5 +26,7 @@ export default function ThemeToggle() {
         <Moon className="h-5 w-5 text-gray-700 dark:text-gray-300" />
       )}
     </button>
-  )
-}
+  );
+};
+
+export default ThemeToggle;

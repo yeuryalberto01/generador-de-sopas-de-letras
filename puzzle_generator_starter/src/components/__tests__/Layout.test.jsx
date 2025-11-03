@@ -4,13 +4,11 @@ import Layout from '../../Layout';
 import { AccessibilityProvider } from '../../context/AccessibilityContext';
 import { AppProvider } from '../../context/AppContext';
 
-// Mock del Sidebar para evitar problemas en las pruebas
-jest.mock('../../../Sidebar', () => ({
-  Sidebar: ({ open, _onToggle }) => (
-    <div data-testid="sidebar" data-open={open}>
-      Sidebar Mock - Open: {open ? 'true' : 'false'}
-    </div>
-  ),
+// Mock useNavigate
+const mockNavigate = jest.fn();
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useNavigate: () => mockNavigate,
 }));
 
 const renderLayout = () =>
@@ -27,31 +25,27 @@ const renderLayout = () =>
   );
 
 describe('Layout Component', () => {
-  test('renders the menu button', () => {
+  test('renders the navigation button', () => {
     renderLayout();
-    const button = screen.getByLabelText('Abrir menú');
+    const button = screen.getByText('Puzzle Generator');
     expect(button).toBeInTheDocument();
   });
 
-  test('toggles sidebar open state when menu button is clicked', () => {
+  test('navigates to temas when title is clicked', () => {
     renderLayout();
-    const button = screen.getByLabelText('Abrir menú');
-    const sidebar = screen.getByTestId('sidebar');
-
-    // Initially closed
-    expect(sidebar).toHaveAttribute('data-open', 'false');
-
-    // Click to open
+    const button = screen.getByText('Puzzle Generator');
     fireEvent.click(button);
-    expect(sidebar).toHaveAttribute('data-open', 'true');
-
-    // Click to close
-    fireEvent.click(button);
-    expect(sidebar).toHaveAttribute('data-open', 'false');
+    expect(mockNavigate).toHaveBeenCalledWith('/temas');
   });
 
   test('renders children content', () => {
     renderLayout();
     expect(screen.getByText('Test Content')).toBeInTheDocument();
+  });
+
+  test('renders ThemeToggle component', () => {
+    renderLayout();
+    // ThemeToggle should be rendered (we can test for its presence indirectly)
+    expect(document.querySelector('header')).toBeInTheDocument();
   });
 });

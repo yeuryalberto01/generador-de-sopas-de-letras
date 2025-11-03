@@ -28,8 +28,8 @@ export default {
       statements: 70
     }
   },
-  moduleFileExtensions: ['js', 'jsx', 'json', 'node'],
+  moduleFileExtensions: ['js', 'jsx', 'ts', 'tsx', 'json', 'node'],
   transformIgnorePatterns: [
-    'node_modules/(?!(react-router-dom|reactflow)/)'
+    'node_modules/(?!(react-router-dom|reactflow|lucide-react)/)'
   ]
 }

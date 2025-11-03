@@ -1,4 +1,4 @@
-const base = import.meta.env.VITE_API_BASE_URL || '/api'
+const base = (import.meta?.env?.VITE_API_BASE_URL) || '/api'
 const DEFAULT_TIMEOUT = 10000 // 10 segundos
 
 // Función helper para crear fetch con timeout

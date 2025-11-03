@@ -1,6 +1,6 @@
 import { AnimatePresence, motion } from 'framer-motion';
-import { FileText, Home, Palette, Search, Sun, ZoomIn, ZoomOut } from 'lucide-react';
-import { useCallback, useEffect, useState } from 'react';
+import { FileText, Home, Layout, Palette, Search, Sun, ZoomIn, ZoomOut } from 'lucide-react';
+import { memo, useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAccessibility } from '../context/AccessibilityContext';
 import { useApp } from '../hooks/useApp';
@@ -20,6 +20,13 @@ const staticCommands = [
     section: 'Navegación',
     icon: <FileText size={18} />,
     path: '/temas',
+  },
+  {
+    id: 'diagramacion',
+    title: 'Crear Sopa de Letras',
+    section: 'Navegación',
+    icon: <Layout size={18} />,
+    path: '/diagramacion',
   },
   {
     id: 'apis',
@@ -51,7 +58,7 @@ const staticCommands = [
   },
 ];
 
-export default function CommandPalette() {
+const CommandPalette = memo(function CommandPalette() {
   const app = useApp();
   const accessibility = useAccessibility();
   const navigate = useNavigate();
@@ -110,15 +117,15 @@ export default function CommandPalette() {
             animate={{ scale: 1, y: 0 }}
             exit={{ scale: 0.95, y: -20 }}
             transition={{ duration: 0.2, ease: 'easeInOut' }}
-            className="w-full max-w-xl bg-white dark:bg-slate-800 rounded-lg shadow-2xl overflow-hidden"
+            className="w-full max-w-xl bg-primary rounded-lg shadow-2xl overflow-hidden smooth-transition"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="flex items-center p-4 border-b border-slate-200 dark:border-slate-700">
-              <Search className="text-slate-400" size={20} />
+            <div className="flex items-center p-4 border-b border-primary">
+              <Search className="text-secondary" size={20} />
               <input
                 type="text"
                 placeholder="Buscar comandos o navegar..."
-                className="w-full ml-4 bg-transparent focus:outline-none text-slate-800 dark:text-slate-200"
+                className="w-full ml-4 bg-transparent focus:outline-none text-primary"
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 autoFocus
@@ -131,9 +138,9 @@ export default function CommandPalette() {
                     key={cmd.id}
                     onClick={() => executeCommand(cmd)}
                     onMouseMove={() => setActiveIndex(index)}
-                    className={`flex items-center justify-between p-3 rounded-md cursor-pointer ${activeIndex === index ? 'bg-blue-500 text-white' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700'}`}>
+                    className={`flex items-center justify-between p-3 rounded-md cursor-pointer smooth-transition ${activeIndex === index ? 'bg-accent text-white' : 'text-secondary hover:bg-secondary'}`}>
                     <div className="flex items-center">
-                      <div className={`mr-3 ${activeIndex === index ? 'text-white' : 'text-slate-400'}`}>{cmd.icon}</div>
+                      <div className={`mr-3 ${activeIndex === index ? 'text-white' : 'text-tertiary'}`}>{cmd.icon}</div>
                       {cmd.title}
                     </div>
                     <span className={`text-xs ${activeIndex === index ? 'text-blue-200' : 'text-slate-400'}`}>{cmd.section}</span>
@@ -148,4 +155,6 @@ export default function CommandPalette() {
       )}
     </AnimatePresence>
   );
-}
+});
+
+export default CommandPalette;

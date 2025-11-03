@@ -1,3 +1,4 @@
+import { AlertCircle, AlertTriangle, Info } from 'lucide-react'
 import { useEffect } from 'react'
 
 /**
@@ -8,7 +9,7 @@ import { useEffect } from 'react'
  * @param {string} props.message - Mensaje del diálogo
  * @param {string} props.confirmText - Texto del botón de confirmar (default: 'Confirmar')
  * @param {string} props.cancelText - Texto del botón de cancelar (default: 'Cancelar')
- * @param {string} props.confirmButtonClass - Clase CSS para el botón de confirmar
+ * @param {string} props.type - Tipo de confirmación: 'danger', 'warning', 'info' (default: 'danger')
  * @param {Function} props.onConfirm - Callback al confirmar
  * @param {Function} props.onCancel - Callback al cancelar
  * @param {boolean} props.isLoading - Si está cargando la operación
@@ -19,11 +20,33 @@ export default function ConfirmDialog({
   message,
   confirmText = 'Confirmar',
   cancelText = 'Cancelar',
-  confirmButtonClass = 'bg-red-500 hover:bg-red-600 text-white',
+  type = 'danger',
   onConfirm,
   onCancel,
   isLoading = false
 }) {
+  const getIcon = () => {
+    switch (type) {
+      case 'warning':
+        return <AlertTriangle size={24} className="text-yellow-500" />
+      case 'info':
+        return <Info size={24} className="text-blue-500" />
+      default: // danger
+        return <AlertCircle size={24} className="text-red-500" />
+    }
+  }
+
+  const getConfirmButtonClass = () => {
+    switch (type) {
+      case 'warning':
+        return 'bg-yellow-600 hover:bg-yellow-700 text-white'
+      case 'info':
+        return 'bg-blue-600 hover:bg-blue-700 text-white'
+      default: // danger
+        return 'bg-red-600 hover:bg-red-700 text-white'
+    }
+  }
+
   // Manejar teclas de escape y enter
   useEffect(() => {
     if (!isOpen) return
@@ -90,17 +113,27 @@ export default function ConfirmDialog({
         onClick={(e) => e.stopPropagation()} // Prevenir cerrar al hacer click dentro
       >
         {/* Título */}
-        <h3
-          id="confirm-dialog-title"
+        <div
           style={{
-            fontSize: '1.125rem',
-            fontWeight: '600',
-            color: '#111827',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '0.75rem',
             marginBottom: '0.5rem'
           }}
         >
-          {title}
-        </h3>
+          {getIcon()}
+          <h3
+            id="confirm-dialog-title"
+            style={{
+              fontSize: '1.125rem',
+              fontWeight: '600',
+              color: '#111827',
+              margin: 0
+            }}
+          >
+            {title}
+          </h3>
+        </div>
 
         {/* Mensaje */}
         <p
@@ -150,25 +183,11 @@ export default function ConfirmDialog({
           <button
             onClick={onConfirm}
             disabled={isLoading}
-            style={{
-              padding: '0.5rem 1rem',
-              border: 'none',
-              borderRadius: '0.375rem',
-              backgroundColor: isLoading ? '#9ca3af' : '#ef4444',
-              color: 'white',
-              fontSize: '0.875rem',
-              fontWeight: '500',
-              cursor: isLoading ? 'not-allowed' : 'pointer',
-              opacity: isLoading ? 0.6 : 1,
-              transition: 'all 0.2s',
-              minWidth: '80px'
-            }}
-            onMouseEnter={(e) => {
-              if (!isLoading) e.target.style.backgroundColor = '#dc2626'
-            }}
-            onMouseLeave={(e) => {
-              if (!isLoading) e.target.style.backgroundColor = isLoading ? '#9ca3af' : '#ef4444'
-            }}
+            className={`px-4 py-2 rounded-lg font-medium transition-colors min-w-[80px] ${
+              isLoading
+                ? 'bg-gray-400 cursor-not-allowed opacity-60'
+                : getConfirmButtonClass()
+            }`}
           >
             {isLoading ? 'Eliminando...' : confirmText}
           </button>

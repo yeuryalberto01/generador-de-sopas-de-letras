@@ -48,9 +48,9 @@ def test_create_tema():
     """Prueba crear un nuevo tema"""
     print("\n3. Probando crear tema...")
     nuevo_tema = {
-        'nombre': 'Animales Salvajes',
-        'descripcion': 'Tema sobre animales del safari',
-        'words': ['leon', 'tigre', 'elefante', 'jirafa']
+        'nombre': 'Animales del Desierto Test',
+        'descripcion': 'Tema sobre animales del desierto',
+        'words': ['camello', 'escorpion', 'lagarto', 'buho']
     }
     try:
         response = requests.post(f'{BASE_URL}/api/temas',

@@ -1,7 +1,8 @@
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
+import type { FC } from 'react';
 
-export default function Splash() {
+const Splash: FC = () => {
   const navigate = useNavigate();
 
   const handleStart = () => {
@@ -39,4 +40,6 @@ export default function Splash() {
       </motion.div>
     </div>
   );
-}
+};
+
+export default Splash;

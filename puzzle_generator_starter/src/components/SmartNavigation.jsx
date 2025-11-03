@@ -1,25 +1,25 @@
 import {
-  ChevronRight,
-  Clock,
-  Home,
-  Layout,
-  Menu,
-  Palette,
-  Search,
-  Settings,
-  Star,
-  X,
-  Zap
-} from 'lucide-react'
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { useLocation, useNavigate } from 'react-router-dom'
-import { useApp } from '../hooks/useApp'
+    ChevronRight,
+    Clock,
+    Home,
+    Layout,
+    Menu,
+    Palette,
+    Search,
+    Settings,
+    Star,
+    X,
+    Zap
+} from 'lucide-react';
+import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { useApp } from '../hooks/useApp';
 
 /**
  * Panel de navegación inteligente y moderno
  * Se adapta al contexto de la aplicación y preferencias del usuario
  */
-export default function SmartNavigation() {
+const SmartNavigation = memo(function SmartNavigation() {
   const navigate = useNavigate()
   const location = useLocation()
   const { recentItems, addRecentItem } = useApp()
@@ -176,7 +176,7 @@ export default function SmartNavigation() {
                 placeholder="Buscar sección..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 bg-white/10 border border-white/20 rounded-lg text-white placeholder-blue-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full pl-10 pr-4 py-2 bg-primary border border-primary rounded-lg text-primary placeholder-secondary focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent smooth-transition"
               />
             </div>
           </div>
@@ -195,7 +195,7 @@ export default function SmartNavigation() {
                     <button
                       key={index}
                       onClick={() => handleNavigation(item)}
-                      className="w-full flex items-center gap-3 p-2 rounded-lg hover:bg-white/10 transition-colors text-sm"
+                      className="w-full flex items-center gap-3 p-2 rounded-lg hover:bg-secondary smooth-transition text-sm"
                     >
                       <item.icon size={16} className="text-blue-300" />
                       <span className="truncate">{item.label}</span>
@@ -225,7 +225,7 @@ export default function SmartNavigation() {
                             w-full flex items-center gap-3 p-3 rounded-xl transition-all duration-200
                             ${active 
                               ? 'bg-blue-600 shadow-lg shadow-blue-500/25' 
-                              : 'hover:bg-white/10 hover:shadow-lg'
+                              : 'hover:bg-secondary hover:shadow-lg'
                             }
                             ${isExpanded ? 'justify-start' : 'justify-center lg:justify-start'}
                           `}
@@ -242,7 +242,7 @@ export default function SmartNavigation() {
                             <div className="flex items-center justify-between">
                               <span className="font-medium text-sm">{item.label}</span>
                               {item.shortcut && (
-                                <kbd className="text-xs bg-white/20 px-1.5 py-0.5 rounded text-blue-200">
+                                <kbd className="text-xs bg-secondary px-1.5 py-0.5 rounded text-secondary">
                                   Alt+{item.shortcut}
                                 </kbd>
                               )}
@@ -281,7 +281,7 @@ export default function SmartNavigation() {
               </div>
               <button
                 onClick={() => setIsExpanded(!isExpanded)}
-                className="p-2 hover:bg-white/10 rounded-lg transition-colors"
+                className="p-2 hover:bg-secondary rounded-lg smooth-transition"
                 aria-label={isExpanded ? "Contraer menú" : "Expandir menú"}
               >
                 <ChevronRight 
@@ -295,4 +295,6 @@ export default function SmartNavigation() {
       </nav>
     </>
   )
-}
+});
+
+export default SmartNavigation;

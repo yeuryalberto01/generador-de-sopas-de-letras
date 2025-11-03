@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import Modal from '../../components/Modal';
 import TemaPanelEntrada from '../../components/TemaPanelEntrada';
 import TemasPanel from '../../components/TemasPanel';
+import ToastContainer from '../../components/ToastContainer';
 import { useApp } from '../../hooks/useApp';
 import useLocalStorage from '../../hooks/useLocalStorage';
 import { useTemaOperations } from '../../hooks/useTemaOperations';
+import { useToast } from '../../hooks/useToast';
 import { temasService } from '../../services/temas';
 import TemaPanelEdicion from './TemaPanelEdicion';
 
@@ -14,23 +15,22 @@ export default function Temas() {
   const nav = useNavigate();
   const { selectTema } = useApp();
   const temaOps = useTemaOperations();
+  const { toasts, showToast, removeToast } = useToast();
 
   const [temas, setTemas] = useState([]);
   const [loading, setLoading] = useState({ create: false, update: false, load: true, import: false });
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedId, setSelectedId] = useLocalStorage('selectedTemaId', null);
 
-  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [editingTema, setEditingTema] = useState(null);
+  const [favorites, setFavorites] = useState(new Set());
 
-  const handleOpenEditModal = (tema) => {
+  const handleStartEdit = (tema) => {
     setEditingTema(tema);
-    setIsEditModalOpen(true);
   };
 
-  const handleCloseEditModal = () => {
+  const handleCloseEdit = () => {
     setEditingTema(null);
-    setIsEditModalOpen(false);
   };
 
   // Funciones para TemaPanelEdicion
@@ -56,6 +56,30 @@ export default function Temas() {
     loadTemas();
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
+  // Cargar favoritos desde localStorage
+  useEffect(() => {
+    try {
+      const saved = JSON.parse(localStorage.getItem('temas_favorites') || '[]');
+      setFavorites(new Set(saved));
+    } catch (error) {
+      // Error al cargar favoritos, usar conjunto vacío
+      setFavorites(new Set());
+    }
+  }, []);
+
+  const handleToggleFavorite = (id) => {
+    const newFavorites = new Set(favorites);
+    if (newFavorites.has(id)) {
+      newFavorites.delete(id);
+      showToast('Tema removido de favoritos', 'info');
+    } else {
+      newFavorites.add(id);
+      showToast('Tema agregado a favoritos', 'success');
+    }
+    setFavorites(newFavorites);
+    localStorage.setItem('temas_favorites', JSON.stringify([...newFavorites]));
+  };
+
   const loadTemas = async () => {
     setLoading(prev => ({ ...prev, load: true }));
     try {
@@ -77,8 +101,10 @@ export default function Temas() {
       // Seleccionar el tema recién creado
       setSelectedId(result.id);
       selectTema(result);
+
+      showToast(`Tema "${result.nombre}" creado correctamente`, 'success');
     } catch (error) {
-      // Error al crear el tema
+      showToast('Error al crear el tema. Inténtalo de nuevo.', 'error');
     } finally {
       setLoading(prev => ({ ...prev, create: false }));
     }
@@ -89,8 +115,9 @@ export default function Temas() {
     try {
       const updated = await temasService.updateTema(id, title, words);
       setTemas(prev => prev.map(t => t.id === id ? updated : t));
+      showToast('Cambios guardados correctamente', 'success');
     } catch (error) {
-      // Error al guardar cambios
+      showToast('Error al guardar cambios. Inténtalo de nuevo.', 'error');
     } finally {
       setLoading(prev => ({ ...prev, update: false }));
     }
@@ -98,6 +125,7 @@ export default function Temas() {
 
   const handleDelete = async (id) => {
     try {
+      const temaToDelete = temas.find(t => t.id === id);
       await temasService.deleteTema(id);
       setTemas(prev => prev.filter(t => t.id !== id));
 
@@ -105,8 +133,10 @@ export default function Temas() {
       if (selectedId === id) {
         setSelectedId(null);
       }
+
+      showToast(`Tema "${temaToDelete?.nombre || 'eliminado'}" eliminado correctamente`, 'success');
     } catch (error) {
-      // Error al eliminar tema
+      showToast('Error al eliminar el tema. Inténtalo de nuevo.', 'error');
     }
   };
 
@@ -115,8 +145,9 @@ export default function Temas() {
     try {
       const newTemas = await temasService.bulkImport(importedTemas);
       setTemas(newTemas);
+      showToast(`${importedTemas.length} tema(s) importado(s) correctamente`, 'success');
     } catch (error) {
-      // Error al importar temas
+      showToast('Error al importar temas. Verifica el formato del archivo.', 'error');
     } finally {
       setLoading(prev => ({ ...prev, import: false }));
     }
@@ -125,26 +156,75 @@ export default function Temas() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 p-6 transition-colors duration-300">
       <div className="max-w-7xl mx-auto">
-        <div className="flex items-center justify-between mb-6">
-          <h1 className="text-3xl font-bold text-text-primary">Gestión de Temas</h1>
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-4 sm:mb-6">
+          <div>
+            <h1 className="text-2xl sm:text-3xl font-bold text-primary">Gestión de Temas</h1>
+            <p className="text-sm text-secondary mt-1">Crea, edita y organiza tus temas para sopas de letras</p>
+          </div>
+          <div className="flex items-center gap-4 text-sm text-secondary">
+            <span className="bg-secondary px-3 py-1 rounded-full">
+              {temas.length} tema{temas.length !== 1 ? 's' : ''}
+            </span>
+          </div>
         </div>
 
-        <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 h-[calc(100vh-150px)]">
-          <TemaPanelEntrada
-            onCreate={handleCreate}
-            loading={loading.create}
-          />
+        <div className="flex flex-col lg:flex-row gap-4 lg:gap-6 h-[calc(100vh-140px)]">
+          {/* Panel de Creación Compacto */}
+          <div className="w-full lg:w-80 flex-shrink-0">
+            <TemaPanelEntrada
+              onCreate={handleCreate}
+              loading={loading.create}
+            />
+          </div>
 
-          <TemasPanel
-            temas={temas}
-            onUpdate={handleUpdate}
-            onDelete={handleDelete}
-            onImport={handleImport}
-            onEdit={handleOpenEditModal}
-            loading={loading.update}
-            searchTerm={searchTerm}
-            setSearchTerm={setSearchTerm}
-          />
+          {/* Panel Principal de Temas */}
+          <div className="flex-1 bg-primary/50 backdrop-blur-sm rounded-xl border border-primary/30 overflow-hidden">
+            {editingTema ? (
+              <div className="h-full flex flex-col">
+                <div className="flex items-center gap-3 p-4 border-b border-primary/30 bg-secondary/20">
+                  <button
+                    onClick={handleCloseEdit}
+                    className="flex items-center gap-2 px-3 py-1.5 hover:bg-primary rounded-lg smooth-transition text-secondary hover:text-primary text-sm"
+                    aria-label="Volver a la lista de temas"
+                  >
+                    ← Volver
+                  </button>
+                  <div className="flex-1">
+                    <h2 className="text-lg font-semibold text-primary">Editando Tema</h2>
+                    <p className="text-sm text-secondary">{editingTema.nombre}</p>
+                  </div>
+                  <span className="text-xs text-secondary bg-primary px-2 py-1 rounded-full">
+                    {editingTema.palabras?.length || 0} palabras
+                  </span>
+                </div>
+                <div className="flex-1 overflow-y-auto">
+                  <TemaPanelEdicion
+                    tema={editingTema}
+                    onUpdateTitle={handleUpdateTitle}
+                    onUpdateWords={handleUpdateWords}
+                    onUndo={handleCloseEdit}
+                    isLoading={false}
+                  />
+                </div>
+              </div>
+            ) : (
+              <div className="h-full flex flex-col">
+                <TemasPanel
+                  temas={temas}
+                  onUpdate={handleUpdate}
+                  onDelete={handleDelete}
+                  onImport={handleImport}
+                  onEdit={handleStartEdit}
+                  loading={loading.update}
+                  searchTerm={searchTerm}
+                  setSearchTerm={setSearchTerm}
+                  showToast={showToast}
+                  favorites={favorites}
+                  onToggleFavorite={handleToggleFavorite}
+                />
+              </div>
+            )}
+          </div>
         </div>
 
         {/* Botón Continuar */}
@@ -152,28 +232,17 @@ export default function Temas() {
           <button
             disabled={!selectedId || loading.load}
             onClick={() => nav(`/diagramacion/${selectedId}`)}
-            className="bg-blue-600 dark:bg-blue-500 text-white px-6 py-3 rounded-lg font-medium hover:bg-blue-700 dark:hover:bg-blue-600 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors flex items-center gap-2 shadow-lg"
+            className="bg-accent text-white px-6 py-3 rounded-xl font-semibold hover:bg-accent-hover disabled:bg-disabled disabled:cursor-not-allowed smooth-transition flex items-center gap-3 shadow-xl hover:shadow-2xl transform hover:scale-105 text-base"
           >
-            Continuar
+            <span>Continuar</span>
+            <span className="text-lg">→</span>
           </button>
         </div>
       </div>
 
-      <Modal
-        isOpen={isEditModalOpen}
-        onClose={handleCloseEditModal}
-        title={`Editando: ${editingTema?.nombre}`}
-        className="max-w-6xl">
-          {editingTema && (
-            <TemaPanelEdicion
-              tema={editingTema}
-              onUpdateTitle={handleUpdateTitle}
-              onUpdateWords={handleUpdateWords}
-              onUndo={handleCloseEditModal}
-              isLoading={false}
-            />
-          )}
-      </Modal>
+
+
+      <ToastContainer toasts={toasts} onRemoveToast={removeToast} />
     </div>
   );
 }

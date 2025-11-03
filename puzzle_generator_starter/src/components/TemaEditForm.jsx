@@ -1,5 +1,5 @@
-import React, { useState, useCallback, useMemo } from 'react';
-import { AlertCircle, Plus, RotateCcw, Save, Loader2 } from 'lucide-react';
+import { AlertCircle, Loader2, Plus, Save } from 'lucide-react';
+import { useCallback, useMemo, useState } from 'react';
 import PalabraItem from './PalabraItem'; // Asumiendo que PalabraItem se extrae a su propio archivo
 
 const VALIDATION_REGEX = /^[A-Za-zÁÉÍÓÚÜÑáéíóúüñ0-9_-]{2,32}$/;
@@ -46,11 +46,6 @@ const TemaEditForm = ({ tema, onSave, onCancel, loading }) => {
 
   const handleSave = () => {
     onSave(tema.id, editedTitle, editedWords);
-  };
-
-  const handleUndo = () => {
-    setEditedTitle(tema.nombre);
-    setEditedWords([...tema.words]);
   };
 
   const handleKeyDown = (e) => {

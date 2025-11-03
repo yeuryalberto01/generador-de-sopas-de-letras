@@ -1,12 +1,16 @@
-import { ChevronDown, ChevronRight, Edit, Plus, Save, Trash2, X } from 'lucide-react';
+import { ChevronDown, ChevronRight, Edit, Plus, Save, Star, Trash2, X } from 'lucide-react';
 import React, { useCallback, useState } from 'react';
+import ConfirmDialog from './ConfirmDialog';
 
-const TemaItem = React.memo(({ tema, onDelete, _onEdit, onUpdate, loading }) => {
+const TemaItem = React.memo(({ tema, onDelete, _onEdit, onUpdate, loading, showToast, isFavorite, onToggleFavorite }) => {
+  // Optimización: memoizar cálculos
+  const wordCount = tema.words?.length || 0;
   const [isExpanded, setIsExpanded] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [editTitle, setEditTitle] = useState(tema.nombre || '');
   const [editWords, setEditWords] = useState([...(tema.words || [])]);
   const [newWord, setNewWord] = useState('');
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
   const formatDate = useCallback((dateStr) => {
     const date = new Date(dateStr);
@@ -41,7 +45,8 @@ const TemaItem = React.memo(({ tema, onDelete, _onEdit, onUpdate, loading }) => 
   const handleSaveEdit = useCallback(() => {
     onUpdate(tema.id, editTitle.trim(), editWords);
     setIsEditing(false);
-  }, [tema.id, editTitle, editWords, onUpdate]);
+    if (showToast) showToast('Cambios guardados correctamente', 'success');
+  }, [tema.id, editTitle, editWords, onUpdate, showToast]);
 
   const handleAddWord = useCallback(() => {
     const trimmedWord = newWord.trim();
@@ -76,9 +81,9 @@ const TemaItem = React.memo(({ tema, onDelete, _onEdit, onUpdate, loading }) => 
   const hasChanges = editTitle !== (tema.nombre || '') || JSON.stringify(editWords) !== JSON.stringify(tema.words || []);
 
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden mb-3 border border-gray-200 dark:border-gray-700 transition-colors duration-300">
+    <div className="bg-primary rounded-xl shadow-lg overflow-hidden mb-3 border border-primary smooth-transition hover:shadow-xl group">
       <div
-        className={`p-4 ${isEditing ? 'cursor-default' : 'cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700'} transition-colors`}
+        className={`p-3 sm:p-4 ${isEditing ? 'cursor-default' : 'cursor-pointer hover:bg-secondary'} smooth-transition`}
         onClick={() => !isEditing && setIsExpanded(!isExpanded)}
       >
         <div className="flex items-start justify-between">
@@ -89,40 +94,54 @@ const TemaItem = React.memo(({ tema, onDelete, _onEdit, onUpdate, loading }) => 
               </button>
             )}
             <div className="flex-1 min-w-0">
-              <h3 className="font-bold text-gray-900 dark:text-white text-lg truncate" title={tema.nombre}>
+              <h3 className="font-bold text-primary text-base sm:text-lg truncate" title={tema.nombre}>
                 {tema.nombre}
               </h3>
-              <div className="flex items-center gap-3 mt-1 text-sm text-gray-600 dark:text-gray-400">
-                <span>{tema.words.length} palabra{tema.words.length !== 1 ? 's' : ''}</span>
-                <span>•</span>
-                <span>{formatDate(tema.updated_at)}</span>
+              <div className="flex items-center gap-2 sm:gap-3 mt-1 text-xs sm:text-sm text-secondary">
+                <span>{wordCount} palabra{wordCount !== 1 ? 's' : ''}</span>
+                <span className="hidden sm:inline">•</span>
+                <span className="hidden sm:inline">{formatDate(tema.updated_at)}</span>
               </div>
             </div>
           </div>
-          <div className="flex items-center gap-1">
+          <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-all duration-200">
             {!isEditing ? (
               <>
+                {onToggleFavorite && (
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onToggleFavorite();
+                    }}
+                    className={`w-9 h-9 rounded-lg hover:bg-secondary smooth-transition flex items-center justify-center transition-all ${
+                      isFavorite
+                        ? 'text-warning bg-secondary/60 shadow-sm'
+                        : 'text-secondary hover:text-primary'
+                    }`}
+                    title={isFavorite ? 'Remover de favoritos' : 'Agregar a favoritos'}
+                  >
+                    <Star size={16} className={isFavorite ? 'fill-current' : ''} />
+                  </button>
+                )}
                 <button
                   onClick={(e) => {
                     e.stopPropagation();
                     handleStartEdit();
                   }}
-                  className="text-gray-600 hover:text-gray-800 dark:text-gray-400 dark:hover:text-gray-200 p-2 rounded-full hover:bg-gray-50 dark:hover:bg-gray-900/50 transition-colors flex-shrink-0"
+                  className="w-9 h-9 rounded-lg text-secondary hover:text-accent hover:bg-secondary smooth-transition flex items-center justify-center"
                   title="Editar tema"
                 >
-                  <Edit size={18} />
+                  <Edit size={16} />
                 </button>
                 <button
                   onClick={(e) => {
                     e.stopPropagation();
-                    if (confirm(`¿Estás seguro de eliminar el tema "${tema.nombre}"?`)) {
-                      onDelete(tema.id);
-                    }
+                    setShowDeleteConfirm(true);
                   }}
-                  className="text-red-600 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 p-2 rounded-full hover:bg-red-50 dark:hover:bg-red-900/50 transition-colors flex-shrink-0"
+                  className="w-9 h-9 rounded-lg text-secondary hover:text-error hover:bg-secondary smooth-transition flex items-center justify-center"
                   title="Eliminar tema"
                 >
-                  <Trash2 size={18} />
+                  <Trash2 size={16} />
                 </button>
               </>
             ) : (
@@ -133,20 +152,20 @@ const TemaItem = React.memo(({ tema, onDelete, _onEdit, onUpdate, loading }) => 
                     handleSaveEdit();
                   }}
                   disabled={!hasChanges || loading}
-                  className="text-green-600 hover:text-green-700 dark:text-green-400 dark:hover:text-green-300 p-2 rounded-full hover:bg-green-50 dark:hover:bg-green-900/50 transition-colors flex-shrink-0 disabled:opacity-50"
+                  className="w-8 h-8 rounded-md text-accent hover:text-accent-hover hover:bg-secondary smooth-transition flex items-center justify-center disabled:opacity-50"
                   title="Guardar cambios"
                 >
-                  <Save size={18} />
+                  <Save size={14} />
                 </button>
                 <button
                   onClick={(e) => {
                     e.stopPropagation();
                     handleCancelEdit();
                   }}
-                  className="text-gray-600 hover:text-gray-800 dark:text-gray-400 dark:hover:text-gray-200 p-2 rounded-full hover:bg-gray-50 dark:hover:bg-gray-900/50 transition-colors flex-shrink-0"
+                  className="w-8 h-8 rounded-md text-secondary hover:text-primary hover:bg-secondary smooth-transition flex items-center justify-center"
                   title="Cancelar edición"
                 >
-                  <X size={18} />
+                  <X size={14} />
                 </button>
               </>
             )}
@@ -155,15 +174,15 @@ const TemaItem = React.memo(({ tema, onDelete, _onEdit, onUpdate, loading }) => 
       </div>
 
       {isExpanded && (
-        <div className="border-t border-gray-200 dark:border-gray-700 p-4 bg-gray-50 dark:bg-gray-900">
+        <div className="border-t border-primary p-3 sm:p-4 bg-secondary">
           {!isEditing ? (
-            <div className="max-h-64 overflow-y-auto space-y-2 bg-white dark:bg-gray-800 p-3 rounded-lg border border-gray-200 dark:border-gray-700">
-              {tema.words.length === 0 ? (
-                <p className="text-sm text-gray-600 dark:text-gray-400 text-center py-4">No hay palabras</p>
+            <div className="max-h-64 overflow-y-auto space-y-2 bg-primary p-3 rounded-lg border border-primary">
+              {wordCount === 0 ? (
+                <p className="text-sm text-secondary text-center py-4">No hay palabras</p>
               ) : (
                 tema.words.map((word, idx) => (
-                  <div key={idx} className="flex items-center justify-between bg-gray-50 dark:bg-gray-800 px-3 py-2 rounded-lg">
-                    <span className="text-sm font-medium text-gray-700 dark:text-gray-300 truncate max-w-[200px]" title={word}>
+                  <div key={idx} className="flex items-center justify-between bg-secondary px-3 py-2 rounded-lg">
+                    <span className="text-sm font-medium text-primary truncate max-w-[200px]" title={word}>
                       {word}
                     </span>
                   </div>
@@ -174,19 +193,19 @@ const TemaItem = React.memo(({ tema, onDelete, _onEdit, onUpdate, loading }) => 
             <div className="space-y-4">
               {/* Edición del título */}
               <div>
-                <label className="block text-sm font-medium text-gray-900 dark:text-white mb-2">Título del tema</label>
+                <label className="block text-sm font-medium text-primary mb-2">Título del tema</label>
                 <input
                   type="text"
                   value={editTitle}
                   onChange={(e) => setEditTitle(e.target.value)}
                   placeholder="Título del tema"
-                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400"
+                  className="w-full px-3 py-2 border border-secondary bg-primary text-primary rounded-lg focus:outline-none focus:ring-2 focus:ring-accent"
                 />
               </div>
 
               {/* Edición de palabras */}
               <div>
-                <label className="block text-sm font-medium text-gray-900 dark:text-white mb-2">Palabras</label>
+                <label className="block text-sm font-medium text-primary mb-2">Palabras</label>
 
                 {/* Agregar nueva palabra */}
                 <div className="flex gap-2 mb-3">
@@ -196,33 +215,33 @@ const TemaItem = React.memo(({ tema, onDelete, _onEdit, onUpdate, loading }) => 
                     onChange={(e) => setNewWord(e.target.value)}
                     onKeyDown={(e) => e.key === 'Enter' && handleAddWord()}
                     placeholder="Nueva palabra..."
-                    className="flex-1 px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 text-sm"
+                    className="flex-1 px-3 py-2 border border-secondary bg-primary text-primary rounded-lg focus:outline-none focus:ring-2 focus:ring-accent text-sm"
                   />
                   <button
                     onClick={handleAddWord}
                     disabled={!newWord.trim()}
-                    className="px-3 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 dark:bg-green-700 dark:hover:bg-green-600 disabled:bg-gray-400 dark:disabled:bg-gray-600 disabled:cursor-not-allowed transition-colors"
+                    className="px-3 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:bg-gray-400 disabled:cursor-not-allowed smooth-transition"
                   >
                     <Plus size={16} />
                   </button>
                 </div>
 
                 {/* Lista de palabras editables */}
-                <div className="max-h-64 overflow-y-auto space-y-2 bg-white dark:bg-gray-800 p-3 rounded-lg border border-gray-200 dark:border-gray-700">
+                <div className="max-h-64 overflow-y-auto space-y-2 bg-primary p-3 rounded-lg border border-primary">
                   {editWords.length === 0 ? (
-                    <p className="text-sm text-gray-600 dark:text-gray-400 text-center py-4">No hay palabras</p>
+                    <p className="text-sm text-secondary text-center py-4">No hay palabras</p>
                   ) : (
                     editWords.map((word, idx) => (
-                      <div key={idx} className="flex items-center gap-2 bg-gray-50 dark:bg-gray-700 px-3 py-2 rounded-lg">
+                      <div key={idx} className="flex items-center gap-2 bg-secondary px-3 py-2 rounded-lg">
                         <input
                           type="text"
                           value={word}
                           onChange={(e) => handleEditWord(idx, e.target.value)}
-                          className="flex-1 px-2 py-1 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded text-sm focus:outline-none focus:ring-1 focus:ring-blue-500 dark:focus:ring-blue-400"
+                          className="flex-1 px-2 py-1 border border-secondary bg-primary text-primary rounded text-sm focus:outline-none focus:ring-1 focus:ring-accent"
                         />
                         <button
                           onClick={() => handleDeleteWord(idx)}
-                          className="text-red-600 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 p-1 rounded hover:bg-red-50 dark:hover:bg-red-900/50 transition-colors"
+                          className="text-red-600 hover:text-red-700 p-1 rounded hover:bg-red-50 dark:hover:bg-red-900/50 smooth-transition"
                           title="Eliminar palabra"
                         >
                           <X size={14} />
@@ -232,15 +251,29 @@ const TemaItem = React.memo(({ tema, onDelete, _onEdit, onUpdate, loading }) => 
                   )}
                 </div>
 
-                <div className="text-xs text-gray-600 dark:text-gray-400 mt-2">
+                <div className="text-xs text-secondary mt-2">
                   {editWords.length} palabra{editWords.length !== 1 ? 's' : ''}
-                  {hasChanges && <span className="text-orange-600 dark:text-orange-400 ml-2">• Cambios sin guardar</span>}
+                  {hasChanges && <span className="text-orange-600 ml-2">• Cambios sin guardar</span>}
                 </div>
               </div>
             </div>
           )}
         </div>
       )}
+
+      <ConfirmDialog
+        isOpen={showDeleteConfirm}
+        title="Eliminar tema"
+        message={`¿Estás seguro de que quieres eliminar el tema "${tema.nombre}"? Esta acción no se puede deshacer.`}
+        confirmText="Eliminar"
+        cancelText="Cancelar"
+        type="danger"
+        onConfirm={() => {
+          onDelete(tema.id);
+          setShowDeleteConfirm(false);
+        }}
+        onCancel={() => setShowDeleteConfirm(false)}
+      />
     </div>
   );
 });

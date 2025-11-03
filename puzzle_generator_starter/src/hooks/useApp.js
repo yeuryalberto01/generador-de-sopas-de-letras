@@ -1,11 +1,11 @@
-import { createContext, useContext } from 'react'
+import { useContext } from 'react'
+import { AppContext } from '../context/AppContext'
 
-export const AppContext = createContext()
-
-export const useApp = () => {
+// Hook para usar el contexto de la aplicación
+export function useApp() {
   const context = useContext(AppContext)
   if (!context) {
-    throw new Error('useApp debe ser usado dentro de AppProvider')
+    throw new Error('useApp debe ser usado dentro de un AppProvider')
   }
   return context
 }
