@@ -131,10 +131,10 @@ export default function Temas() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 p-6 transition-all duration-500">
+    <div className="min-h-screen bg-white dark:bg-gradient-to-br dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 p-6 transition-all duration-500">
       <div className="max-w-7xl mx-auto">
         <div className="flex items-center justify-between mb-6">
-          <h1 className="text-3xl font-bold text-white">Gestión de Temas</h1>
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Gestión de Temas</h1>
         </div>
 
         <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 h-[calc(100vh-150px)]">
@@ -156,11 +156,11 @@ export default function Temas() {
         </div>
 
         {/* Botón Continuar */}
-        <div className="fixed bottom-6 right-6">
+        <div className="fixed bottom-6 right-6 z-50">
           <button
             disabled={!selectedId || loading.load}
             onClick={() => nav(`/diagramacion/${selectedId}`)}
-            className="bg-blue-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors flex items-center gap-2 shadow-lg"
+            className="bg-blue-600 dark:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium hover:bg-blue-700 dark:hover:bg-blue-800 disabled:bg-gray-400 dark:disabled:bg-slate-600 disabled:cursor-not-allowed transition-colors flex items-center gap-2 shadow-lg relative"
           >
             Continuar
           </button>
