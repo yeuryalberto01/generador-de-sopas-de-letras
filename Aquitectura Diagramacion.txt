@@ -1,0 +1,599 @@
+Perfecto! Ahora te proporciono los archivos complementarios para completar el módulo:
+
+## 📁 Archivos Adicionales del Módulo
+
+### 1. **services/wordSearchAlgorithm.js** - Algoritmo Avanzado
+
+```javascript
+/**
+ * Algoritmo optimizado para generar sopas de letras
+ * Basado en técnicas de backtracking y heurísticas
+ */
+
+export const DIRECTIONS = {
+  HORIZONTAL: { dx: 1, dy: 0, name: 'horizontal' },
+  VERTICAL: { dx: 0, dy: 1, name: 'vertical' },
+  DIAGONAL_DOWN: { dx: 1, dy: 1, name: 'diagonal-down' },
+  DIAGONAL_UP: { dx: 1, dy: -1, name: 'diagonal-up' },
+  HORIZONTAL_REVERSE: { dx: -1, dy: 0, name: 'horizontal-reverse' },
+  VERTICAL_REVERSE: { dx: 0, dy: -1, name: 'vertical-reverse' },
+  DIAGONAL_DOWN_REVERSE: { dx: -1, dy: -1, name: 'diagonal-down-reverse' },
+  DIAGONAL_UP_REVERSE: { dx: -1, dy: 1, name: 'diagonal-up-reverse' }
+};
+
+class WordSearchGenerator {
+  constructor(rows, cols, options = {}) {
+    this.rows = rows;
+    this.cols = cols;
+    this.grid = this.createEmptyGrid();
+    this.placedWords = [];
+    this.options = {
+      allowReverse: options.allowReverse ?? true,
+      allowDiagonal: options.allowDiagonal ?? true,
+      minWordLength: options.minWordLength ?? 3,
+      maxAttempts: options.maxAttempts ?? 200,
+      fillWithRandom: options.fillWithRandom ?? true,
+      ...options
+    };
+  }
+
+  createEmptyGrid() {
+    return Array(this.rows).fill(null).map(() =>
+      Array(this.cols).fill(null).map(() => ({
+        letter: '',
+        isWord: false,
+        wordIds: []
+      }))
+    );
+  }
+
+  getAvailableDirections() {
+    const directions = [
+      DIRECTIONS.HORIZONTAL,
+      DIRECTIONS.VERTICAL
+    ];
+
+    if (this.options.allowDiagonal) {
+      directions.push(DIRECTIONS.DIAGONAL_DOWN, DIRECTIONS.DIAGONAL_UP);
+    }
+
+    if (this.options.allowReverse) {
+      directions.push(
+        DIRECTIONS.HORIZONTAL_REVERSE,
+        DIRECTIONS.VERTICAL_REVERSE
+      );
+      if (this.options.allowDiagonal) {
+        directions.push(
+          DIRECTIONS.DIAGONAL_DOWN_REVERSE,
+          DIRECTIONS.DIAGONAL_UP_REVERSE
+        );
+      }
+    }
+
+    return directions;
+  }
+
+  canPlaceWord(word, row, col, direction) {
+    const wordText = word.toUpperCase();
+    
+    for (let i = 0; i < wordText.length; i++) {
+      const newRow = row + (direction.dy * i);
+      const newCol = col + (direction.dx * i);
+
+      // Verificar límites
+      if (newRow < 0 || newRow >= this.rows || newCol < 0 || newCol >= this.cols) {
+        return false;
+      }
+
+      const cell = this.grid[newRow][newCol];
+      
+      // Si hay una letra y no coincide, no se puede colocar
+      if (cell.letter !== '' && cell.letter !== wordText[i]) {
+        return false;
+      }
+    }
+
+    return true;
+  }
+
+  placeWord(word, wordId, row, col, direction) {
+    const wordText = word.toUpperCase();
+    const positions = [];
+
+    for (let i = 0; i < wordText.length; i++) {
+      const newRow = row + (direction.dy * i);
+      const newCol = col + (direction.dx * i);
+
+      this.grid[newRow][newCol].letter = wordText[i];
+      this.grid[newRow][newCol].isWord = true;
+      this.grid[newRow][newCol].wordIds.push(wordId);
+
+      positions.push({ row: newRow, col: newCol, letter: wordText[i] });
+    }
+
+    return positions;
+  }
+
+  findBestPlacement(word, wordId) {
+    const wordText = word.toUpperCase();
+    const directions = this.getAvailableDirections();
+    const candidates = [];
+
+    // Buscar todas las posiciones posibles
+    for (let row = 0; row < this.rows; row++) {
+      for (let col = 0; col < this.cols; col++) {
+        for (const direction of directions) {
+          if (this.canPlaceWord(wordText, row, col, direction)) {
+            // Calcular score (preferir posiciones con letras compartidas)
+            let score = 0;
+            let sharedLetters = 0;
+
+            for (let i = 0; i < wordText.length; i++) {
+              const newRow = row + (direction.dy * i);
+              const newCol = col + (direction.dx * i);
+              if (this.grid[newRow][newCol].letter === wordText[i]) {
+                sharedLetters++;
+                score += 10; // Bonus por compartir letras
+              }
+            }
+
+            // Preferir posiciones más centrales
+            const centerRow = this.rows / 2;
+            const centerCol = this.cols / 2;
+            const distanceFromCenter = Math.sqrt(
+              Math.pow(row - centerRow, 2) + Math.pow(col - centerCol, 2)
+            );
+            score -= distanceFromCenter * 0.5;
+
+            candidates.push({
+              row,
+              col,
+              direction,
+              score,
+              sharedLetters
+            });
+          }
+        }
+      }
+    }
+
+    if (candidates.length === 0) return null;
+
+    // Ordenar por score y seleccionar el mejor
+    candidates.sort((a, b) => b.score - a.score);
+    
+    // Añadir algo de aleatoriedad para variedad
+    const topCandidates = candidates.slice(0, Math.min(5, candidates.length));
+    return topCandidates[Math.floor(Math.random() * topCandidates.length)];
+  }
+
+  generate(words) {
+    // Ordenar palabras por longitud (más largas primero)
+    const sortedWords = [...words]
+      .filter(w => w.texto.length >= this.options.minWordLength)
+      .sort((a, b) => b.texto.length - a.texto.length);
+
+    // Intentar colocar cada palabra
+    sortedWords.forEach((word, index) => {
+      let attempts = 0;
+      let placed = false;
+
+      while (!placed && attempts < this.options.maxAttempts) {
+        attempts++;
+
+        const placement = this.findBestPlacement(word.texto, index);
+
+        if (placement) {
+          const positions = this.placeWord(
+            word.texto,
+            index,
+            placement.row,
+            placement.col,
+            placement.direction
+          );
+
+          this.placedWords.push({
+            id: index,
+            text: word.texto.toUpperCase(),
+            originalText: word.texto,
+            startRow: placement.row,
+            startCol: placement.col,
+            direction: placement.direction.name,
+            positions,
+            attempts
+          });
+
+          placed = true;
+        }
+      }
+
+      if (!placed) {
+        console.warn(`No se pudo colocar la palabra: ${word.texto}`);
+      }
+    });
+
+    // Rellenar espacios vacíos
+    if (this.options.fillWithRandom) {
+      this.fillEmptySpaces();
+    }
+
+    return {
+      grid: this.grid,
+      placedWords: this.placedWords,
+      stats: {
+        totalWords: words.length,
+        placedWords: this.placedWords.length,
+        successRate: (this.placedWords.length / words.length) * 100
+      }
+    };
+  }
+
+  fillEmptySpaces() {
+    const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    
+    // Opcionalmente usar letras de las palabras colocadas para mayor dificultad
+    let availableLetters = alphabet;
+    
+    if (this.options.useWordLetters) {
+      const usedLetters = new Set();
+      this.placedWords.forEach(word => {
+        word.text.split('').forEach(letter => usedLetters.add(letter));
+      });
+      availableLetters = Array.from(usedLetters).join('');
+    }
+
+    for (let row = 0; row < this.rows; row++) {
+      for (let col = 0; col < this.cols; col++) {
+        if (this.grid[row][col].letter === '') {
+          const randomLetter = availableLetters[
+            Math.floor(Math.random() * availableLetters.length)
+          ];
+          this.grid[row][col].letter = randomLetter;
+        }
+      }
+    }
+  }
+
+  getGridAsString() {
+    return this.grid.map(row => 
+      row.map(cell => cell.letter).join(' ')
+    ).join('\n');
+  }
+}
+
+export default WordSearchGenerator;
+```
+
+### 2. **hooks/useDiagramacion.js** - Hook Principal
+
+```javascript
+import { useState, useCallback, useEffect } from 'react';
+import WordSearchGenerator from '../services/wordSearchAlgorithm';
+import { generatePDF } from '../services/pdfExporter';
+
+export function useDiagramacion() {
+  const [state, setState] = useState({
+    pageSize: 'LETTER',
+    selectedTema: null,
+    gridConfig: {
+      type: 'auto',
+      rows: 15,
+      cols: 15,
+      cellSize: 30,
+      allowDiagonal: true,
+      allowReverse: true
+    },
+    wordBoxConfig: {
+      visible: true,
+      style: 'columns',
+      columns: 3,
+      numbered: true,
+      position: 'bottom'
+    },
+    placedWords: [],
+    grid: [],
+    zoom: 100,
+    showGrid: true,
+    isGenerating: false,
+    error: null
+  });
+
+  const updateState = useCallback((updates) => {
+    setState(prev => ({ ...prev, ...updates }));
+  }, []);
+
+  const calculateOptimalGridSize = useCallback((words, pageSize) => {
+    const wordLengths = words.map(w => w.texto.length);
+    const avgLength = wordLengths.reduce((a, b) => a + b, 0) / wordLengths.length;
+    const maxLength = Math.max(...wordLengths);
+    const wordCount = words.length;
+
+    let size;
+    if (wordCount <= 10) {
+      size = Math.max(12, maxLength + 3);
+    } else if (wordCount <= 20) {
+      size = Math.max(15, maxLength + 2);
+    } else if (wordCount <= 30) {
+      size = Math.max(18, maxLength + 1);
+    } else {
+      size = Math.max(20, maxLength);
+    }
+
+    // Ajustar según tamaño de página
+    if (pageSize === 'TABLOID') {
+      size = Math.floor(size * 1.4);
+    }
+
+    return Math.min(size, 30);
+  }, []);
+
+  const generateWordSearch = useCallback(async () => {
+    if (!state.selectedTema) {
+      updateState({ error: 'Selecciona un tema primero' });
+      return;
+    }
+
+    updateState({ isGenerating: true, error: null });
+
+    try {
+      const words = state.selectedTema.palabras;
+      let rows = state.gridConfig.rows;
+      let cols = state.gridConfig.cols;
+
+      // Calcular tamaño óptimo si es automático
+      if (state.gridConfig.type === 'auto') {
+        const size = calculateOptimalGridSize(words, state.pageSize);
+        rows = cols = size;
+      }
+
+      // Generar sopa de letras
+      const generator = new WordSearchGenerator(rows, cols, {
+        allowReverse: state.gridConfig.allowReverse,
+        allowDiagonal: state.gridConfig.allowDiagonal,
+        fillWithRandom: true,
+        useWordLetters: false,
+        maxAttempts: 200
+      });
+
+      const result = generator.generate(words);
+
+      updateState({
+        grid: result.grid,
+        placedWords: result.placedWords,
+        gridConfig: { ...state.gridConfig, rows, cols },
+        isGenerating: false
+      });
+
+      console.log('Generación exitosa:', result.stats);
+    } catch (error) {
+      console.error('Error generando sopa de letras:', error);
+      updateState({
+        error: 'Error al generar la sopa de letras',
+        isGenerating: false
+      });
+    }
+  }, [state.selectedTema, state.gridConfig, state.pageSize, calculateOptimalGridSize, updateState]);
+
+  const exportToPDF = useCallback(async () => {
+    if (state.grid.length === 0) {
+      alert('Genera una sopa de letras primero');
+      return;
+    }
+
+    try {
+      await generatePDF({
+        grid: state.grid,
+        tema: state.selectedTema,
+        pageSize: state.pageSize,
+        gridConfig: state.gridConfig,
+        wordBoxConfig: state.wordBoxConfig,
+        placedWords: state.placedWords
+      });
+    } catch (error) {
+      console.error('Error exportando PDF:', error);
+      updateState({ error: 'Error al exportar PDF' });
+    }
+  }, [state]);
+
+  const resetGrid = useCallback(() => {
+    updateState({
+      grid: [],
+      placedWords: [],
+      error: null
+    });
+  }, [updateState]);
+
+  return {
+    state,
+    updateState,
+    generateWordSearch,
+    exportToPDF,
+    resetGrid
+  };
+}
+```
+
+### 3. **services/pdfExporter.js** - Exportación a PDF
+
+```javascript
+import jsPDF from 'jspdf';
+
+const PAGE_SIZES_MM = {
+  LETTER: { width: 215.9, height: 279.4 },
+  TABLOID: { width: 279.4, height: 431.8 }
+};
+
+export async function generatePDF(config) {
+  const { grid, tema, pageSize, gridConfig, wordBoxConfig, placedWords } = config;
+  
+  const pageSizeMM = PAGE_SIZES_MM[pageSize];
+  const pdf = new jsPDF({
+    orientation: 'portrait',
+    unit: 'mm',
+    format: [pageSizeMM.width, pageSizeMM.height]
+  });
+
+  const margin = 20;
+  const usableWidth = pageSizeMM.width - (margin * 2);
+  const usableHeight = pageSizeMM.height - (margin * 2);
+
+  // Título
+  pdf.setFontSize(20);
+  pdf.setFont('helvetica', 'bold');
+  pdf.text(`Sopa de Letras: ${tema.nombre}`, pageSizeMM.width / 2, margin, {
+    align: 'center'
+  });
+
+  // Calcular tamaño de celda
+  const cellSize = Math.min(
+    usableWidth / gridConfig.cols,
+    (usableHeight * 0.7) / gridConfig.rows
+  );
+
+  const gridWidth = cellSize * gridConfig.cols;
+  const gridHeight = cellSize * gridConfig.rows;
+  const startX = (pageSizeMM.width - gridWidth) / 2;
+  const startY = margin + 15;
+
+  // Dibujar cuadrícula
+  pdf.setFontSize(cellSize * 2.5);
+  pdf.setFont('helvetica', 'bold');
+
+  for (let row = 0; row < gridConfig.rows; row++) {
+    for (let col = 0; col < gridConfig.cols; col++) {
+      const cell = grid[row][col];
+      const x = startX + (col * cellSize);
+      const y = startY + (row * cellSize);
+
+      // Dibujar celda
+      pdf.rect(x, y, cellSize, cellSize);
+
+      // Dibujar letra
+      pdf.text(
+        cell.letter,
+        x + cellSize / 2,
+        y + cellSize / 2 + (cellSize * 0.15),
+        { align: 'center' }
+      );
+    }
+  }
+
+  // Caja de palabras
+  if (wordBoxConfig.visible) {
+    const wordBoxY = startY + gridHeight + 10;
+    
+    pdf.setFontSize(14);
+    pdf.setFont('helvetica', 'bold');
+    pdf.text('Encuentra estas palabras:', margin, wordBoxY);
+
+    pdf.setFontSize(11);
+    pdf.setFont('helvetica', 'normal');
+
+    const wordsPerColumn = Math.ceil(tema.palabras.length / wordBoxConfig.columns);
+    const columnWidth = usableWidth / wordBoxConfig.columns;
+
+    tema.palabras.forEach((palabra, index) => {
+      const column = Math.floor(index / wordsPerColumn);
+      const row = index % wordsPerColumn;
+      
+      const x = margin + (column * columnWidth);
+      const y = wordBoxY + 10 + (row * 7);
+
+      const text = wordBoxConfig.numbered 
+        ? `${index + 1}. ${palabra.texto}`
+        : palabra.texto;
+
+      pdf.text(text, x, y);
+    });
+  }
+
+  // Información adicional
+  pdf.setFontSize(8);
+  pdf.setTextColor(128);
+  pdf.text(
+    `Generado con Puzzle Generator | ${new Date().toLocaleDateString()}`,
+    pageSizeMM.width / 2,
+    pageSizeMM.height - 10,
+    { align: 'center' }
+  );
+
+  // Guardar PDF
+  pdf.save(`sopa-letras-${tema.nombre}.pdf`);
+}
+```
+
+### 4. **utils/constants.js** - Constantes del Módulo
+
+```javascript
+export const PAGE_SIZES = {
+  LETTER: {
+    key: 'LETTER',
+    width: 8.5,
+    height: 11,
+    label: '8.5" × 11" (Carta)',
+    widthPx: 816,
+    heightPx: 1056
+  },
+  TABLOID: {
+    key: 'TABLOID',
+    width: 11,
+    height: 17,
+    label: '11" × 17" (Tabloide)',
+    widthPx: 1056,
+    heightPx: 1632
+  }
+};
+
+export const GRID_TYPES = {
+  AUTO: {
+    key: 'auto',
+    label: 'Automático (Óptimo)',
+    description: 'Calcula el mejor tamaño según las palabras'
+  },
+  MANUAL: {
+    key: 'manual',
+    label: 'Manual',
+    description: 'Define el tamaño manualmente'
+  },
+  COMPACT: {
+    key: 'compact',
+    label: 'Compacto',
+    description: 'Grid más pequeño y denso'
+  },
+  SPACIOUS: {
+    key: 'spacious',
+    label: 'Espacioso',
+    description: 'Grid más grande con más espacio'
+  }
+};
+
+export const WORD_BOX_STYLES = {
+  NUMBERED: {
+    key: 'numbered',
+    label: 'Lista Numerada',
+    icon: 'ListOrdered'
+  },
+  COLUMNS: {
+    key: 'columns',
+    label: 'Columnas',
+    icon: 'Columns'
+  },
+  GRID: {
+    key: 'grid',
+    label: 'Cuadrícula',
+    icon: 'Grid'
+  },
+  FLOWING: {
+    key: 'flowing',
+    label: 'Flujo Continuo',
+    icon: 'AlignJustify'
+  }
+};
+
+export const DEFAULT_CELL_SIZE = 30;
+export const MIN_GRID_SIZE = 8;
+export const MAX_GRID_SIZE = 30;
+export const DEFAULT_ZOOM = 100;
+export const MIN_ZOOM = 25;
+export const MAX_ZOOM = 200;
+```

@@ -1,7 +1,0 @@
-from fastapi import FastAPI
-
-app = FastAPI(title="Test API")
-
-@app.get("/api/health")
-def health():
-    return {"status": "ok", "version": "0.1.0"}

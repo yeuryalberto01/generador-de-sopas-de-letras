@@ -1,5 +1,5 @@
-import { Download, Grid, Layout, Printer, Save, Settings, Type, ZoomIn, ZoomOut } from 'lucide-react';
-import { createContext, useCallback, useContext, useState } from 'react';
+import React, { createContext, useContext, useState, useCallback, useEffect, useMemo } from 'react';
+import { Download, ZoomIn, ZoomOut, Settings, Grid, Type, Layout, Printer, Save } from 'lucide-react';
 
 // ==================== CONSTANTS ====================
 const PAGE_SIZES = {
@@ -77,7 +77,7 @@ function useDiagramacion() {
 function useWordSearchAlgorithm() {
   const generateGrid = useCallback((rows, cols, words) => {
     // Crear grid vacío
-    const grid = Array(rows).fill(null).map(() =>
+    const grid = Array(rows).fill(null).map(() => 
       Array(cols).fill(null).map(() => ({ letter: '', isWord: false, wordId: null }))
     );
 
@@ -98,10 +98,10 @@ function useWordSearchAlgorithm() {
 
       while (!placed && attempts < maxAttempts) {
         attempts++;
-
+        
         // Dirección aleatoria
         const direction = directions[Math.floor(Math.random() * directions.length)];
-
+        
         // Posición inicial aleatoria
         const startRow = Math.floor(Math.random() * rows);
         const startCol = Math.floor(Math.random() * cols);
@@ -215,17 +215,17 @@ function ToolbarPanel() {
           Imprimir
         </button>
       </div>
-
+      
       <div className="flex items-center gap-4">
         <div className="flex items-center gap-2">
-          <button
+          <button 
             onClick={() => updateState({ zoom: Math.max(25, state.zoom - 10) })}
             className="p-2 hover:bg-gray-100 rounded"
           >
             <ZoomOut size={18} />
           </button>
           <span className="text-sm font-medium w-12 text-center">{state.zoom}%</span>
-          <button
+          <button 
             onClick={() => updateState({ zoom: Math.min(200, state.zoom + 10) })}
             className="p-2 hover:bg-gray-100 rounded"
           >
@@ -269,11 +269,11 @@ function PageSizeSelector() {
 // Tema Selector (Mock - se conectará a la API)
 function TemaSelector() {
   const { state, updateState } = useDiagramacion();
-
+  
   // Mock temas - en producción vendrá de la API
   const mockTemas = [
     { id: 1, nombre: 'Animales', palabras: [
-      { texto: 'Perro' }, { texto: 'Gato' }, { texto: 'León' },
+      { texto: 'Perro' }, { texto: 'Gato' }, { texto: 'León' }, 
       { texto: 'Elefante' }, { texto: 'Jirafa' }, { texto: 'Tigre' }
     ]},
     { id: 2, nombre: 'Frutas', palabras: [
@@ -307,7 +307,7 @@ function TemaSelector() {
           </option>
         ))}
       </select>
-
+      
       {state.selectedTema && (
         <div className="mt-3 p-3 bg-gray-50 rounded text-sm">
           <p className="font-medium mb-2">Palabras:</p>
@@ -337,7 +337,7 @@ function GridConfigurator() {
 
     const words = state.selectedTema.palabras;
     const wordLengths = words.map(w => w.texto.length);
-
+    
     let rows = state.gridConfig.rows;
     let cols = state.gridConfig.cols;
 
@@ -347,7 +347,7 @@ function GridConfigurator() {
     }
 
     const { grid, placedWords } = generateGrid(rows, cols, words);
-
+    
     updateState({
       grid,
       placedWords,
@@ -361,7 +361,7 @@ function GridConfigurator() {
         <Grid size={18} />
         Configuración de Cuadrícula
       </h3>
-
+      
       <div className="space-y-3">
         <div>
           <label className="block text-sm font-medium mb-1">Tipo</label>
@@ -432,7 +432,7 @@ function WordBoxDesigner() {
         <Settings size={18} />
         Caja de Palabras
       </h3>
-
+      
       <div className="space-y-3">
         <label className="flex items-center gap-2">
           <input
@@ -524,7 +524,7 @@ function WordSearchCanvas() {
 
   return (
     <div className="overflow-auto h-full bg-gray-100 p-8">
-      <div
+      <div 
         className="bg-white shadow-lg mx-auto"
         style={{
           width: `${pageSize.width * 96}px`,
@@ -539,7 +539,7 @@ function WordSearchCanvas() {
 
         {/* Grid */}
         <div className="flex justify-center mb-6">
-          <div
+          <div 
             className="inline-block border-2 border-gray-800"
             style={{
               display: 'grid',
@@ -569,7 +569,7 @@ function WordSearchCanvas() {
           <div className="border-2 border-gray-300 rounded-lg p-4">
             <h3 className="font-semibold mb-3 text-center">Encuentra estas palabras:</h3>
             {state.wordBoxConfig.style === WORD_BOX_STYLES.COLUMNS && (
-              <div
+              <div 
                 className="grid gap-2"
                 style={{
                   gridTemplateColumns: `repeat(${state.wordBoxConfig.columns}, 1fr)`
@@ -619,9 +619,9 @@ function LivePreviewPanel() {
           Los cambios se reflejan en tiempo real
         </p>
       </div>
-
+      
       <div className="flex-1 overflow-auto p-4">
-        <div
+        <div 
           className="bg-white shadow-md mx-auto"
           style={{
             width: '100%',
@@ -638,7 +638,7 @@ function LivePreviewPanel() {
                 {state.selectedTema?.nombre}
               </div>
               <div className="flex-1 flex items-center justify-center">
-                <div
+                <div 
                   className="border inline-block"
                   style={{
                     display: 'grid',
@@ -679,7 +679,7 @@ function LivePreviewPanel() {
           )}
         </div>
       </div>
-
+      
       <div className="p-3 border-t bg-white text-xs text-gray-600">
         <div className="flex justify-between">
           <span>Tamaño: {pageSize.label}</span>
@@ -700,7 +700,7 @@ function DiagramacionLayout() {
   return (
     <div className="h-screen flex flex-col">
       <ToolbarPanel />
-
+      
       <div className="flex-1 flex overflow-hidden">
         {/* Left Panel */}
         <div className="w-80 border-r bg-gray-50 overflow-y-auto">

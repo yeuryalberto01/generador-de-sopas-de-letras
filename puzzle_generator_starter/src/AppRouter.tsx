@@ -13,7 +13,7 @@ import Layout from './Layout';
 // Lazy loading de componentes para mejor performance
 const Splash = lazy(() => import('./modules/splash/Splash'));
 const Temas = lazy(() => import('./modules/temas/Temas'));
-const Diagramacion = lazy(() => import('./modules/diagramacion/Diagramacion'));
+const Diagramacion = lazy(() => import('./modules/diagramacion/DiagramacionNew'));
 const PanelAPIs = lazy(() => import('./modules/panel-apis/PanelAPIs'));
 
 // Componente de carga
