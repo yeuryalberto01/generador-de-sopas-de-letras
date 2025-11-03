@@ -1,5 +1,5 @@
-import React, { createContext, useContext, useState, useCallback, useEffect, useMemo } from 'react';
-import { Download, ZoomIn, ZoomOut, Settings, Grid, Type, Layout, Printer, Save } from 'lucide-react';
+import { Download, Grid, Layout, Printer, Save, Settings, Type, ZoomIn, ZoomOut } from 'lucide-react';
+import { createContext, useCallback, useContext, useState } from 'react';
 
 // ==================== CONSTANTS ====================
 const PAGE_SIZES = {
