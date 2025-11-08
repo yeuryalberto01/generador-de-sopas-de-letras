@@ -1,0 +1,24 @@
+services:
+  backend:
+    build:
+      context: ./puzzle_generator_starter/backend_fastapi
+    image: puzzle-backend
+    container_name: puzzle-backend
+    restart: unless-stopped
+    ports:
+      - "${PUZZLE_BACKEND_PORT:-8000}:8000"
+    volumes:
+      - ./puzzle_generator_starter/backend_fastapi/data:/app/data
+
+  frontend:
+    build:
+      context: ./puzzle_generator_starter
+      args:
+        VITE_API_BASE_URL: ${VITE_API_BASE_URL:-/api}
+    image: puzzle-frontend
+    container_name: puzzle-frontend
+    restart: unless-stopped
+    depends_on:
+      - backend
+    ports:
+      - "${PUZZLE_FRONTEND_PORT:-8080}:80"

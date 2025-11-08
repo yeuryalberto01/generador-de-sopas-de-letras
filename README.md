@@ -161,6 +161,16 @@ cd puzzle_generator_starter
 npm run dev
 ```
 
+### Opción 3: Docker / Portainer
+```powershell
+docker compose up --build -d
+```
+- Backend disponible en `http://localhost:8000` y frontend en `http://localhost:8080`
+- `docker-compose.yml` construye y conecta las imágenes definidas en los Dockerfiles del frontend y backend
+- Los datos persistentes viven en `puzzle_generator_starter/backend_fastapi/data` mediante un bind mount (puedes editarlos desde el host)
+- Cambia los puertos con `PUZZLE_BACKEND_PORT` o `PUZZLE_FRONTEND_PORT` antes de ejecutar `docker compose`
+- En Portainer, crea un *Stack* nuevo pegando el contenido de `docker-compose.yml`; la herramienta se encarga de construir las imágenes y levantar ambos servicios
+
 ## 🌐 Acceder a la Aplicación
 
 - **🏠 Frontend**: http://localhost:5174
