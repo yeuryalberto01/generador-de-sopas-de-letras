@@ -5,6 +5,11 @@ ENV PYTHONUNBUFFERED=1 \
 
 WORKDIR /app
 
+# Install build deps needed for uvicorn[standard] extras (uvloop/httptools)
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends build-essential \
+    && rm -rf /var/lib/apt/lists/*
+
 # Install dependencies first to leverage Docker layer caching
 COPY requirements.txt .
 RUN pip install --upgrade pip && pip install -r requirements.txt
