@@ -166,15 +166,15 @@ export default function Temas() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 p-6 transition-colors duration-300">
+    <div className="min-h-screen px-6 py-6 transition-colors duration-300 bg-white dark:bg-slate-900 text-gray-900 dark:text-slate-100">
       <div className="max-w-7xl mx-auto">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-4 sm:mb-6">
           <div>
-            <h1 className="text-2xl sm:text-3xl font-bold text-primary">Gestión de Temas</h1>
-            <p className="text-sm text-secondary mt-1">Crea, edita y organiza tus temas para sopas de letras</p>
+            <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-slate-100">Gestión de Temas</h1>
+            <p className="text-sm text-gray-600 dark:text-slate-300 mt-1">Crea, edita y organiza tus temas para sopas de letras</p>
           </div>
-          <div className="flex items-center gap-4 text-sm text-secondary">
-            <span className="bg-secondary px-3 py-1 rounded-full">
+          <div className="flex items-center gap-4 text-sm text-gray-600 dark:text-slate-300">
+            <span className="px-3 py-1 rounded-full bg-gray-100 dark:bg-slate-800 text-gray-900 dark:text-slate-100">
               {temas.length} tema{temas.length !== 1 ? 's' : ''}
             </span>
           </div>
@@ -190,7 +190,7 @@ export default function Temas() {
           </div>
 
           {/* Panel Principal de Temas */}
-          <div className="flex-1 bg-primary/50 backdrop-blur-sm rounded-xl border border-primary/30 overflow-hidden">
+          <div className="flex-1 rounded-xl border overflow-hidden bg-white dark:bg-slate-900 border-gray-200 dark:border-slate-700">
             {editingTema ? (
               <div className="h-full flex flex-col">
                 <div className="flex items-center gap-3 p-4 border-b border-primary/30 bg-secondary/20">

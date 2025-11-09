@@ -16,14 +16,16 @@ const ThemeToggle: FC = () => {
   return (
     <button
       onClick={toggleTheme}
-      className="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
+      className={`p-2 rounded-full transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-accent ${
+        isDarkMode ? 'hover:bg-white/10' : 'hover:bg-primary/10'
+      }`}
       title={`Cambiar a modo ${isDarkMode ? 'claro' : 'oscuro'}`}
       aria-label={`Cambiar a modo ${isDarkMode ? 'claro' : 'oscuro'}`}
     >
       {isDarkMode ? (
-        <Sun className="h-5 w-5 text-yellow-500" />
+        <Sun className="h-5 w-5 text-warning" />
       ) : (
-        <Moon className="h-5 w-5 text-gray-700 dark:text-gray-300" />
+        <Moon className="h-5 w-5 text-secondary" />
       )}
     </button>
   );

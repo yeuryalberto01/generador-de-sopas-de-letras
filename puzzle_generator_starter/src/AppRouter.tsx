@@ -18,7 +18,7 @@ const PanelAPIs = lazy(() => import('./modules/panel-apis/PanelAPIs'));
 
 // Componente de carga
 const LoadingFallback: FC = () => (
-  <div className="flex items-center justify-center h-screen text-lg text-gray-500">
+  <div className="flex items-center justify-center h-screen text-lg text-secondary">
     Cargando...
   </div>
 );
@@ -49,7 +49,7 @@ const AppContent: FC = () => {
     throw new Error('AppContent must be used within an AppProvider');
   }
 
-  const { isCommandPaletteOpen, setCommandPaletteOpen } = context;
+  const { isCommandPaletteOpen, setCommandPaletteOpen } = context; // Removed userPreferences and isDarkMode
 
   // Listener para el atajo de teclado
   useEffect(() => {
@@ -61,7 +61,7 @@ const AppContent: FC = () => {
     };
     window.addEventListener('keydown', handler);
     return () => window.removeEventListener('keydown', handler);
-  }, [setCommandPaletteOpen]);
+  }, [setCommandPaletteOpen, isCommandPaletteOpen]); // Added isCommandPaletteOpen to dependencies
 
   return (
     <>
@@ -72,7 +72,9 @@ const AppContent: FC = () => {
       {/* Botón para abrir el menú de comandos */}
       <button
         onClick={() => setCommandPaletteOpen(true)}
-        className="fixed bottom-6 left-6 bg-blue-600 text-white p-3 rounded-full shadow-lg hover:bg-blue-700 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500"
+        className="fixed bottom-6 left-6 p-3 rounded-full shadow-lg transition-colors focus:outline-none focus:ring-2 focus:ring-accent
+                   bg-accent-primary text-accent-text hover:bg-accent-primary-hover
+                   dark:bg-accent-primary dark:text-accent-text dark:hover:bg-accent-primary-hover" // Using dark: for consistency
         title="Abrir menú de comandos (Ctrl+K)"
       >
         <Search size={22} />

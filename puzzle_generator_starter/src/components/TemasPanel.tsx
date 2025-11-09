@@ -105,18 +105,18 @@ const TemasPanel: FC<TemasPanelProps> = ({
   }, [onImport]);
 
   return (
-    <div className="bg-primary rounded-xl shadow-xl border border-primary h-auto xl:h-full flex flex-col smooth-transition">
-      <div className="p-4 border-b border-primary/30">
+    <div className="rounded-xl shadow-xl border h-auto xl:h-full flex flex-col smooth-transition bg-white dark:bg-slate-900 border-gray-200 dark:border-slate-700">
+      <div className="p-4 border-b border-gray-200 dark:border-slate-700">
         <div className="flex items-center justify-between mb-3">
-          <h2 className="text-lg font-semibold text-primary">Temas</h2>
-          <span className="text-xs text-secondary bg-secondary px-2 py-1 rounded-full">
+          <h2 className="text-lg font-semibold text-gray-900 dark:text-slate-100">Temas</h2>
+          <span className="text-xs text-gray-900 dark:text-slate-100 bg-gray-100 dark:bg-slate-800 px-2 py-1 rounded-full">
             {temas.length}
           </span>
         </div>
 
         {/* Barra de búsqueda compacta */}
         <div className="mb-3">
-          <div className="flex items-center gap-2 px-3 py-2 border border-secondary rounded-lg bg-primary text-primary text-sm focus-within:ring-2 focus-within:ring-accent">
+          <div className="flex items-center gap-2 px-3 py-2 border rounded-lg text-sm focus-within:ring-2 focus-within:ring-blue-500 bg-white dark:bg-slate-800 border-gray-300 dark:border-slate-600 text-gray-900 dark:text-slate-100">
             {searchTerm !== debouncedSearchTerm ? (
               <Clock size={14} className="text-warning animate-pulse" />
             ) : (
@@ -153,7 +153,7 @@ const TemasPanel: FC<TemasPanelProps> = ({
                 className={`w-9 h-9 border rounded-lg smooth-transition flex items-center justify-center transition-all ${
                   showOnlyFavorites
                     ? 'border-warning text-warning bg-warning/10'
-                    : 'border-secondary text-secondary hover:bg-secondary'
+                    : 'border-border-secondary text-secondary hover:bg-primary/10'
                 }`}
                 title={`${showOnlyFavorites ? 'Mostrar todos' : 'Solo favoritos'}`}
                 aria-pressed={showOnlyFavorites}
@@ -166,7 +166,7 @@ const TemasPanel: FC<TemasPanelProps> = ({
               <select
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value)}
-                className="px-3 py-2 border border-secondary bg-primary text-primary rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent"
+                className="px-3 py-2 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-slate-800 border-gray-300 dark:border-slate-600 text-gray-900 dark:text-slate-100"
                 aria-label="Ordenar temas por"
               >
                 <option value="updated">Recientes</option>
@@ -174,7 +174,7 @@ const TemasPanel: FC<TemasPanelProps> = ({
               </select>
               <button
                 onClick={() => setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')}
-                className="w-9 h-9 border border-secondary text-secondary rounded-lg hover:bg-secondary smooth-transition flex items-center justify-center transition-all"
+                className="w-9 h-9 border border-border-secondary text-secondary rounded-lg hover:bg-primary/10 smooth-transition flex items-center justify-center transition-all"
                 title={`Orden ${sortOrder === 'asc' ? 'ascendente' : 'descendente'}`}
               >
                 <ArrowUpDown size={16} />

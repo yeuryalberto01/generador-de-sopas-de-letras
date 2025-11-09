@@ -1,251 +1,57 @@
-@import './skin.css';
+@import './skin.css'; /* Única fuente de verdad para las variables de color */
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* Design Tokens - Sistema de colores unificado */
-:root {
-  /* Colores base */
-  --color-bg-primary: 255 255 255; /* white */
-  --color-bg-secondary: 249 250 251; /* gray-50 */
-  --color-bg-tertiary: 243 244 246; /* gray-100 */
-  --color-bg-accent: 239 246 255; /* blue-50 */
+/*
+  Estilos globales y base.
+  Se eliminaron las variables de color y clases duplicadas que causaban conflictos.
+  Ahora, la aplicación dependerá únicamente de las clases generadas por Tailwind
+  a partir de la configuración en tailwind.config.js y las variables en skin.css.
+*/
 
-  --color-text-primary: 17 24 39; /* gray-900 */
-  --color-text-secondary: 107 114 128; /* gray-600 */
-  --color-text-tertiary: 156 163 175; /* gray-400 */
-
-  --color-border-primary: 229 231 235; /* gray-200 */
-  --color-border-secondary: 209 213 219; /* gray-300 */
-  --color-border-accent: 59 130 246; /* blue-500 */
-
-  /* Colores de estado */
-  --color-success: 34 197 94; /* green-500 */
-  --color-warning: 245 158 11; /* amber-500 */
-  --color-error: 239 68 68; /* red-500 */
-
-  /* Espaciado */
-  --space-xs: 0.25rem;
-  --space-sm: 0.5rem;
-  --space-md: 0.75rem;
-  --space-lg: 1rem;
-  --space-xl: 1.5rem;
-  --space-2xl: 2rem;
-
-  /* Bordes y sombras */
-  --border-radius-sm: 0.375rem;
-  --border-radius-md: 0.5rem;
-  --border-radius-lg: 0.75rem;
-  --border-radius-xl: 1rem;
-
-  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
-
-  /* Animaciones */
-  --animation-duration: 0.3s;
-  --animation-timing: cubic-bezier(0.4, 0, 0.2, 1);
-  --focus-outline: 2px solid rgb(59 130 246);
-  --focus-outline-offset: 2px;
+html,body,#root {
+  height: 100%;
 }
 
-/* Dark mode tokens */
-.dark {
-  --color-bg-primary: 15 23 42; /* slate-900 */
-  --color-bg-secondary: 30 41 59; /* slate-700 */
-  --color-bg-tertiary: 51 65 85; /* slate-600 */
-  --color-bg-accent: 30 58 138; /* blue-900 */
-
-  --color-text-primary: 248 250 252; /* slate-50 */
-  --color-text-secondary: 148 163 184; /* slate-400 */
-  --color-text-tertiary: 100 116 139; /* slate-500 */
-
-  --color-border-primary: 51 65 85; /* slate-600 */
-  --color-border-secondary: 71 85 105; /* slate-500 */
-  --color-border-accent: 59 130 246; /* blue-500 */
-}
-
-/* Alto contraste */
-.high-contrast {
-  --bg-primary: #000000;
-  --bg-secondary: #111111;
-  --text-primary: #ffffff;
-  --text-secondary: #cccccc;
-  --border-color: #ffffff;
-  --accent-color: #ffff00;
-  --error-color: #ff0000;
-  --success-color: #00ff00;
-}
-
-.high-contrast body {
-  filter: contrast(1.5);
-}
-
-/* Aplicar variables CSS a elementos base */
 body {
-  background-color: rgb(var(--color-bg-primary));
-  color: rgb(var(--color-text-primary));
-  transition: background-color var(--animation-duration) var(--animation-timing),
-              color var(--animation-duration) var(--animation-timing);
+  /* Estilos base que serán aplicados por las clases de Tailwind en el componente Layout */
+  margin: 0;
+  font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-/* Skip Navigation para accesibilidad */
-.skip-nav {
-  position: absolute;
-  top: -40px;
-  left: 6px;
-  background: var(--accent-color);
-  color: white;
-  padding: 8px 12px;
-  border-radius: 4px;
-  text-decoration: none;
-  font-weight: 600;
-  z-index: 10000;
-  transition: top 0.2s ease;
-}
-
-.skip-nav:focus {
-  top: 6px;
-  outline: 2px solid var(--accent-color);
-  outline-offset: 2px;
-}
-
-/* Mejoras de foco para accesibilidad */
-.focus-visible button:focus,
-.focus-visible input:focus,
-.focus-visible select:focus,
-.focus-visible textarea:focus,
-.focus-visible a:focus {
-  outline: var(--focus-outline);
-  outline-offset: var(--focus-outline-offset);
-}
-
-/* Mejor contraste para enlaces */
-a {
-  color: var(--accent-color);
-  text-decoration: underline;
-}
-
-a:hover,
-a:focus {
-  text-decoration: none;
-}
-
-/* Mejor contraste para botones deshabilitados */
-button:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
-
-/* Animaciones para skeletons */
-@keyframes pulse {
-  0%, 100% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0.5;
-  }
-}
-
-/* Mejoras de legibilidad para texto */
-p, li, span {
-  line-height: 1.6;
-}
-
-h1, h2, h3, h4, h5, h6 {
-  line-height: 1.3;
-}
-
-/* Responsive typography */
-@media (max-width: 768px) {
-  html {
-    font-size: 14px;
-  }
-}
-
-@media (min-width: 1200px) {
-  html {
-    font-size: 18px;
-  }
-}
-
-html,body,#root{height:100%;}
-body{margin:0;font-family:ui-sans-serif,system-ui,Segoe UI,Roboto,Helvetica,Arial;}
-/* Utilidades mínimas para que se vea decente aun sin Tailwind */
-.button-primary{border-radius:12px;padding:12px 18px;font-weight:600;cursor:pointer;}
-
-/* Mejoras de contraste para modales y overlays */
-.modal-overlay {
-  background-color: rgba(0, 0, 0, 0.7) !important;
-}
-
-/* Efectos glassmorphism modernos */
-.glass-card {
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-}
-
-.glass-card-dark {
-  background: rgba(15, 23, 42, 0.7);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-/* Mejoras de sombras y bordes */
-.modern-shadow {
-  box-shadow: 
-    0 10px 25px -3px rgba(0, 0, 0, 0.1),
-    0 4px 6px -4px rgba(0, 0, 0, 0.1),
-    0 0 0 1px rgba(255, 255, 255, 0.1);
-}
-
-/* Animaciones suaves */
+/* Animaciones suaves para transiciones */
 .smooth-transition {
-  transition: all var(--animation-duration) var(--animation-timing);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* Clases utilitarias con design tokens */
-.bg-primary { background-color: rgb(var(--color-bg-primary)); }
-.bg-secondary { background-color: rgb(var(--color-bg-secondary)); }
-.bg-tertiary { background-color: rgb(var(--color-bg-tertiary)); }
-.bg-accent { background-color: rgb(var(--color-bg-accent)); }
-
-.text-primary { color: rgb(var(--color-text-primary)); }
-.text-secondary { color: rgb(var(--color-text-secondary)); }
-.text-tertiary { color: rgb(var(--color-text-tertiary)); }
-
-.border-primary { border-color: rgb(var(--color-border-primary)); }
-.border-secondary { border-color: rgb(var(--color-border-secondary)); }
-.border-accent { border-color: rgb(var(--color-border-accent)); }
-
-.shadow-sm { box-shadow: var(--shadow-sm); }
-.shadow-md { box-shadow: var(--shadow-md); }
-.shadow-lg { box-shadow: var(--shadow-lg); }
-
-.rounded-sm { border-radius: var(--border-radius-sm); }
-.rounded-md { border-radius: var(--border-radius-md); }
-.rounded-lg { border-radius: var(--border-radius-lg); }
-.rounded-xl { border-radius: var(--border-radius-xl); }
-
-/* Efectos hover mejorados */
-.hover-lift:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+/* Overrides para clases heredadas que causan bajo contraste en modo claro */
+html:not(.dark) .bg-slate-900,
+html:not(.dark) .bg-slate-800,
+html:not(.dark) .bg-gray-900,
+html:not(.dark) .bg-gray-800,
+html:not(.dark) .bg-slate-700 {
+  background-color: rgb(var(--color-bg-card, 249 250 251)) !important;
 }
 
-/* Gradientes modernos */
-.gradient-primary {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+html:not(.dark) .text-white,
+html:not(.dark) .text-slate-100,
+html:not(.dark) .text-gray-100,
+html:not(.dark) .text-gray-50 {
+  color: rgb(var(--color-text-primary, 17 24 39)) !important;
 }
 
-.gradient-secondary {
-  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+html:not(.dark) .border-white\/10,
+html:not(.dark) .border-white\/20,
+html:not(.dark) .border-slate-800 {
+  border-color: rgb(var(--color-border-primary, 229 231 235)) !important;
 }
 
-.gradient-accent {
-  background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+html:not(.dark) .hover\:bg-gray-700:hover,
+html:not(.dark) .hover\:bg-slate-700:hover,
+html:not(.dark) .hover\:bg-gray-800:hover {
+  background-color: rgba(17, 24, 39, 0.08) !important;
 }
-
-

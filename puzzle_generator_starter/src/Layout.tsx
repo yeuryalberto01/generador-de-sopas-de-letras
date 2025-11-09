@@ -5,19 +5,25 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen bg-slate-900 text-slate-100">
+    <div className="min-h-screen bg-surface text-primary transition-colors duration-300">
       {/* Topbar */}
-      <header className="sticky top-0 z-50 backdrop-blur bg-slate-900/60 border-b border-white/10 h-14 flex items-center justify-between px-4">
+      <header
+        className="sticky top-0 z-50 backdrop-blur h-14 flex items-center justify-between px-4 border-b transition-colors duration-300 
+                   bg-surface/90 border-border-secondary text-primary shadow-sm
+                   dark:bg-surface/70 dark:border-border-primary"
+      >
         <button
           onClick={() => navigate('/temas')}
-          className="font-semibold hover:text-blue-400 transition-colors cursor-pointer"
+          className="font-semibold transition-colors cursor-pointer hover:text-accent"
         >
           Puzzle Generator
         </button>
         <ThemeToggle />
       </header>
 
-      <main className="px-4 py-6">{children}</main>
+      <main className="px-4 py-6">
+        <div className="max-w-7xl mx-auto">{children}</div>
+      </main>
     </div>
   );
 }

@@ -49,7 +49,6 @@ export default function Temas() {
     if (result.ok && result.data) {
       setTemas(prev => prev.map(t => (t.id === id ? result.data as Tema : t)));
     } else {
-      // TODO: Manejar error al actualizar título
       console.error('Error al actualizar título');
     }
   };
@@ -59,7 +58,6 @@ export default function Temas() {
     if (result.ok) {
       setTemas(prev => prev.map(t => (t.id === id ? { ...t, palabras: words } : t)));
     } else {
-      // TODO: Manejar error al actualizar palabras
       console.error('Error al actualizar palabras');
     }
   };
@@ -143,18 +141,26 @@ export default function Temas() {
   };
 
   return (
-    <div className="min-h-screen bg-white dark:bg-gradient-to-br dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 p-6 transition-all duration-500">
-      <div className="max-w-7xl mx-auto">
-        <div className="flex items-center justify-between mb-6">
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Gestión de Temas</h1>
+    <div className="max-w-7xl mx-auto"> {/* This div was missing in the user's snippet, but it's part of the Layout's main content */}
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-4 sm:mb-6">
+        <div>
+          <h1 className="text-2xl sm:text-3xl font-bold text-primary">Gestión de Temas</h1>
+          <p className="text-sm text-secondary mt-1">Crea, edita y organiza tus temas para sopas de letras</p>
         </div>
+        <div className="flex items-center gap-4 text-sm text-secondary">
+          <span className="bg-primary/10 text-primary px-3 py-1 rounded-full">{temas.length} temas</span>
+        </div>
+      </div>
 
-        <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 h-auto xl:h-[calc(100vh-150px)]">
+      <div className="flex flex-col lg:flex-row gap-4 lg:gap-6 h-[calc(100vh-140px)]">
+        <div className="w-full lg:w-80 flex-shrink-0">
           <TemaPanelEntrada
             onCreate={handleCreate}
             loading={loading.create}
           />
+        </div>
 
+        <div className="flex-1 bg-card rounded-xl border border-border-primary overflow-hidden">
           <TemasPanel
             temas={temas}
             onUpdate={handleUpdate}
@@ -168,17 +174,19 @@ export default function Temas() {
             onSelect={handleSelectTema}
           />
         </div>
+      </div>
 
-        {/* Botón Continuar */}
-        <div className="fixed bottom-6 right-6 z-50">
-          <button
-            disabled={!selectedId || loading.load}
-            onClick={() => nav(`/diagramacion/${selectedId}`)}
-            className="bg-blue-600 dark:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium hover:bg-blue-700 dark:hover:bg-blue-800 disabled:bg-gray-400 dark:disabled:bg-slate-600 disabled:cursor-not-allowed transition-colors flex items-center gap-2 shadow-lg relative"
-          >
-            Continuar
-          </button>
-        </div>
+      {/* Botón Continuar */}
+      <div className="fixed bottom-6 right-6 z-50">
+        <button
+          disabled={!selectedId || loading.load}
+          onClick={() => nav(`/diagramacion/${selectedId}`)}
+          className="px-6 py-3 rounded-lg font-medium transition-colors flex items-center gap-2 shadow-lg relative 
+                     bg-accent-primary hover:bg-accent-primary-hover text-accent-text 
+                     disabled:bg-disabled-bg disabled:text-disabled disabled:cursor-not-allowed"
+        >
+          Continuar
+        </button>
       </div>
 
       <Modal
@@ -192,7 +200,7 @@ export default function Temas() {
               onUpdateTitle={handleUpdateTitle}
               onUpdateWords={handleUpdateWords}
               onUndo={handleCloseEditModal}
-              isLoading={false} // O pasar el estado de carga real si es necesario
+              isLoading={false}
             />
           )}
       </Modal>

@@ -5,7 +5,6 @@ import ConfirmDialog from './ConfirmDialog';
 const TemaItem = React.memo(({
   tema,
   onDelete,
-  _onEdit,
   onUpdate,
   loading,
   showToast,
@@ -14,7 +13,6 @@ const TemaItem = React.memo(({
   isSelected = false,
   onSelect
 }) => {
-  // Optimización: memoizar cálculos
   const wordCount = tema.words?.length || 0;
   const [isExpanded, setIsExpanded] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
@@ -43,7 +41,7 @@ const TemaItem = React.memo(({
     setEditWords([...(tema.words || [])]);
     setNewWord('');
     setIsEditing(true);
-    setIsExpanded(true); // Expandir automáticamente al entrar en modo edición
+    setIsExpanded(true);
   }, [tema.nombre, tema.words]);
 
   const handleCancelEdit = useCallback(() => {
@@ -62,14 +60,10 @@ const TemaItem = React.memo(({
   const handleAddWord = useCallback(() => {
     const trimmedWord = newWord.trim();
     if (!trimmedWord) return;
-
-    // Validación básica
     if (trimmedWord.length < 2 || trimmedWord.length > 32) return;
     if (!/^[A-Za-zÁÉÍÓÚÜÑáéíóúüñ0-9_-]+$/.test(trimmedWord)) return;
-
     const normalizedWord = trimmedWord.toLowerCase();
     if (editWords.some(word => word.toLowerCase() === normalizedWord)) return;
-
     setEditWords(prev => [...prev, trimmedWord]);
     setNewWord('');
   }, [newWord, editWords]);
@@ -77,11 +71,8 @@ const TemaItem = React.memo(({
   const handleEditWord = useCallback((index, newWord) => {
     const trimmedWord = newWord.trim();
     if (!trimmedWord) return;
-
-    // Validación básica
     if (trimmedWord.length < 2 || trimmedWord.length > 32) return;
     if (!/^[A-Za-zÁÉÍÓÚÜÑáéíóúüñ0-9_-]+$/.test(trimmedWord)) return;
-
     setEditWords(prev => prev.map((word, i) => i === index ? trimmedWord : word));
   }, []);
 
@@ -92,9 +83,9 @@ const TemaItem = React.memo(({
   const hasChanges = editTitle !== (tema.nombre || '') || JSON.stringify(editWords) !== JSON.stringify(tema.words || []);
 
   return (
-    <div className={`bg-primary rounded-xl shadow-lg overflow-hidden mb-3 border smooth-transition hover:shadow-xl group ${isSelected ? 'border-accent ring-2 ring-accent/60' : 'border-primary'}`}>
+    <div className={`bg-card rounded-xl shadow-lg overflow-hidden mb-3 border smooth-transition hover:shadow-xl group ${isSelected ? 'border-accent ring-2 ring-accent/60' : 'border-border-primary'}`}>
       <div
-        className={`p-3 sm:p-4 ${isEditing ? 'cursor-default' : 'cursor-pointer hover:bg-secondary'} smooth-transition`}
+        className={`p-3 sm:p-4 ${isEditing ? 'cursor-default' : 'cursor-pointer hover:bg-primary/10'} smooth-transition`}
         onClick={() => {
           if (isEditing) return;
           if (onSelect) onSelect();
@@ -104,7 +95,7 @@ const TemaItem = React.memo(({
         <div className="flex items-start justify-between">
           <div className="flex items-start gap-3 flex-1 min-w-0">
             {!isEditing && (
-              <button className="mt-1 text-text-secondary flex-shrink-0">
+              <button className="mt-1 text-secondary flex-shrink-0">
                 {isExpanded ? <ChevronDown size={20} /> : <ChevronRight size={20} />}
               </button>
             )}
@@ -124,36 +115,23 @@ const TemaItem = React.memo(({
               <>
                 {onToggleFavorite && (
                   <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      onToggleFavorite();
-                    }}
-                    className={`w-9 h-9 rounded-lg hover:bg-secondary smooth-transition flex items-center justify-center transition-all ${
-                      isFavorite
-                        ? 'text-warning bg-secondary/60 shadow-sm'
-                        : 'text-secondary hover:text-primary'
-                    }`}
+                    onClick={(e) => { e.stopPropagation(); onToggleFavorite(); }}
+                  className={`w-9 h-9 rounded-lg hover:bg-primary/10 smooth-transition flex items-center justify-center transition-all ${isFavorite ? 'text-yellow-500' : 'text-secondary hover:text-primary'}`}
                     title={isFavorite ? 'Remover de favoritos' : 'Agregar a favoritos'}
                   >
                     <Star size={16} className={isFavorite ? 'fill-current' : ''} />
                   </button>
                 )}
                 <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleStartEdit();
-                  }}
-                  className="w-9 h-9 rounded-lg text-secondary hover:text-accent hover:bg-secondary smooth-transition flex items-center justify-center"
+                  onClick={(e) => { e.stopPropagation(); handleStartEdit(); }}
+                  className="w-9 h-9 rounded-lg text-secondary hover:text-accent hover:bg-primary/10 smooth-transition flex items-center justify-center"
                   title="Editar tema"
                 >
                   <Edit size={16} />
                 </button>
                 <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setShowDeleteConfirm(true);
-                  }}
-                  className="w-9 h-9 rounded-lg text-secondary hover:text-error hover:bg-secondary smooth-transition flex items-center justify-center"
+                  onClick={(e) => { e.stopPropagation(); setShowDeleteConfirm(true); }}
+                  className="w-9 h-9 rounded-lg text-secondary hover:text-accent-danger hover:bg-primary/10 smooth-transition flex items-center justify-center"
                   title="Eliminar tema"
                 >
                   <Trash2 size={16} />
@@ -162,22 +140,16 @@ const TemaItem = React.memo(({
             ) : (
               <>
                 <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleSaveEdit();
-                  }}
+                  onClick={(e) => { e.stopPropagation(); handleSaveEdit(); }}
                   disabled={!hasChanges || loading}
-                  className="w-8 h-8 rounded-md text-accent hover:text-accent-hover hover:bg-secondary smooth-transition flex items-center justify-center disabled:opacity-50"
+                  className="w-8 h-8 rounded-md text-accent-success hover:bg-primary/10 smooth-transition flex items-center justify-center disabled:opacity-50"
                   title="Guardar cambios"
                 >
                   <Save size={14} />
                 </button>
                 <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleCancelEdit();
-                  }}
-                  className="w-8 h-8 rounded-md text-secondary hover:text-primary hover:bg-secondary smooth-transition flex items-center justify-center"
+                  onClick={(e) => { e.stopPropagation(); handleCancelEdit(); }}
+                  className="w-8 h-8 rounded-md text-secondary hover:text-primary hover:bg-primary/10 smooth-transition flex items-center justify-center"
                   title="Cancelar edición"
                 >
                   <X size={14} />
@@ -189,14 +161,14 @@ const TemaItem = React.memo(({
       </div>
 
       {isExpanded && (
-        <div className="border-t border-primary p-3 sm:p-4 bg-secondary">
+        <div className="border-t border-border-primary p-3 sm:p-4 bg-surface">
           {!isEditing ? (
-            <div className="max-h-64 overflow-y-auto space-y-2 bg-primary p-3 rounded-lg border border-primary">
+            <div className="max-h-64 overflow-y-auto space-y-2 bg-input p-3 rounded-lg border border-border-secondary">
               {wordCount === 0 ? (
                 <p className="text-sm text-secondary text-center py-4">No hay palabras</p>
               ) : (
                 tema.words.map((word, idx) => (
-                  <div key={idx} className="flex items-center justify-between bg-secondary px-3 py-2 rounded-lg">
+                  <div key={idx} className="flex items-center justify-between bg-surface px-3 py-2 rounded-lg">
                     <span className="text-sm font-medium text-primary truncate max-w-[200px]" title={word}>
                       {word}
                     </span>
@@ -206,7 +178,6 @@ const TemaItem = React.memo(({
             </div>
           ) : (
             <div className="space-y-4">
-              {/* Edición del título */}
               <div>
                 <label className="block text-sm font-medium text-primary mb-2">Título del tema</label>
                 <input
@@ -214,15 +185,12 @@ const TemaItem = React.memo(({
                   value={editTitle}
                   onChange={(e) => setEditTitle(e.target.value)}
                   placeholder="Título del tema"
-                  className="w-full px-3 py-2 border border-secondary bg-primary text-primary rounded-lg focus:outline-none focus:ring-2 focus:ring-accent"
+                  className="w-full px-3 py-2 border border-border-secondary bg-input text-primary rounded-lg focus:outline-none focus:ring-2 focus:ring-accent"
                 />
               </div>
 
-              {/* Edición de palabras */}
               <div>
                 <label className="block text-sm font-medium text-primary mb-2">Palabras</label>
-
-                {/* Agregar nueva palabra */}
                 <div className="flex gap-2 mb-3">
                   <input
                     type="text"
@@ -230,33 +198,32 @@ const TemaItem = React.memo(({
                     onChange={(e) => setNewWord(e.target.value)}
                     onKeyDown={(e) => e.key === 'Enter' && handleAddWord()}
                     placeholder="Nueva palabra..."
-                    className="flex-1 px-3 py-2 border border-secondary bg-primary text-primary rounded-lg focus:outline-none focus:ring-2 focus:ring-accent text-sm"
+                    className="flex-1 px-3 py-2 border border-border-secondary bg-input text-primary rounded-lg focus:outline-none focus:ring-2 focus:ring-accent text-sm"
                   />
                   <button
                     onClick={handleAddWord}
                     disabled={!newWord.trim()}
-                    className="px-3 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:bg-gray-400 disabled:cursor-not-allowed smooth-transition"
+                    className="px-3 py-2 bg-accent-success text-accent-text rounded-lg hover:bg-accent-success-hover disabled:bg-disabled-bg disabled:cursor-not-allowed smooth-transition"
                   >
                     <Plus size={16} />
                   </button>
                 </div>
 
-                {/* Lista de palabras editables */}
-                <div className="max-h-64 overflow-y-auto space-y-2 bg-primary p-3 rounded-lg border border-primary">
+                <div className="max-h-64 overflow-y-auto space-y-2 bg-input p-3 rounded-lg border border-border-secondary">
                   {editWords.length === 0 ? (
                     <p className="text-sm text-secondary text-center py-4">No hay palabras</p>
                   ) : (
                     editWords.map((word, idx) => (
-                      <div key={idx} className="flex items-center gap-2 bg-secondary px-3 py-2 rounded-lg">
+                      <div key={idx} className="flex items-center gap-2 bg-surface px-3 py-2 rounded-lg">
                         <input
                           type="text"
                           value={word}
                           onChange={(e) => handleEditWord(idx, e.target.value)}
-                          className="flex-1 px-2 py-1 border border-secondary bg-primary text-primary rounded text-sm focus:outline-none focus:ring-1 focus:ring-accent"
+                          className="flex-1 px-2 py-1 border border-border-secondary bg-input text-primary rounded text-sm focus:outline-none focus:ring-1 focus:ring-accent"
                         />
                         <button
                           onClick={() => handleDeleteWord(idx)}
-                          className="text-red-600 hover:text-red-700 p-1 rounded hover:bg-red-50 dark:hover:bg-red-900/50 smooth-transition"
+                          className="text-accent-danger hover:bg-primary/10 p-1 rounded smooth-transition"
                           title="Eliminar palabra"
                         >
                           <X size={14} />
@@ -268,7 +235,7 @@ const TemaItem = React.memo(({
 
                 <div className="text-xs text-secondary mt-2">
                   {editWords.length} palabra{editWords.length !== 1 ? 's' : ''}
-                  {hasChanges && <span className="text-orange-600 ml-2">• Cambios sin guardar</span>}
+                  {hasChanges && <span className="text-yellow-600 dark:text-yellow-500 ml-2">• Cambios sin guardar</span>}
                 </div>
               </div>
             </div>
