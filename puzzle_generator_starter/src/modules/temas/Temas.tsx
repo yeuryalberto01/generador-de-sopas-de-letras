@@ -64,6 +64,11 @@ export default function Temas() {
     }
   };
 
+  const handleSelectTema = useCallback((id: string) => {
+    setSelectedId(id);
+    if (selectTema) selectTema(id);
+  }, [selectTema, setSelectedId]);
+
   const loadTemas = useCallback(async () => {
     setLoading(prev => ({ ...prev, load: true }));
     try {
@@ -80,13 +85,20 @@ export default function Temas() {
     loadTemas();
   }, [loadTemas]);
 
+  useEffect(() => {
+    if (!temas.length) return;
+    const exists = selectedId ? temas.some(t => t.id === selectedId) : false;
+    if (!exists) {
+      handleSelectTema(temas[0].id);
+    }
+  }, [temas, selectedId, handleSelectTema]);
+
   const handleCreate = async (title: string, words: string[]) => {
     setLoading(prev => ({ ...prev, create: true }));
     try {
       const result = await temasService.createTema(title, words);
       setTemas(prev => [result, ...prev]);
-      setSelectedId(result.id);
-      if(selectTema) selectTema(result.id);
+      handleSelectTema(result.id);
     } catch (error) {
       console.error('Error al crear el tema', error);
     } finally {
@@ -137,7 +149,7 @@ export default function Temas() {
           <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Gestión de Temas</h1>
         </div>
 
-        <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 h-[calc(100vh-150px)]">
+        <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 h-auto xl:h-[calc(100vh-150px)]">
           <TemaPanelEntrada
             onCreate={handleCreate}
             loading={loading.create}
@@ -152,6 +164,8 @@ export default function Temas() {
             loading={loading.update}
             searchTerm={searchTerm}
             setSearchTerm={setSearchTerm}
+            selectedId={selectedId}
+            onSelect={handleSelectTema}
           />
         </div>
 

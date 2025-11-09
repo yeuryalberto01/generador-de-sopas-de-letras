@@ -35,6 +35,8 @@ interface TemasPanelProps {
   showToast?: (message: string, type?: string) => void;
   favorites?: Set<string>;
   onToggleFavorite?: (id: string) => void;
+  selectedId: string | null;
+  onSelect: (id: string) => void;
 }
 
 // =============================================================================
@@ -52,7 +54,9 @@ const TemasPanel: FC<TemasPanelProps> = ({
   setSearchTerm,
   showToast,
   favorites = new Set(),
-  onToggleFavorite
+  onToggleFavorite,
+  selectedId,
+  onSelect
 }) => {
   const [importing, setImporting] = useState(false);
   const [showOnlyFavorites, setShowOnlyFavorites] = useState(false);
@@ -101,7 +105,7 @@ const TemasPanel: FC<TemasPanelProps> = ({
   }, [onImport]);
 
   return (
-    <div className="bg-primary rounded-xl shadow-xl border border-primary h-full flex flex-col smooth-transition">
+    <div className="bg-primary rounded-xl shadow-xl border border-primary h-auto xl:h-full flex flex-col smooth-transition">
       <div className="p-4 border-b border-primary/30">
         <div className="flex items-center justify-between mb-3">
           <h2 className="text-lg font-semibold text-primary">Temas</h2>
@@ -111,25 +115,27 @@ const TemasPanel: FC<TemasPanelProps> = ({
         </div>
 
         {/* Barra de búsqueda compacta */}
-        <div className="relative mb-3">
-          {searchTerm !== debouncedSearchTerm ? (
-            <Clock size={14} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-warning animate-pulse" />
-          ) : (
-            <Search size={16} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-tertiary" />
-          )}
-          <input
-            type="text"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            placeholder="Buscar temas..."
-            className="w-full pl-9 pr-3 py-2 border border-secondary bg-primary text-primary rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent"
-            aria-label="Buscar temas"
-          />
+        <div className="mb-3">
+          <div className="flex items-center gap-2 px-3 py-2 border border-secondary rounded-lg bg-primary text-primary text-sm focus-within:ring-2 focus-within:ring-accent">
+            {searchTerm !== debouncedSearchTerm ? (
+              <Clock size={14} className="text-warning animate-pulse" />
+            ) : (
+              <Search size={16} className="text-tertiary" />
+            )}
+            <input
+              type="text"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              placeholder="Buscar temas..."
+              className="flex-1 bg-transparent placeholder:text-secondary focus:outline-none"
+              aria-label="Buscar temas"
+            />
+          </div>
         </div>
-          
-                    {/* Barra de herramientas compacta */}
-          <div className="flex items-center justify-between gap-3">
-            <div className="flex items-center gap-3">
+
+        {/* Barra de herramientas compacta */}
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <div className="flex flex-wrap items-center gap-2 sm:gap-3 w-full sm:w-auto">
               <button
                 onClick={() => exportToJSON(temas)}
                 disabled={temas.length === 0}
@@ -156,7 +162,7 @@ const TemasPanel: FC<TemasPanelProps> = ({
               </button>
             </div>
 
-            <div className="flex items-center gap-2">
+            <div className="flex flex-wrap items-center gap-2 sm:justify-end w-full sm:w-auto">
               <select
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value)}
@@ -183,7 +189,7 @@ const TemasPanel: FC<TemasPanelProps> = ({
           </div>
         )}
       </div>
-      <div className="flex-1 overflow-y-auto p-3 sm:p-4">
+      <div className="flex-1 overflow-visible xl:overflow-y-auto p-3 sm:p-4">
         {filteredTemas.length === 0 ? (
           <div className="text-center py-8 sm:py-12 text-secondary">
             {searchTerm ? 'No se encontraron temas' : 'Aún no hay temas guardados. ¡Crea tu primer tema!'}
@@ -200,6 +206,8 @@ const TemasPanel: FC<TemasPanelProps> = ({
               showToast={showToast}
               isFavorite={favorites.has(tema.id)}
               onToggleFavorite={onToggleFavorite ? () => onToggleFavorite(tema.id) : undefined}
+              isSelected={selectedId === tema.id}
+              onSelect={() => onSelect(tema.id)}
             />
           ))
         )}

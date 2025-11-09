@@ -1,5 +1,6 @@
-import { Download, Grid, Layout, Printer, Save, Settings, Type, ZoomIn, ZoomOut } from 'lucide-react';
-import { createContext, useCallback, useContext, useState } from 'react';
+import { AlertTriangle, BadgeCheck, Download, Grid, Layout, Printer, Save, Search, Settings, Type, ZoomIn, ZoomOut } from 'lucide-react';
+import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import type { MouseEvent as ReactMouseEvent } from 'react';
 
 // ==================== CONSTANTS ====================
 const PAGE_SIZES = {
@@ -28,6 +29,55 @@ const WORD_BOX_STYLES = {
   COLUMNS: 'columns',
   GRID: 'grid',
   FLOWING: 'flowing'
+};
+
+// ==================== HELPERS ====================
+const clamp = (value: number, min: number, max: number) => Math.min(Math.max(value, min), max);
+
+const sanitizeWordList = (palabras: any[] = []) =>
+  (palabras || [])
+    .map((palabra) => {
+      if (typeof palabra === 'string') {
+        return { texto: palabra };
+      }
+      if (palabra && typeof palabra.texto === 'string') {
+        return { ...palabra };
+      }
+      return null;
+    })
+    .filter((palabra) => palabra && palabra.texto?.trim().length)
+    .map((palabra) => ({ ...palabra, texto: palabra.texto.trim() }));
+
+const computeWordStats = (palabras: any[] = []) => {
+  const normalized = sanitizeWordList(palabras);
+  if (!normalized.length) {
+    return {
+      totalWords: 0,
+      totalLetters: 0,
+      avgLength: 0,
+      longestWord: 0
+    };
+  }
+
+  const lengths = normalized.map((word) => word.texto.replace(/\s+/g, '').length);
+  const totalLetters = lengths.reduce((sum, len) => sum + len, 0);
+  const avgLength = totalLetters / lengths.length;
+  const longestWord = Math.max(...lengths);
+
+  return {
+    totalWords: normalized.length,
+    totalLetters,
+    avgLength,
+    longestWord
+  };
+};
+
+const normalizeTemaPayload = (tema: any) => {
+  if (!tema) return null;
+  return {
+    ...tema,
+    palabras: sanitizeWordList(tema.palabras || [])
+  };
 };
 
 // ==================== CONTEXT ====================
@@ -269,63 +319,226 @@ function PageSizeSelector() {
 // Tema Selector (Mock - se conectará a la API)
 function TemaSelector() {
   const { state, updateState } = useDiagramacion();
+  const [searchTerm, setSearchTerm] = useState('');
 
-  // Mock temas - en producción vendrá de la API
+  // Mock temas - en produccin vendr de la API
   const mockTemas = [
-    { id: 1, nombre: 'Animales', palabras: [
-      { texto: 'Perro' }, { texto: 'Gato' }, { texto: 'León' },
-      { texto: 'Elefante' }, { texto: 'Jirafa' }, { texto: 'Tigre' }
-    ]},
-    { id: 2, nombre: 'Frutas', palabras: [
-      { texto: 'Manzana' }, { texto: 'Pera' }, { texto: 'Uva' },
-      { texto: 'Sandía' }, { texto: 'Melón' }
-    ]},
-    { id: 3, nombre: 'Colores', palabras: [
-      { texto: 'Rojo' }, { texto: 'Azul' }, { texto: 'Verde' },
-      { texto: 'Amarillo' }, { texto: 'Naranja' }, { texto: 'Morado' }
-    ]}
+    {
+      id: 1,
+      nombre: 'Animales',
+      palabras: [
+        { texto: 'Perro' }, { texto: 'Gato' }, { texto: 'Len' },
+        { texto: 'Elefante' }, { texto: 'Jirafa' }, { texto: 'Tigre' }
+      ]
+    },
+    {
+      id: 2,
+      nombre: 'Frutas',
+      palabras: [
+        { texto: 'Manzana' }, { texto: 'Pera' }, { texto: 'Uva' },
+        { texto: 'Sanda' }, { texto: 'Meln' }
+      ]
+    },
+    {
+      id: 3,
+      nombre: 'Colores',
+      palabras: [
+        { texto: 'Rojo' }, { texto: 'Azul' }, { texto: 'Verde' },
+        { texto: 'Amarillo' }, { texto: 'Naranja' }, { texto: 'Morado' }
+      ]
+    }
   ];
 
-  return (
-    <div className="p-4 bg-white dark:bg-slate-800 rounded-lg border border-gray-300 dark:border-slate-600 shadow-lg relative z-10">
-      <h3 className="font-semibold mb-3 flex items-center gap-2 text-gray-900 dark:text-white">
-        <Type size={18} className="text-gray-900 dark:text-white" />
-        Seleccionar Tema
-      </h3>
-      <select
-        value={state.selectedTema?.id || ''}
-        onChange={(e) => {
-          const tema = mockTemas.find(t => t.id === parseInt(e.target.value));
-          updateState({ selectedTema: tema });
-        }}
-        className="w-full p-2 border border-gray-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-800 text-gray-900 dark:text-white relative z-20"
-      >
-        <option value="">-- Seleccionar --</option>
-        {mockTemas.map(tema => (
-          <option key={tema.id} value={tema.id}>
-            {tema.nombre} ({tema.palabras.length} palabras)
-          </option>
-        ))}
-      </select>
+  const catalog = useMemo(() => {
+    const baseCatalog = mockTemas.map(normalizeTemaPayload);
+    const selected = normalizeTemaPayload(state.selectedTema);
 
-      {state.selectedTema && (
-        <div className="mt-3 p-3 bg-gray-50 dark:bg-slate-700 rounded text-sm text-gray-900 dark:text-white relative z-20">
-          <p className="font-medium mb-2 text-gray-900 dark:text-white">Palabras:</p>
-          <div className="flex flex-wrap gap-1">
-            {state.selectedTema.palabras.map((p, i) => (
-              <span key={i} className="px-2 py-1 bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300 rounded text-xs font-medium relative z-20">
-                {p.texto}
-              </span>
-            ))}
+    if (!selected) return baseCatalog;
+
+    const exists = baseCatalog.some((tema) => tema.id === selected.id);
+    if (exists) {
+      return baseCatalog.map((tema) => (tema.id === selected.id ? selected : tema));
+    }
+    return [selected, ...baseCatalog];
+  }, [state.selectedTema]);
+
+  const filteredTemas = useMemo(() => {
+    const term = searchTerm.trim().toLowerCase();
+    if (!term) return catalog;
+
+    return catalog.filter((tema) => {
+      const matchesName = tema.nombre.toLowerCase().includes(term);
+      const matchesWord = tema.palabras.some((p) => p.texto.toLowerCase().includes(term));
+      return matchesName || matchesWord;
+    });
+  }, [catalog, searchTerm]);
+
+  const statsByTema = useMemo(() => {
+    const stats = new Map();
+    catalog.forEach((tema) => {
+      stats.set(tema.id, computeWordStats(tema.palabras));
+    });
+    return stats;
+  }, [catalog]);
+
+  const technicalMetrics = useMemo(() => {
+    if (!state.selectedTema) return null;
+    const normalized = normalizeTemaPayload(state.selectedTema);
+    const baseStats = computeWordStats(normalized.palabras);
+    const gridArea = state.gridConfig.rows * state.gridConfig.cols;
+    const coverage = gridArea
+      ? Math.min(100, Math.round((baseStats.totalLetters / gridArea) * 100))
+      : 0;
+    const recommendedSide = Math.max(
+      baseStats.longestWord,
+      Math.ceil(Math.sqrt(Math.max(baseStats.totalLetters, 1))) + 2
+    );
+
+    return {
+      ...baseStats,
+      coverage,
+      recommendedSide,
+      fitsGrid:
+        state.gridConfig.rows >= recommendedSide &&
+        state.gridConfig.cols >= recommendedSide
+    };
+  }, [state.selectedTema, state.gridConfig]);
+
+  const handleTemaSelection = (tema) => {
+    updateState({ selectedTema: tema });
+  };
+
+  return (
+    <div className="p-4 bg-white dark:bg-slate-800 rounded-lg border border-gray-300 dark:border-slate-600 shadow-lg relative z-10 space-y-4">
+      <div className="flex items-start justify-between gap-3">
+        <div>
+          <h3 className="font-semibold flex items-center gap-2 text-gray-900 dark:text-white">
+            <Type size={18} className="text-gray-900 dark:text-white" />
+            Catálogo técnico de temas
+          </h3>
+          <p className="text-xs text-gray-500 dark:text-gray-400">
+            Evalúa densidad y complejidad antes de diagramar.
+          </p>
+        </div>
+        <span className="text-xs text-gray-500 dark:text-gray-400 border border-gray-200 dark:border-slate-700 rounded-full px-2 py-1">
+          {catalog.length} activos
+        </span>
+      </div>
+
+      <div className="relative">
+        <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+        <input
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          placeholder="Filtrar por nombre o palabra clave"
+          className="w-full pl-9 pr-3 py-2 border border-gray-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-900 text-sm text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500/60"
+        />
+      </div>
+
+      <div className="space-y-2 max-h-48 overflow-y-auto pr-1">
+        {filteredTemas.length === 0 && (
+          <p className="text-xs text-gray-500 dark:text-gray-400">
+            No encontramos coincidencias. Ajusta el filtro.
+          </p>
+        )}
+        {filteredTemas.map((tema) => {
+          const stats = statsByTema.get(tema.id) || computeWordStats(tema.palabras);
+          const isActive = state.selectedTema?.id === tema.id;
+
+          return (
+            <button
+              type="button"
+              key={tema.id}
+              onClick={() => handleTemaSelection(tema)}
+              className={`w-full text-left rounded-lg border p-3 transition-all ${
+                isActive
+                  ? 'border-blue-500/80 bg-blue-50 dark:bg-blue-900/30 shadow-sm'
+                  : 'border-gray-200 dark:border-slate-700 hover:border-blue-400/70'
+              }`}
+            >
+              <div className="flex items-center justify-between text-sm">
+                <span className="font-semibold text-gray-900 dark:text-white">
+                  {tema.nombre}
+                </span>
+                <span className="text-xs text-gray-500 dark:text-gray-400">
+                  {tema.palabras.length} palabras
+                </span>
+              </div>
+              <div className="mt-2 grid grid-cols-2 gap-2 text-[11px] text-gray-500 dark:text-gray-400">
+                <span>
+                  Promedio {stats.avgLength ? stats.avgLength.toFixed(1) : '0'} letras
+                </span>
+                <span>Largo mx. {stats.longestWord || 0} letras</span>
+              </div>
+            </button>
+          );
+        })}
+      </div>
+
+      {technicalMetrics ? (
+        <div className="border border-gray-200 dark:border-slate-700 rounded-lg p-3 bg-gray-50 dark:bg-slate-900/40">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-xs uppercase tracking-wide text-gray-500 dark:text-gray-400">
+                Ficha técnica
+              </p>
+              <h4 className="text-sm font-semibold text-gray-900 dark:text-white">
+                {state.selectedTema?.nombre}
+              </h4>
+            </div>
+            <span
+              className={`flex items-center gap-1 text-xs font-semibold ${
+                technicalMetrics.fitsGrid
+                  ? 'text-emerald-600 dark:text-emerald-400'
+                  : 'text-amber-600 dark:text-amber-400'
+              }`}
+            >
+              {technicalMetrics.fitsGrid ? (
+                <>
+                  <BadgeCheck size={14} /> Compatible
+                </>
+              ) : (
+                <>
+                  <AlertTriangle size={14} /> Ajustar malla
+                </>
+              )}
+            </span>
           </div>
+          <div className="mt-3 grid grid-cols-2 gap-3 text-sm text-gray-700 dark:text-gray-200">
+            <div>
+              <p className="text-xs text-gray-500 dark:text-gray-400 uppercase">Palabras útiles</p>
+              <p className="text-lg font-semibold">{technicalMetrics.totalWords}</p>
+            </div>
+            <div>
+              <p className="text-xs text-gray-500 dark:text-gray-400 uppercase">Total caracteres</p>
+              <p className="text-lg font-semibold">{technicalMetrics.totalLetters}</p>
+            </div>
+            <div>
+              <p className="text-xs text-gray-500 dark:text-gray-400 uppercase">Cobertura estimada</p>
+              <p className="text-lg font-semibold">{technicalMetrics.coverage}%</p>
+              <span className="text-[11px] text-gray-500 dark:text-gray-400">
+                respecto a {state.gridConfig.rows}x{state.gridConfig.cols}
+              </span>
+            </div>
+            <div>
+              <p className="text-xs text-gray-500 dark:text-gray-400 uppercase">Recomendación de malla</p>
+              <p className="text-lg font-semibold">
+                ≥ {technicalMetrics.recommendedSide} celdas
+              </p>
+              <span className="text-[11px] text-gray-500 dark:text-gray-400">
+                lado sugerido
+              </span>
+            </div>
+          </div>
+        </div>
+      ) : (
+        <div className="text-xs text-gray-500 dark:text-gray-400 border border-dashed border-gray-300 dark:border-slate-700 rounded-lg p-3">
+          Selecciona un tema para habilitar la ficha técnica de diagramación.
         </div>
       )}
     </div>
   );
-}
-
-// Grid Configurator
-function GridConfigurator() {
+}function GridConfigurator() {
   const { state, updateState } = useDiagramacion();
   const { generateGrid } = useWordSearchAlgorithm();
 
@@ -691,14 +904,81 @@ function LivePreviewPanel() {
 }
 
 // Main Layout
+
+const MIN_SIDEBAR_WIDTH = 260;
+const MAX_SIDEBAR_WIDTH = 520;
+const RIGHT_PANEL_WIDTH = 384;
+const MIN_CANVAS_WIDTH = 520;
+
 function DiagramacionLayout() {
+  const getInitialSidebar = () => {
+    if (typeof window === 'undefined') return 320;
+    const available = Math.max(MIN_SIDEBAR_WIDTH, window.innerWidth - RIGHT_PANEL_WIDTH - MIN_CANVAS_WIDTH);
+    const maxWidth = Math.min(MAX_SIDEBAR_WIDTH, available);
+    return clamp(window.innerWidth * 0.22, MIN_SIDEBAR_WIDTH, maxWidth);
+  };
+
+  const [sidebarWidth, setSidebarWidth] = useState(() => getInitialSidebar());
+  const [isDragging, setIsDragging] = useState(false);
+  const [isCompactLayout, setIsCompactLayout] = useState(() => {
+    if (typeof window === 'undefined') return true;
+    return window.innerWidth < 1024;
+  });
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const handleResize = () => {
+      const compact = window.innerWidth < 1024;
+      setIsCompactLayout(compact);
+      if (!compact) {
+        const available = Math.max(MIN_SIDEBAR_WIDTH, window.innerWidth - RIGHT_PANEL_WIDTH - MIN_CANVAS_WIDTH);
+        const maxWidth = Math.min(MAX_SIDEBAR_WIDTH, available);
+        setSidebarWidth(prev => clamp(prev, MIN_SIDEBAR_WIDTH, maxWidth));
+      }
+    };
+
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  useEffect(() => {
+    if (!isDragging || isCompactLayout || typeof window === 'undefined') return;
+
+    const handleMouseMove = (event: MouseEvent) => {
+      const available = Math.max(MIN_SIDEBAR_WIDTH, window.innerWidth - RIGHT_PANEL_WIDTH - MIN_CANVAS_WIDTH);
+      const maxWidth = Math.min(MAX_SIDEBAR_WIDTH, available);
+      const nextWidth = clamp(event.clientX, MIN_SIDEBAR_WIDTH, maxWidth);
+      setSidebarWidth(nextWidth);
+    };
+
+    const handleMouseUp = () => setIsDragging(false);
+
+    window.addEventListener('mousemove', handleMouseMove);
+    window.addEventListener('mouseup', handleMouseUp);
+    return () => {
+      window.removeEventListener('mousemove', handleMouseMove);
+      window.removeEventListener('mouseup', handleMouseUp);
+    };
+  }, [isDragging, isCompactLayout]);
+
+  const handleDragStart = useCallback((event: ReactMouseEvent<HTMLDivElement>) => {
+    event.preventDefault();
+    setIsDragging(true);
+  }, []);
+
   return (
     <div className="h-screen flex flex-col bg-white dark:bg-slate-900">
       <ToolbarPanel />
 
-      <div className="flex-1 flex overflow-hidden">
+      <div className="flex-1 flex flex-col lg:flex-row overflow-hidden">
         {/* Left Panel */}
-        <div className="w-80 border-r border-gray-300 dark:border-slate-600 bg-gray-50 dark:bg-slate-800 overflow-y-auto">
+        <div
+          className={`border-gray-300 dark:border-slate-600 bg-gray-50 dark:bg-slate-800 overflow-y-auto ${
+            isCompactLayout ? 'w-full border-b lg:border-r-0' : 'border-r'
+          }`}
+          style={isCompactLayout ? undefined : { width: `${sidebarWidth}px` }}
+        >
           <div className="p-4 space-y-4">
             <PageSizeSelector />
             <TemaSelector />
@@ -707,13 +987,31 @@ function DiagramacionLayout() {
           </div>
         </div>
 
+        {/* Drag handle */}
+        {!isCompactLayout && (
+          <div
+            role="separator"
+            aria-orientation="vertical"
+            onMouseDown={handleDragStart}
+            className={`hidden lg:flex items-center justify-center w-2 cursor-ew-resize select-none transition-colors ${
+              isDragging ? 'bg-blue-200/60 dark:bg-blue-900/30' : 'bg-transparent'
+            }`}
+          >
+            <div className="h-16 w-[3px] rounded-full bg-gray-300 dark:bg-slate-600" />
+          </div>
+        )}
+
         {/* Center Panel - Canvas */}
         <div className="flex-1 overflow-hidden bg-white dark:bg-slate-900">
           <WordSearchCanvas />
         </div>
 
         {/* Right Panel - Preview */}
-        <div className="w-96 border-l border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-800">
+        <div
+          className={`border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-800 ${
+            isCompactLayout ? 'w-full border-t mt-4 lg:mt-0' : 'w-96 border-l'
+          }`}
+        >
           <LivePreviewPanel />
         </div>
       </div>
@@ -729,3 +1027,4 @@ export default function DiagramacionApp() {
     </DiagramacionProvider>
   );
 }
+

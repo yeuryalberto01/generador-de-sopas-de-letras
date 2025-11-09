@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import TemaPanelEntrada from '../../components/TemaPanelEntrada';
 import TemasPanel from '../../components/TemasPanel';
@@ -24,6 +24,11 @@ export default function Temas() {
 
   const [editingTema, setEditingTema] = useState(null);
   const [favorites, setFavorites] = useState(new Set());
+
+  const handleSelectTema = useCallback((id) => {
+    setSelectedId(id);
+    if (selectTema) selectTema(id);
+  }, [selectTema, setSelectedId]);
 
   const handleStartEdit = (tema) => {
     setEditingTema(tema);
@@ -55,6 +60,14 @@ export default function Temas() {
   useEffect(() => {
     loadTemas();
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
+    if (!temas.length) return;
+    const exists = selectedId ? temas.some(t => t.id === selectedId) : false;
+    if (!exists) {
+      handleSelectTema(temas[0].id);
+    }
+  }, [temas, selectedId, handleSelectTema]);
 
   // Cargar favoritos desde localStorage
   useEffect(() => {
@@ -99,8 +112,7 @@ export default function Temas() {
       setTemas(prev => [result, ...prev]);
 
       // Seleccionar el tema recién creado
-      setSelectedId(result.id);
-      selectTema(result);
+      handleSelectTema(result.id);
 
       showToast(`Tema "${result.nombre}" creado correctamente`, 'success');
     } catch (error) {
@@ -221,6 +233,8 @@ export default function Temas() {
                   showToast={showToast}
                   favorites={favorites}
                   onToggleFavorite={handleToggleFavorite}
+                  selectedId={selectedId}
+                  onSelect={handleSelectTema}
                 />
               </div>
             )}

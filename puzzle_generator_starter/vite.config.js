@@ -8,6 +8,13 @@ export default defineConfig({
   define: {
     'process.env.NODE_ENV': '"development"'
   },
+  esbuild: {
+    /**
+     * Emit ASCII-only bundles so every acento/ñ is escaped as \uXXXX.
+     * Esto evita que navegadores que fuerzan ISO-8859-1 vean textos como "ConfiguraciÃ³n".
+     */
+    charset: 'ascii'
+  },
   server: {
     host: true,
     proxy: {

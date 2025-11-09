@@ -2,7 +2,18 @@ import { ChevronDown, ChevronRight, Edit, Plus, Save, Star, Trash2, X } from 'lu
 import React, { useCallback, useState } from 'react';
 import ConfirmDialog from './ConfirmDialog';
 
-const TemaItem = React.memo(({ tema, onDelete, _onEdit, onUpdate, loading, showToast, isFavorite, onToggleFavorite }) => {
+const TemaItem = React.memo(({
+  tema,
+  onDelete,
+  _onEdit,
+  onUpdate,
+  loading,
+  showToast,
+  isFavorite,
+  onToggleFavorite,
+  isSelected = false,
+  onSelect
+}) => {
   // Optimización: memoizar cálculos
   const wordCount = tema.words?.length || 0;
   const [isExpanded, setIsExpanded] = useState(false);
@@ -81,10 +92,14 @@ const TemaItem = React.memo(({ tema, onDelete, _onEdit, onUpdate, loading, showT
   const hasChanges = editTitle !== (tema.nombre || '') || JSON.stringify(editWords) !== JSON.stringify(tema.words || []);
 
   return (
-    <div className="bg-primary rounded-xl shadow-lg overflow-hidden mb-3 border border-primary smooth-transition hover:shadow-xl group">
+    <div className={`bg-primary rounded-xl shadow-lg overflow-hidden mb-3 border smooth-transition hover:shadow-xl group ${isSelected ? 'border-accent ring-2 ring-accent/60' : 'border-primary'}`}>
       <div
         className={`p-3 sm:p-4 ${isEditing ? 'cursor-default' : 'cursor-pointer hover:bg-secondary'} smooth-transition`}
-        onClick={() => !isEditing && setIsExpanded(!isExpanded)}
+        onClick={() => {
+          if (isEditing) return;
+          if (onSelect) onSelect();
+          setIsExpanded(prev => !prev);
+        }}
       >
         <div className="flex items-start justify-between">
           <div className="flex items-start gap-3 flex-1 min-w-0">

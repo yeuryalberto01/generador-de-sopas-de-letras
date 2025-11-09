@@ -66,7 +66,7 @@ const TemaPanelEntrada: FC<TemaPanelEntradaProps> = ({ onCreate, loading }) => {
   const characterCount = batchInput.length;
 
   return (
-    <div className="bg-primary rounded-xl shadow-xl border border-primary p-4 sm:p-6 h-full flex flex-col smooth-transition">
+    <div className="bg-primary rounded-xl shadow-xl border border-primary p-4 sm:p-6 h-auto xl:h-full flex flex-col smooth-transition">
       <h2 className="text-xl sm:text-2xl font-bold text-primary mb-4 sm:mb-6">Crear Nuevo Tema</h2>
       <div className="flex flex-col gap-4 flex-1">
         <div>
