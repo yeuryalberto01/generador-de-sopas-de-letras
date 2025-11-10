@@ -30,8 +30,10 @@ export default function Temas() {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedId, setSelectedId] = useLocalStorage('selectedTemaId', null);
 
-  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isEntradaPanelCollapsed, setEntradaPanelCollapsed] = useState(false);
+  const [isTemasPanelCollapsed, setTemasPanelCollapsed] = useState(false);
   const [editingTema, setEditingTema] = useState<Tema | null>(null);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
   const handleOpenEditModal = (tema: Tema) => {
     setEditingTema(tema);
@@ -86,7 +88,7 @@ export default function Temas() {
   useEffect(() => {
     if (!temas.length) return;
     const exists = selectedId ? temas.some(t => t.id === selectedId) : false;
-    if (!exists) {
+    if (!exists && temas.length > 0) {
       handleSelectTema(temas[0].id);
     }
   }, [temas, selectedId, handleSelectTema]);
@@ -141,38 +143,78 @@ export default function Temas() {
   };
 
   return (
-    <div className="max-w-7xl mx-auto"> {/* This div was missing in the user's snippet, but it's part of the Layout's main content */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-4 sm:mb-6">
-        <div>
-          <h1 className="text-2xl sm:text-3xl font-bold text-primary">Gestión de Temas</h1>
-          <p className="text-sm text-secondary mt-1">Crea, edita y organiza tus temas para sopas de letras</p>
-        </div>
-        <div className="flex items-center gap-4 text-sm text-secondary">
-          <span className="bg-primary/10 text-primary px-3 py-1 rounded-full">{temas.length} temas</span>
+    <div className="h-full flex flex-col bg-white dark:bg-slate-900 text-gray-900 dark:text-white transition-colors duration-300">
+      {/* Header */}
+      <div className="px-6 py-4 border-b border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-900">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <div>
+            <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white">Gestión de Temas</h1>
+            <p className="text-sm text-gray-600 dark:text-gray-300 mt-1">Crea, edita y organiza tus temas para sopas de letras</p>
+          </div>
+          <div className="flex items-center gap-4 text-sm text-gray-600 dark:text-gray-300">
+            <span className="px-3 py-1 rounded-full bg-gray-100 dark:bg-slate-800 text-gray-900 dark:text-white">
+              {temas.length} temas
+            </span>
+          </div>
         </div>
       </div>
 
-      <div className="flex flex-col lg:flex-row gap-4 lg:gap-6 h-[calc(100vh-140px)]">
-        <div className="w-full lg:w-80 flex-shrink-0">
-          <TemaPanelEntrada
-            onCreate={handleCreate}
-            loading={loading.create}
-          />
+      {/* Contenido Principal - Panorámico */}
+      <div className="flex-1 flex flex-col lg:flex-row gap-4 lg:gap-6 p-6 overflow-hidden">
+        {/* Panel de Entrada Colapsable */}
+        <div className={`relative flex-shrink-0 transition-all duration-300 ease-in-out ${isEntradaPanelCollapsed ? 'lg:w-16' : 'lg:w-80'} w-full`}>
+          <button 
+              onClick={() => setEntradaPanelCollapsed(!isEntradaPanelCollapsed)} 
+              className="absolute top-1/2 -right-3 z-20 bg-gray-200 dark:bg-slate-700 p-1 rounded-full text-gray-600 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-slate-600 hidden lg:block"
+              title={isEntradaPanelCollapsed ? 'Expandir panel' : 'Contraer panel'}
+          >
+              <span className="font-bold text-lg">{isEntradaPanelCollapsed ? '»' : '«'}</span>
+          </button>
+          <div className={`h-full ${isEntradaPanelCollapsed ? 'overflow-hidden' : ''}`}>
+            <div className={isEntradaPanelCollapsed ? 'hidden' : 'h-full'}>
+                <TemaPanelEntrada
+                    onCreate={handleCreate}
+                    loading={loading.create}
+                />
+            </div>
+            {isEntradaPanelCollapsed && (
+                <div className="h-full flex items-center justify-center rounded-xl border bg-white dark:bg-slate-900 border-gray-200 dark:border-slate-700">
+                    <span className="transform -rotate-90 whitespace-nowrap text-sm font-semibold tracking-wider uppercase">Entrada</span>
+                </div>
+            )}
+          </div>
         </div>
 
-        <div className="flex-1 bg-card rounded-xl border border-border-primary overflow-hidden">
-          <TemasPanel
-            temas={temas}
-            onUpdate={handleUpdate}
-            onDelete={handleDelete}
-            onImport={handleImport}
-            onEdit={handleOpenEditModal}
-            loading={loading.update}
-            searchTerm={searchTerm}
-            setSearchTerm={setSearchTerm}
-            selectedId={selectedId}
-            onSelect={handleSelectTema}
-          />
+        {/* Panel de Temas Colapsable */}
+        <div className={`relative transition-all duration-300 ease-in-out ${isTemasPanelCollapsed ? 'lg:w-16' : 'flex-1'} w-full`}>
+            <button 
+                onClick={() => setTemasPanelCollapsed(!isTemasPanelCollapsed)} 
+                className="absolute top-1/2 -left-3 z-20 bg-gray-200 dark:bg-slate-700 p-1 rounded-full text-gray-600 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-slate-600 hidden lg:block"
+                title={isTemasPanelCollapsed ? 'Expandir panel' : 'Contraer panel'}
+            >
+                <span className="font-bold text-lg">{isTemasPanelCollapsed ? '«' : '»'}</span>
+            </button>
+            <div className={`h-full ${isTemasPanelCollapsed ? 'overflow-hidden' : ''}`}>
+                <div className={isTemasPanelCollapsed ? 'hidden' : 'h-full'}>
+                    <TemasPanel
+                        temas={temas}
+                        onUpdate={handleUpdate}
+                        onDelete={handleDelete}
+                        onImport={handleImport}
+                        onEdit={handleOpenEditModal}
+                        loading={loading.update}
+                        searchTerm={searchTerm}
+                        setSearchTerm={setSearchTerm}
+                        selectedId={selectedId}
+                        onSelect={handleSelectTema}
+                    />
+                </div>
+                {isTemasPanelCollapsed && (
+                    <div className="h-full flex items-center justify-center rounded-xl border bg-white dark:bg-slate-900 border-gray-200 dark:border-slate-700">
+                        <span className="transform -rotate-90 whitespace-nowrap text-sm font-semibold tracking-wider uppercase">Temas</span>
+                    </div>
+                )}
+            </div>
         </div>
       </div>
 
@@ -181,11 +223,10 @@ export default function Temas() {
         <button
           disabled={!selectedId || loading.load}
           onClick={() => nav(`/diagramacion/${selectedId}`)}
-          className="px-6 py-3 rounded-lg font-medium transition-colors flex items-center gap-2 shadow-lg relative 
-                     bg-accent-primary hover:bg-accent-primary-hover text-accent-text 
-                     disabled:bg-disabled-bg disabled:text-disabled disabled:cursor-not-allowed"
+          className="bg-blue-600 dark:bg-blue-500 text-white px-6 py-3 rounded-xl font-semibold hover:bg-blue-700 dark:hover:bg-blue-600 disabled:bg-gray-400 dark:disabled:bg-slate-600 disabled:cursor-not-allowed smooth-transition flex items-center gap-3 shadow-xl hover:shadow-2xl transform hover:scale-105 text-base"
         >
-          Continuar
+          <span>Continuar</span>
+          <span className="text-lg">→</span>
         </button>
       </div>
 

@@ -1,7 +1,7 @@
 import { Moon, Sun } from 'lucide-react';
+import type { FC } from 'react';
 import { useContext } from 'react';
 import { AppContext } from '../context/AppContext';
-import type { FC } from 'react';
 
 const ThemeToggle: FC = () => {
   const context = useContext(AppContext);
@@ -16,16 +16,18 @@ const ThemeToggle: FC = () => {
   return (
     <button
       onClick={toggleTheme}
-      className={`p-2 rounded-full transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-accent ${
-        isDarkMode ? 'hover:bg-white/10' : 'hover:bg-primary/10'
+      className={`p-2 rounded-full transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+        isDarkMode 
+          ? 'hover:bg-white/20 text-yellow-300' 
+          : 'hover:bg-gray-200 text-gray-700'
       }`}
       title={`Cambiar a modo ${isDarkMode ? 'claro' : 'oscuro'}`}
       aria-label={`Cambiar a modo ${isDarkMode ? 'claro' : 'oscuro'}`}
     >
       {isDarkMode ? (
-        <Sun className="h-5 w-5 text-warning" />
+        <Sun className="h-5 w-5" />
       ) : (
-        <Moon className="h-5 w-5 text-secondary" />
+        <Moon className="h-5 w-5" />
       )}
     </button>
   );

@@ -1,6 +1,6 @@
-import { AlertTriangle, BadgeCheck, Download, Grid, Layout, Printer, Save, Search, Settings, Type, ZoomIn, ZoomOut } from 'lucide-react';
-import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import { AlertTriangle, BadgeCheck, Download, Eye, Grid, Layout, Printer, Save, Search, Settings, Type, ZoomIn, ZoomOut } from 'lucide-react';
 import type { MouseEvent as ReactMouseEvent } from 'react';
+import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 
 // ==================== CONSTANTS ====================
 const PAGE_SIZES = {
@@ -29,6 +29,28 @@ const WORD_BOX_STYLES = {
   COLUMNS: 'columns',
   GRID: 'grid',
   FLOWING: 'flowing'
+};
+
+const SOLUTION_COLORS = [
+  '#2563EB',
+  '#EA580C',
+  '#16A34A',
+  '#9333EA',
+  '#DB2777',
+  '#0EA5E9',
+  '#F59E0B',
+  '#059669',
+  '#7C3AED',
+  '#DC2626'
+];
+
+const hexToRgba = (hex: string, alpha: number) => {
+  const value = hex.replace('#', '');
+  const bigint = parseInt(value, 16);
+  const r = (bigint >> 16) & 255;
+  const g = (bigint >> 8) & 255;
+  const b = bigint & 255;
+  return `rgba(${r}, ${g}, ${b}, ${alpha})`;
 };
 
 // ==================== HELPERS ====================
@@ -103,7 +125,9 @@ function DiagramacionProvider({ children }) {
     placedWords: [],
     grid: [],
     zoom: 100,
-    showGrid: true
+    showGrid: true,
+    showSolutions: false,
+    wordColors: {},
   });
 
   const updateState = useCallback((updates) => {
@@ -246,7 +270,7 @@ function calculateOptimalGrid(wordCount, wordLengths, pageSize) {
 // ==================== COMPONENTS ====================
 
 // Toolbar Panel
-function ToolbarPanel() {
+function ToolbarPanel({ onToggleInspector }) {
   const { state, updateState } = useDiagramacion();
 
   return (
@@ -282,6 +306,10 @@ function ToolbarPanel() {
             <ZoomIn size={18} />
           </button>
         </div>
+        <div className="w-px h-6 bg-gray-300 dark:bg-slate-600 mx-2" />
+        <button onClick={onToggleInspector} className="p-2 hover:bg-gray-100 dark:hover:bg-slate-700 rounded" title="Inspector de Soluciones">
+          <Eye size={18} />
+        </button>
       </div>
     </div>
   );
@@ -348,6 +376,12 @@ function TemaSelector() {
       ]
     }
   ];
+
+  useEffect(() => {
+    if (!state.selectedTema && mockTemas.length > 0) {
+      updateState({ selectedTema: normalizeTemaPayload(mockTemas[0]) });
+    }
+  }, []); // Runs once to set default
 
   const catalog = useMemo(() => {
     const baseCatalog = mockTemas.map(normalizeTemaPayload);
@@ -560,10 +594,16 @@ function TemaSelector() {
 
     const { grid, placedWords } = generateGrid(rows, cols, words);
 
+    const wordColors = {};
+    placedWords.forEach((word, index) => {
+      wordColors[word.id] = SOLUTION_COLORS[index % SOLUTION_COLORS.length];
+    });
+
     updateState({
       grid,
       placedWords,
-      gridConfig: { ...state.gridConfig, rows, cols }
+      gridConfig: { ...state.gridConfig, rows, cols },
+      wordColors
     });
   };
 
@@ -637,92 +677,104 @@ function TemaSelector() {
 // Word Box Designer
 function WordBoxDesigner() {
   const { state, updateState } = useDiagramacion();
+  const { wordBoxConfig, selectedTema } = state;
 
   return (
-    <div className="p-4 bg-white dark:bg-slate-800 rounded-lg border border-gray-300 dark:border-slate-600 shadow-lg relative z-10">
-      <h3 className="font-semibold mb-3 flex items-center gap-2 text-gray-900 dark:text-white">
-        <Settings size={18} className="text-gray-900 dark:text-white" />
-        Caja de Palabras
-      </h3>
+    <div className="p-4 bg-white dark:bg-slate-800 rounded-lg border border-gray-300 dark:border-slate-600 shadow-lg relative z-10 space-y-4">
+      <div>
+        <h3 className="font-semibold mb-3 flex items-center gap-2 text-gray-900 dark:text-white">
+          <Settings size={18} />
+          Caja de Palabras
+        </h3>
+        <div className="space-y-3">
+          <label className="flex items-center gap-2">
+            <input
+              type="checkbox"
+              checked={wordBoxConfig.visible}
+              onChange={(e) => updateState({ wordBoxConfig: { ...wordBoxConfig, visible: e.target.checked } })}
+              className="w-4 h-4 text-blue-600"
+            />
+            <span className="text-sm">Mostrar caja de palabras</span>
+          </label>
 
-      <div className="space-y-3">
-        <label className="flex items-center gap-2">
-          <input
-            type="checkbox"
-            checked={state.wordBoxConfig.visible}
-            onChange={(e) => updateState({
-              wordBoxConfig: { ...state.wordBoxConfig, visible: e.target.checked }
-            })}
-            className="w-4 h-4 text-blue-600 dark:text-blue-400 relative z-20"
-          />
-          <span className="text-sm text-gray-900 dark:text-white">Mostrar caja de palabras</span>
-        </label>
-
-        {state.wordBoxConfig.visible && (
-          <>
-            <div>
-              <label className="block text-sm font-medium mb-1 text-gray-900 dark:text-white">Estilo</label>
-              <select
-                value={state.wordBoxConfig.style}
-                onChange={(e) => updateState({
-                  wordBoxConfig: { ...state.wordBoxConfig, style: e.target.value }
-                })}
-                className="w-full p-2 border border-gray-300 dark:border-slate-600 rounded bg-white dark:bg-slate-800 text-gray-900 dark:text-white relative z-20"
-              >
-                <option value={WORD_BOX_STYLES.COLUMNS}>Columnas</option>
-                <option value={WORD_BOX_STYLES.NUMBERED}>Numeradas</option>
-                <option value={WORD_BOX_STYLES.GRID}>Cuadrícula</option>
-                <option value={WORD_BOX_STYLES.FLOWING}>Flujo continuo</option>
-              </select>
-            </div>
-
-            {state.wordBoxConfig.style === WORD_BOX_STYLES.COLUMNS && (
+          {wordBoxConfig.visible && (
+            <>
               <div>
-                <label className="block text-sm font-medium mb-1 text-gray-900 dark:text-white">
-                  Número de columnas: {state.wordBoxConfig.columns}
-                </label>
-                <input
-                  type="range"
-                  min="1"
-                  max="5"
-                  value={state.wordBoxConfig.columns}
-                  onChange={(e) => updateState({
-                    wordBoxConfig: { ...state.wordBoxConfig, columns: parseInt(e.target.value) }
-                  })}
-                  className="w-full relative z-20"
-                />
+                <label className="block text-sm font-medium mb-1">Estilo</label>
+                <select
+                  value={wordBoxConfig.style}
+                  onChange={(e) => updateState({ wordBoxConfig: { ...wordBoxConfig, style: e.target.value } })}
+                  className="w-full p-2 border border-gray-300 dark:border-slate-600 rounded bg-white dark:bg-slate-700"
+                >
+                  <option value="columns">Columnas</option>
+                  <option value="numbered">Numeradas</option>
+                </select>
               </div>
-            )}
 
-            <label className="flex items-center gap-2">
-              <input
-                type="checkbox"
-                checked={state.wordBoxConfig.numbered}
-                onChange={(e) => updateState({
-                  wordBoxConfig: { ...state.wordBoxConfig, numbered: e.target.checked }
-                })}
-                className="w-4 h-4 text-blue-600 dark:text-blue-400 relative z-20"
-              />
-              <span className="text-sm text-gray-900 dark:text-white">Numerar palabras</span>
-            </label>
-          </>
-        )}
+              {wordBoxConfig.style === 'columns' && (
+                <div>
+                  <label className="block text-sm font-medium mb-1">
+                    Columnas: {wordBoxConfig.columns}
+                  </label>
+                  <input
+                    type="range"
+                    min="1"
+                    max="5"
+                    value={wordBoxConfig.columns}
+                    onChange={(e) => updateState({ wordBoxConfig: { ...wordBoxConfig, columns: parseInt(e.target.value) } })}
+                    className="w-full"
+                  />
+                </div>
+              )}
+
+              <label className="flex items-center gap-2">
+                <input
+                  type="checkbox"
+                  checked={wordBoxConfig.numbered}
+                  onChange={(e) => updateState({ wordBoxConfig: { ...wordBoxConfig, numbered: e.target.checked } })}
+                  className="w-4 h-4 text-blue-600"
+                />
+                <span className="text-sm">Numerar palabras</span>
+              </label>
+            </>
+          )}
+        </div>
       </div>
+
+      {/* The actual word box preview */}
+      {wordBoxConfig.visible && selectedTema && (
+        <div className="border-t border-gray-200 dark:border-slate-700 pt-4">
+          <h4 className="text-sm font-semibold mb-2 text-center">Palabras a Encontrar</h4>
+          <div
+            className="text-sm"
+            style={{
+              columnCount: wordBoxConfig.style === 'columns' ? wordBoxConfig.columns : 1,
+              columnGap: '1rem'
+            }}
+          >
+            {selectedTema.palabras.map((palabra, idx) => (
+              <p key={idx} className="mb-1 break-inside-avoid">
+                {wordBoxConfig.numbered && <span className="font-bold mr-2">{idx + 1}.</span>}
+                {palabra.texto}
+              </p>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
 
-// Canvas (Word Search Grid)
 function WordSearchCanvas() {
   const { state } = useDiagramacion();
   const pageSize = PAGE_SIZES[state.pageSize];
 
   if (state.grid.length === 0) {
     return (
-      <div className="flex items-center justify-center h-full bg-gray-50 dark:bg-slate-900">
-        <div className="text-center">
+      <div className="flex items-center justify-center h-full bg-gray-200 dark:bg-slate-900">
+        <div className="text-center text-gray-500">
           <Grid size={64} className="mx-auto mb-4 text-gray-300 dark:text-slate-600" />
-          <p className="text-gray-500 dark:text-gray-400 text-lg font-medium">
+          <p className="text-lg font-medium">
             Selecciona un tema y genera la sopa de letras
           </p>
         </div>
@@ -730,62 +782,64 @@ function WordSearchCanvas() {
     );
   }
 
-  const cellSize = state.gridConfig.cellSize * (state.zoom / 100);
-  const gridWidth = state.gridConfig.cols * cellSize;
-  const gridHeight = state.gridConfig.rows * cellSize;
+  // Cell size is now fixed, zoom is handled by transform
+  const cellSize = state.gridConfig.cellSize;
 
   return (
-    <div className="overflow-auto h-full bg-gray-100 dark:bg-slate-900 p-8">
+    <div className="overflow-auto h-full bg-gray-200 dark:bg-slate-900 flex items-start justify-center p-12">
       <div
-        className="bg-white dark:bg-slate-800 shadow-lg mx-auto border border-gray-300 dark:border-slate-600"
+        className="bg-white dark:bg-slate-800 shadow-2xl mx-auto border border-gray-300 dark:border-slate-700 origin-top"
         style={{
           width: `${pageSize.width * 96}px`,
           minHeight: `${pageSize.height * 96}px`,
-          padding: '40px'
+          transform: `scale(${state.zoom / 100})`,
         }}
       >
-        {/* Title */}
-        <h2 className="text-2xl font-bold text-center mb-6 text-gray-900 dark:text-white">
-          Sopa de Letras: {state.selectedTema?.nombre}
-        </h2>
+        <div style={{ padding: '40px' }}>
+          {/* Title */}
+          <h2 className="text-2xl font-bold text-center mb-6 text-gray-900 dark:text-white">
+            Sopa de Letras: {state.selectedTema?.nombre}
+          </h2>
 
-        {/* Grid */}
-        <div className="flex justify-center mb-6">
-          <div
-            className="inline-block border-2 border-gray-800"
-            style={{
-              display: 'grid',
-              gridTemplateColumns: `repeat(${state.gridConfig.cols}, ${cellSize}px)`,
-              gridTemplateRows: `repeat(${state.gridConfig.rows}, ${cellSize}px)`
-            }}
-          >
-            {state.grid.map((row, rowIdx) =>
-              row.map((cell, colIdx) => (
-                <div
-                  key={`${rowIdx}-${colIdx}`}
-                  className={`border border-gray-300 dark:border-slate-600 flex items-center justify-center font-bold text-gray-900 dark:text-white ${cell.isWord ? 'bg-blue-50 dark:bg-blue-900' : 'bg-white dark:bg-slate-800'}`}
-                  style={{
-                    fontSize: `${cellSize * 0.5}px`
-                  }}
-                >
-                  {cell.letter}
-                </div>
-              ))
-            )}
+          {/* Grid */}
+          <div className="flex justify-center mb-6">
+            <div
+              className="inline-block border-2 border-gray-800 dark:border-gray-400"
+              style={{
+                display: 'grid',
+                gridTemplateColumns: `repeat(${state.gridConfig.cols}, ${cellSize}px)`,
+                gridTemplateRows: `repeat(${state.gridConfig.rows}, ${cellSize}px)`
+              }}
+            >
+              {state.grid.map((row, rowIdx) =>
+                row.map((cell, colIdx) => {
+                  const { showSolutions, wordColors } = state;
+                  const bgColor = cell.isWord && showSolutions 
+                    ? hexToRgba(wordColors[cell.wordId], 0.4)
+                    : 'transparent';
+
+                  return (
+                    <div
+                      key={`${rowIdx}-${colIdx}`}
+                      className="border border-gray-300 dark:border-slate-600 flex items-center justify-center font-bold text-gray-900 dark:text-white"
+                      style={{
+                        fontSize: `${cellSize * 0.55}px`,
+                        backgroundColor: bgColor
+                      }}
+                    >
+                      {cell.letter}
+                    </div>
+                  );
+                })
+              )}
+            </div>
           </div>
-        </div>
 
-        {/* Word Box */}
-        {state.wordBoxConfig.visible && state.selectedTema && (
-          <div className="border-2 border-gray-300 dark:border-slate-600 rounded-lg p-4">
-            <h3 className="font-semibold mb-3 text-center text-gray-900 dark:text-white">Encuentra estas palabras:</h3>
-            {state.wordBoxConfig.style === WORD_BOX_STYLES.COLUMNS && (
-              <div
-                className="grid gap-2"
-                style={{
-                  gridTemplateColumns: `repeat(${state.wordBoxConfig.columns}, 1fr)`
-                }}
-              >
+          {/* Word Box */}
+          {state.wordBoxConfig.visible && state.selectedTema && (
+            <div className="border-2 border-gray-300 dark:border-slate-600 rounded-lg p-4">
+              <h3 className="font-semibold mb-3 text-center text-gray-900 dark:text-white">Encuentra estas palabras:</h3>
+              <div className="grid gap-2" style={{ gridTemplateColumns: `repeat(${state.wordBoxConfig.columns || 3}, 1fr)` }}>
                 {state.selectedTema.palabras.map((palabra, idx) => (
                   <div key={idx} className="text-sm text-gray-900 dark:text-white">
                     {state.wordBoxConfig.numbered && <span className="font-bold mr-1 text-gray-900 dark:text-white">{idx + 1}.</span>}
@@ -793,31 +847,41 @@ function WordSearchCanvas() {
                   </div>
                 ))}
               </div>
-            )}
-            {state.wordBoxConfig.style === WORD_BOX_STYLES.NUMBERED && (
-              <ol className="list-decimal list-inside grid grid-cols-3 gap-2 text-gray-900 dark:text-white">
-                {state.selectedTema.palabras.map((palabra, idx) => (
-                  <li key={idx} className="text-sm">{palabra.texto}</li>
-                ))}
-              </ol>
-            )}
-            {state.wordBoxConfig.style === WORD_BOX_STYLES.FLOWING && (
-              <div className="flex flex-wrap gap-3 justify-center">
-                {state.selectedTema.palabras.map((palabra, idx) => (
-                  <span key={idx} className="px-3 py-1 bg-gray-100 dark:bg-slate-700 text-gray-900 dark:text-gray-100 rounded-full text-sm">
-                    {palabra.texto}
-                  </span>
-                ))}
-              </div>
-            )}
-          </div>
-        )}
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
 }
 
 // Live Preview Panel
+function SolutionInspectorPanel() {
+    const { state, updateState } = useDiagramacion();
+    const { placedWords = [], showSolutions = false, wordColors = {} } = state;
+
+    return (
+        <div className="h-full flex flex-col bg-gray-50 dark:bg-slate-900">
+            <div className="p-4 border-b bg-white dark:bg-slate-800 border-gray-300 dark:border-slate-600">
+                <h3 className="font-semibold">Inspector de Soluciones</h3>
+                <label className="flex items-center gap-2 mt-3 cursor-pointer">
+                    <input type="checkbox" checked={showSolutions} onChange={(e) => updateState({ showSolutions: e.target.checked })} className="w-4 h-4 text-blue-600 rounded focus:ring-blue-500"/>
+                    <span className="text-sm">Mostrar soluciones en cuadrícula</span>
+                </label>
+            </div>
+            <div className="flex-1 overflow-y-auto p-4 space-y-2">
+                {placedWords.length === 0 && <p className="text-sm text-gray-500">No hay palabras colocadas para inspeccionar.</p>}
+                {placedWords.map((word) => (
+                    <div key={word.id} className="flex items-center gap-3 p-2 rounded-md" style={{ backgroundColor: hexToRgba(wordColors[word.id], 0.1) }}>
+                        <div className="w-4 h-4 rounded-full" style={{ backgroundColor: wordColors[word.id] }}></div>
+                        <span className="text-sm font-mono tracking-wider">{word.text}</span>
+                    </div>
+                ))}
+            </div>
+        </div>
+    );
+}
+
 function LivePreviewPanel() {
   const { state } = useDiagramacion();
   const pageSize = PAGE_SIZES[state.pageSize];
@@ -920,6 +984,9 @@ function DiagramacionLayout() {
 
   const [sidebarWidth, setSidebarWidth] = useState(() => getInitialSidebar());
   const [isDragging, setIsDragging] = useState(false);
+  const [isLeftPanelCollapsed, setLeftPanelCollapsed] = useState(false);
+  const [isRightPanelCollapsed, setRightPanelCollapsed] = useState(false);
+  const [isInspectorVisible, setInspectorVisible] = useState(false);
   const [isCompactLayout, setIsCompactLayout] = useState(() => {
     if (typeof window === 'undefined') return true;
     return window.innerWidth < 1024;
@@ -969,26 +1036,42 @@ function DiagramacionLayout() {
 
   return (
     <div className="h-screen flex flex-col bg-white dark:bg-slate-900">
-      <ToolbarPanel />
+      <ToolbarPanel onToggleInspector={() => setInspectorVisible(!isInspectorVisible)} />
 
       <div className="flex-1 flex flex-col lg:flex-row overflow-hidden">
         {/* Left Panel */}
         <div
-          className={`border-gray-300 dark:border-slate-600 bg-gray-50 dark:bg-slate-800 overflow-y-auto ${
+          className={`relative transition-all duration-300 ease-in-out border-gray-300 dark:border-slate-600 bg-gray-50 dark:bg-slate-800 ${
             isCompactLayout ? 'w-full border-b lg:border-r-0' : 'border-r'
-          }`}
-          style={isCompactLayout ? undefined : { width: `${sidebarWidth}px` }}
+          } ${isLeftPanelCollapsed && !isCompactLayout ? 'w-16' : ''}`}
+          style={!isCompactLayout && !isLeftPanelCollapsed ? { width: `${sidebarWidth}px` } : {}}
         >
-          <div className="p-4 space-y-4">
-            <PageSizeSelector />
-            <TemaSelector />
-            <GridConfigurator />
-            <WordBoxDesigner />
+          {!isCompactLayout && (
+            <button 
+              onClick={() => setLeftPanelCollapsed(!isLeftPanelCollapsed)} 
+              className="absolute top-1/2 -right-3 z-30 bg-gray-200 dark:bg-slate-700 p-1 rounded-full text-gray-600 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-slate-600"
+              title={isLeftPanelCollapsed ? 'Expandir panel' : 'Contraer panel'}
+            >
+              <span className="font-bold text-lg">{isLeftPanelCollapsed ? '»' : '«'}</span>
+            </button>
+          )}
+          <div className={`h-full ${isLeftPanelCollapsed && !isCompactLayout ? 'overflow-hidden' : 'overflow-y-auto'}`}>
+            <div className={isLeftPanelCollapsed && !isCompactLayout ? 'hidden' : 'p-4 space-y-4'}>
+              <PageSizeSelector />
+              <TemaSelector />
+              <GridConfigurator />
+              <WordBoxDesigner />
+            </div>
+            {isLeftPanelCollapsed && !isCompactLayout && (
+              <div className="h-full flex items-center justify-center">
+                <span className="transform -rotate-90 whitespace-nowrap text-sm font-semibold tracking-wider uppercase">Controles</span>
+              </div>
+            )}
           </div>
         </div>
 
         {/* Drag handle */}
-        {!isCompactLayout && (
+        {!isCompactLayout && !isLeftPanelCollapsed && (
           <div
             role="separator"
             aria-orientation="vertical"
@@ -1006,13 +1089,33 @@ function DiagramacionLayout() {
           <WordSearchCanvas />
         </div>
 
-        {/* Right Panel - Preview */}
+        {/* Right Panel - Preview/Inspector */}
         <div
-          className={`border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-800 ${
-            isCompactLayout ? 'w-full border-t mt-4 lg:mt-0' : 'w-96 border-l'
-          }`}
+          className={`relative transition-all duration-300 ease-in-out border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-800 ${
+            isCompactLayout ? 'w-full border-t mt-4 lg:mt-0' : 'border-l'
+          } ${isRightPanelCollapsed && !isCompactLayout ? 'w-16' : 'w-96'}`}
         >
-          <LivePreviewPanel />
+          {!isCompactLayout && (
+            <button 
+              onClick={() => setRightPanelCollapsed(!isRightPanelCollapsed)} 
+              className="absolute top-1/2 -left-3 z-30 bg-gray-200 dark:bg-slate-700 p-1 rounded-full text-gray-600 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-slate-600"
+              title={isRightPanelCollapsed ? 'Expandir panel' : 'Contraer panel'}
+            >
+              <span className="font-bold text-lg">{isRightPanelCollapsed ? '«' : '»'}</span>
+            </button>
+          )}
+          <div className={`h-full ${isRightPanelCollapsed && !isCompactLayout ? 'overflow-hidden' : ''}`}>
+            <div className={isRightPanelCollapsed && !isCompactLayout ? 'hidden' : 'h-full'}>
+              {isInspectorVisible ? <SolutionInspectorPanel /> : <LivePreviewPanel />}
+            </div>
+            {isRightPanelCollapsed && !isCompactLayout && (
+              <div className="h-full flex items-center justify-center">
+                <span className="transform -rotate-90 whitespace-nowrap text-sm font-semibold tracking-wider uppercase">
+                  {isInspectorVisible ? 'Inspector' : 'Previsualización'}
+                </span>
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </div>

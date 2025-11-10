@@ -66,19 +66,9 @@ const AppContent: FC = () => {
   return (
     <>
       <CommandPalette />
-      <Layout>
+      <Layout setCommandPaletteOpen={setCommandPaletteOpen}>
         <AnimatedRoutes />
       </Layout>
-      {/* Botón para abrir el menú de comandos */}
-      <button
-        onClick={() => setCommandPaletteOpen(true)}
-        className="fixed bottom-6 left-6 p-3 rounded-full shadow-lg transition-colors focus:outline-none focus:ring-2 focus:ring-accent
-                   bg-accent-primary text-accent-text hover:bg-accent-primary-hover
-                   dark:bg-accent-primary dark:text-accent-text dark:hover:bg-accent-primary-hover" // Using dark: for consistency
-        title="Abrir menú de comandos (Ctrl+K)"
-      >
-        <Search size={22} />
-      </button>
     </>
   );
 };

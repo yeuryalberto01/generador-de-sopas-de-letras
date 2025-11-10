@@ -1,4 +1,4 @@
-import { useNavigate, useLocation } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 
 /**
  * Componente de menú de navegación principal
@@ -39,127 +39,48 @@ export default function NavigationMenu() {
   }
 
   return (
-    <nav style={{
-      background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-      padding: '20px',
-      borderRadius: '12px',
-      boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)',
-      margin: '20px 0'
-    }}>
-      <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
-        <h2 style={{
-          color: 'white',
-          fontSize: '24px',
-          fontWeight: 'bold',
-          marginBottom: '20px',
-          textAlign: 'center'
-        }}>
+    <nav className="bg-gradient-to-br from-blue-600 to-purple-700 dark:from-blue-800 dark:to-purple-900 p-6 rounded-xl shadow-lg my-6">
+      <div className="max-w-4xl mx-auto">
+        <h2 className="text-2xl font-bold text-white text-center mb-4">
           🧩 Generador de Sopas de Letras
         </h2>
 
-        <p style={{
-          color: 'rgba(255, 255, 255, 0.9)',
-          textAlign: 'center',
-          marginBottom: '30px',
-          fontSize: '16px'
-        }}>
+        <p className="text-blue-100 text-center mb-6">
           Selecciona una sección para continuar
         </p>
 
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
-          gap: '20px'
-        }}>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {menuItems.map((item) => (
             <button
               key={item.path}
               onClick={() => navigate(item.path)}
-              style={{
-                background: isActive(item.path)
-                  ? 'rgba(255, 255, 255, 0.2)'
-                  : 'rgba(255, 255, 255, 0.1)',
-                border: isActive(item.path)
-                  ? '2px solid rgba(255, 255, 255, 0.8)'
-                  : '2px solid rgba(255, 255, 255, 0.2)',
-                borderRadius: '12px',
-                padding: '24px',
-                color: 'white',
-                textAlign: 'left',
-                cursor: 'pointer',
-                transition: 'all 0.3s ease',
-                backdropFilter: 'blur(10px)',
-                position: 'relative',
-                overflow: 'hidden'
-              }}
-              onMouseEnter={(e) => {
-                if (!isActive(item.path)) {
-                  e.target.style.background = 'rgba(255, 255, 255, 0.15)'
-                  e.target.style.borderColor = 'rgba(255, 255, 255, 0.4)'
-                  e.target.style.transform = 'translateY(-2px)'
+              className={`
+                text-left p-6 rounded-xl transition-all duration-300 backdrop-blur-sm
+                ${isActive(item.path)
+                  ? 'bg-white/30 border-2 border-white/80 shadow-lg'
+                  : 'bg-white/15 border-2 border-white/20 hover:bg-white/20 hover:border-white/40 hover:shadow-md'
                 }
-              }}
-              onMouseLeave={(e) => {
-                if (!isActive(item.path)) {
-                  e.target.style.background = 'rgba(255, 255, 255, 0.1)'
-                  e.target.style.borderColor = 'rgba(255, 255, 255, 0.2)'
-                  e.target.style.transform = 'translateY(0)'
-                }
-              }}
+              `}
             >
-              <div style={{
-                position: 'absolute',
-                top: '0',
-                left: '0',
-                right: '0',
-                height: '4px',
-                background: isActive(item.path)
-                  ? 'rgba(255, 255, 255, 0.8)'
-                  : 'rgba(255, 255, 255, 0.3)'
-              }} />
+              <div className={`h-1 rounded-full mb-4 ${
+                isActive(item.path) ? 'bg-white/80' : 'bg-white/30'
+              }`} />
 
-              <h3 style={{
-                fontSize: '18px',
-                fontWeight: 'bold',
-                marginBottom: '8px',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '8px'
-              }}>
+              <h3 className="text-lg font-bold text-white mb-2 flex items-center gap-2">
                 {item.label}
                 {isActive(item.path) && (
-                  <span style={{
-                    fontSize: '12px',
-                    background: 'rgba(255, 255, 255, 0.2)',
-                    padding: '2px 8px',
-                    borderRadius: '12px',
-                    fontWeight: 'normal'
-                  }}>
+                  <span className="text-xs bg-white/20 px-2 py-1 rounded-full text-white">
                     ACTUAL
                   </span>
                 )}
               </h3>
 
-              <p style={{
-                fontSize: '14px',
-                lineHeight: '1.5',
-                marginBottom: '12px',
-                opacity: 0.9
-              }}>
+              <p className="text-blue-100 text-sm mb-3">
                 {item.description}
               </p>
 
               {item.note && (
-                <p style={{
-                  fontSize: '12px',
-                  fontStyle: 'italic',
-                  opacity: 0.8,
-                  marginTop: '8px',
-                  padding: '6px 12px',
-                  background: 'rgba(255, 255, 255, 0.1)',
-                  borderRadius: '6px',
-                  border: '1px solid rgba(255, 255, 255, 0.2)'
-                }}>
+                <p className="text-xs text-yellow-200 italic bg-white/10 px-3 py-2 rounded border border-white/20">
                   💡 {item.note}
                 </p>
               )}
@@ -167,55 +88,21 @@ export default function NavigationMenu() {
           ))}
         </div>
 
-        <div style={{
-          marginTop: '30px',
-          padding: '20px',
-          background: 'rgba(255, 255, 255, 0.1)',
-          borderRadius: '8px',
-          textAlign: 'center'
-        }}>
-          <h4 style={{
-            color: 'white',
-            fontSize: '16px',
-            fontWeight: 'bold',
-            marginBottom: '8px'
-          }}>
+        <div className="mt-6 p-4 bg-white/10 rounded-lg text-center">
+          <h4 className="text-white font-bold mb-2">
             📋 Estado del Sistema
           </h4>
-          <div style={{
-            display: 'flex',
-            justifyContent: 'center',
-            gap: '20px',
-            flexWrap: 'wrap'
-          }}>
-            <span style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '6px',
-              fontSize: '14px',
-              color: 'rgba(255, 255, 255, 0.9)'
-            }}>
-              <span style={{ color: '#10b981' }}>●</span>
+          <div className="flex justify-center gap-6 flex-wrap">
+            <span className="inline-flex items-center gap-2 text-sm text-green-200">
+              <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
               Backend: Conectado
             </span>
-            <span style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '6px',
-              fontSize: '14px',
-              color: 'rgba(255, 255, 255, 0.9)'
-            }}>
-              <span style={{ color: '#10b981' }}>●</span>
+            <span className="inline-flex items-center gap-2 text-sm text-green-200">
+              <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
               Base de datos: OK
             </span>
-            <span style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '6px',
-              fontSize: '14px',
-              color: 'rgba(255, 255, 255, 0.9)'
-            }}>
-              <span style={{ color: '#10b981' }}>●</span>
+            <span className="inline-flex items-center gap-2 text-sm text-green-200">
+              <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
               Tests: Pasando
             </span>
           </div>
