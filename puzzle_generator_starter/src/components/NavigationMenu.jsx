@@ -25,6 +25,18 @@ export default function NavigationMenu() {
       note: 'Requiere seleccionar un tema primero'
     },
     {
+      path: '/libros',
+      label: '📚 Libros',
+      description: 'Crear libros completos organizando múltiples puzzles',
+      note: 'Sistema integrado para publicaciones profesionales'
+    },
+    {
+      path: '/edicion',
+      label: '🎨 Edición',
+      description: 'Editor gráfico avanzado para documentos personalizados',
+      note: 'Herramientas gráficas como Photoshop o Canva'
+    },
+    {
       path: '/panel-apis',
       label: '🔧 APIs',
       description: 'Panel de desarrollo y testing de APIs'

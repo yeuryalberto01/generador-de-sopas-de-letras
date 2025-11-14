@@ -1,0 +1,376 @@
+{
+  "id": "book-1762848081596-qnbw3tt4n",
+  "name": "Libro de Prueba - Animales",
+  "description": "Libro creado con plantilla Libro Infantil Básico",
+  "template": {
+    "id": "infantil-basico",
+    "name": "Libro Infantil Básico",
+    "description": "Perfecto para niños pequeños con puzzles grandes y colores vivos",
+    "category": "infantil",
+    "pageSize": "LETTER",
+    "layout": {
+      "puzzlesPerPage": 1,
+      "margin": {
+        "top": 1,
+        "right": 1,
+        "bottom": 1,
+        "left": 1
+      },
+      "spacing": 0.5,
+      "showPageNumbers": true,
+      "showTitles": true
+    },
+    "styles": {
+      "backgroundColor": "#ffffff",
+      "titleFont": "Comic Sans MS, cursive",
+      "titleSize": 24,
+      "decorations": true
+    }
+  },
+  "temaIds": [
+    "33682b77-a16e-4ffd-983f-3401f49a27ff",
+    "c8f682ab-4f47-4b62-8696-64030827f79f"
+  ],
+  "pages": [
+    {
+      "id": "page-1762848081597-teyob1bzy",
+      "title": "Puzzle: Animales Salvajes",
+      "puzzleData": {
+        "grid": [
+          [
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ],
+          [
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ],
+          [
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ],
+          [
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ],
+          [
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ],
+          [
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ],
+          [
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ],
+          [
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ],
+          [
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ],
+          [
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ]
+        ],
+        "words": [
+          {
+            "text": "leon",
+            "positions": []
+          },
+          {
+            "text": "tigre",
+            "positions": []
+          },
+          {
+            "text": "elefante",
+            "positions": []
+          },
+          {
+            "text": "jirafa",
+            "positions": []
+          }
+        ],
+        "config": {
+          "rows": 10,
+          "cols": 10
+        }
+      },
+      "layout": {
+        "position": {
+          "x": 50,
+          "y": 100
+        },
+        "size": {
+          "width": 400,
+          "height": 300
+        },
+        "pageNumber": 1
+      },
+      "elements": [],
+      "createdAt": "2025-11-11T08:01:21.597Z",
+      "updatedAt": "2025-11-11T08:01:21.597Z"
+    },
+    {
+      "id": "page-1762848081597-thor1p50z",
+      "title": "Puzzle: Animales del Desierto",
+      "puzzleData": {
+        "grid": [
+          [
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ],
+          [
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ],
+          [
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ],
+          [
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ],
+          [
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ],
+          [
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ],
+          [
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ],
+          [
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ],
+          [
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ],
+          [
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ]
+        ],
+        "words": [
+          {
+            "text": "camello",
+            "positions": []
+          },
+          {
+            "text": "escorpion",
+            "positions": []
+          },
+          {
+            "text": "lagarto",
+            "positions": []
+          },
+          {
+            "text": "buho",
+            "positions": []
+          }
+        ],
+        "config": {
+          "rows": 10,
+          "cols": 10
+        }
+      },
+      "layout": {
+        "position": {
+          "x": 50,
+          "y": 100
+        },
+        "size": {
+          "width": 400,
+          "height": 300
+        },
+        "pageNumber": 2
+      },
+      "elements": [],
+      "createdAt": "2025-11-11T08:01:21.597Z",
+      "updatedAt": "2025-11-11T08:01:21.597Z"
+    }
+  ],
+  "metadata": {
+    "author": "Usuario",
+    "createdAt": "2025-11-11T08:01:21.596Z",
+    "updatedAt": "2025-11-11T08:01:21.596Z",
+    "version": "1.0.0",
+    "totalPages": 2
+  },
+  "settings": {
+    "autoGeneratePages": true,
+    "includeIndex": true,
+    "includeSolutions": false
+  }
+}

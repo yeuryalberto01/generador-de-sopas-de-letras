@@ -1,5 +1,6 @@
-import React, { createContext, useContext, useState, useCallback, useEffect, useMemo } from 'react';
-import { Download, ZoomIn, ZoomOut, Settings, Grid, Type, Layout, Printer, Save } from 'lucide-react';
+import { Download, Grid, Layout, Loader, Printer, Save, Settings, Type, ZoomIn, ZoomOut } from 'lucide-react';
+import { createContext, useCallback, useContext, useState } from 'react';
+import { UI_TEXTS } from '../../constants/uiTexts';
 
 // ==================== CONSTANTS ====================
 const PAGE_SIZES = {
@@ -69,7 +70,7 @@ function DiagramacionProvider({ children }) {
 
 function useDiagramacion() {
   const context = useContext(DiagramacionContext);
-  if (!context) throw new Error('useDiagramacion must be used within DiagramacionProvider');
+  if (!context) throw new Error(UI_TEXTS.CONTEXT_ERRORS.DIAGRAMACION_PROVIDER);
   return context;
 }
 
@@ -170,28 +171,49 @@ function useWordSearchAlgorithm() {
 }
 
 // ==================== GRID CALCULATOR ====================
-function calculateOptimalGrid(wordCount, wordLengths, pageSize) {
-  const avgLength = wordLengths.reduce((a, b) => a + b, 0) / wordLengths.length;
+function calculateGridSize(wordCount, wordLengths, pageSize, gridType) {
   const maxLength = Math.max(...wordLengths);
 
-  let size;
+  // Calcular tamaño base óptimo
+  let baseSize;
   if (wordCount <= 10) {
-    size = Math.max(12, maxLength + 3);
+    baseSize = Math.max(12, maxLength + 3);
   } else if (wordCount <= 20) {
-    size = Math.max(15, maxLength + 2);
+    baseSize = Math.max(15, maxLength + 2);
   } else if (wordCount <= 30) {
-    size = Math.max(18, maxLength + 1);
+    baseSize = Math.max(18, maxLength + 1);
   } else {
-    size = Math.max(20, maxLength);
+    baseSize = Math.max(20, maxLength);
   }
 
   // Ajustar según tamaño de página
   if (pageSize === 'TABLOID') {
-    size = Math.floor(size * 1.3);
+    baseSize = Math.floor(baseSize * 1.3);
   }
 
-  return Math.min(size, 30); // Máximo 30x30
+  // Aplicar modificadores según tipo de grid
+  let finalSize;
+  switch (gridType) {
+    case GRID_TYPES.COMPACT:
+      // Reducir tamaño para hacer más compacto (mínimo 10x10)
+      finalSize = Math.max(10, Math.floor(baseSize * 0.8));
+      break;
+
+    case GRID_TYPES.SPACIOUS:
+      // Aumentar tamaño para hacer más espacioso (máximo 35x35)
+      finalSize = Math.min(35, Math.floor(baseSize * 1.4));
+      break;
+
+    case GRID_TYPES.AUTO:
+    default:
+      // Mantener tamaño óptimo
+      finalSize = baseSize;
+      break;
+  }
+
+  return Math.min(finalSize, 35); // Máximo 35x35 para spacious
 }
+
 
 // ==================== COMPONENTS ====================
 
@@ -329,33 +351,84 @@ function GridConfigurator() {
   const { state, updateState } = useDiagramacion();
   const { generateGrid } = useWordSearchAlgorithm();
 
+  // Calcular tamaño esperado según configuración actual
+  const getExpectedSize = () => {
+    if (!state.selectedTema || state.gridConfig.type === GRID_TYPES.MANUAL) {
+      return `${state.gridConfig.rows}×${state.gridConfig.cols}`;
+    }
+
+    const words = state.selectedTema.palabras;
+    const wordLengths = words.map(w => w.texto.length);
+    const size = calculateGridSize(words.length, wordLengths, state.pageSize, state.gridConfig.type);
+    return `${size}×${size}`;
+  };
+
+  // Función para regenerar grilla con nuevo tamaño cuando cambia el tipo
+  const handleGridTypeChange = async (newGridType) => {
+    if (!state.selectedTema || !state.grid || state.grid.length === 0) {
+      // Solo actualizar el tipo si no hay grilla generada
+      updateState({
+        gridConfig: { ...state.gridConfig, type: newGridType }
+      });
+      return;
+    }
+
+    // Mostrar indicador de carga mientras se regenera
+    updateState({ isGenerating: true });
+
+    try {
+      // Regenerar grilla con el nuevo tamaño
+      const words = state.selectedTema.palabras;
+      const wordLengths = words.map(w => w.texto.length);
+
+      let rows = state.gridConfig.rows;
+      let cols = state.gridConfig.cols;
+
+      // Calcular nuevo tamaño según tipo de grid
+      if (newGridType !== GRID_TYPES.MANUAL) {
+        const size = calculateGridSize(words.length, wordLengths, state.pageSize, newGridType);
+        rows = cols = size;
+      }
+
+      const { grid, placedWords } = generateGrid(rows, cols, words);
+
+      updateState({
+        grid,
+        placedWords,
+        gridConfig: { ...state.gridConfig, type: newGridType, rows, cols },
+        isGenerating: false
+      });
+    } catch (error) {
+      updateState({ isGenerating: false, error: UI_TEXTS.ERRORS.REGENERATING_GRID });
+    }
+  };
+
   const handleGenerate = () => {
     if (!state.selectedTema) {
-      alert('Por favor selecciona un tema primero');
+      alert(UI_TEXTS.INFO.SELECT_THEME_FIRST);
       return;
     }
 
     const words = state.selectedTema.palabras;
     const wordLengths = words.map(w => w.texto.length);
-    
+
     let rows = state.gridConfig.rows;
     let cols = state.gridConfig.cols;
 
-    if (state.gridConfig.type === GRID_TYPES.AUTO) {
-      const size = calculateOptimalGrid(words.length, wordLengths, state.pageSize);
+    // Calcular tamaño según tipo de grid
+    if (state.gridConfig.type !== GRID_TYPES.MANUAL) {
+      const size = calculateGridSize(words.length, wordLengths, state.pageSize, state.gridConfig.type);
       rows = cols = size;
     }
 
     const { grid, placedWords } = generateGrid(rows, cols, words);
-    
+
     updateState({
       grid,
       placedWords,
       gridConfig: { ...state.gridConfig, rows, cols }
     });
-  };
-
-  return (
+  };  return (
     <div className="p-4 bg-white rounded-lg border">
       <h3 className="font-semibold mb-3 flex items-center gap-2">
         <Grid size={18} />
@@ -367,16 +440,39 @@ function GridConfigurator() {
           <label className="block text-sm font-medium mb-1">Tipo</label>
           <select
             value={state.gridConfig.type}
-            onChange={(e) => updateState({
-              gridConfig: { ...state.gridConfig, type: e.target.value }
-            })}
+            onChange={(e) => handleGridTypeChange(e.target.value)}
             className="w-full p-2 border rounded"
+            disabled={state.isGenerating}
           >
-            <option value={GRID_TYPES.AUTO}>Automático (Óptimo)</option>
-            <option value={GRID_TYPES.MANUAL}>Manual</option>
-            <option value={GRID_TYPES.COMPACT}>Compacto</option>
-            <option value={GRID_TYPES.SPACIOUS}>Espacioso</option>
+            <option value={GRID_TYPES.AUTO}>Automático (Tamaño óptimo basado en palabras)</option>
+            <option value={GRID_TYPES.COMPACT}>Compacto (80% del tamaño óptimo - más pequeño)</option>
+            <option value={GRID_TYPES.SPACIOUS}>Espacioso (140% del tamaño óptimo - más grande)</option>
+            <option value={GRID_TYPES.MANUAL}>Manual (Configuración personalizada)</option>
           </select>
+
+          {state.selectedTema && (
+            <div className="mt-2 p-2 bg-blue-50 border border-blue-200 rounded text-sm">
+              <div className="flex items-center gap-2 text-blue-700">
+                {state.isGenerating ? (
+                  <>
+                    <Loader className="animate-spin" size={14} />
+                    <span>Regenerando grilla...</span>
+                  </>
+                ) : (
+                  <>
+                    <Grid size={14} />
+                    <span>Tamaño esperado: <strong>{getExpectedSize()}</strong></span>
+                  </>
+                )}
+              </div>
+              <p className="text-xs text-blue-600 mt-1">
+                {state.gridConfig.type === GRID_TYPES.COMPACT && "Más compacto, mejor para puzzles simples"}
+                {state.gridConfig.type === GRID_TYPES.SPACIOUS && "Más espacioso, mejor para puzzles complejos"}
+                {state.gridConfig.type === GRID_TYPES.AUTO && "Equilibrado entre complejidad y espacio"}
+                {state.gridConfig.type === GRID_TYPES.MANUAL && "Configuración personalizada"}
+              </p>
+            </div>
+          )}
         </div>
 
         {state.gridConfig.type === GRID_TYPES.MANUAL && (
@@ -519,8 +615,6 @@ function WordSearchCanvas() {
   }
 
   const cellSize = state.gridConfig.cellSize * (state.zoom / 100);
-  const gridWidth = state.gridConfig.cols * cellSize;
-  const gridHeight = state.gridConfig.rows * cellSize;
 
   return (
     <div className="overflow-auto h-full bg-gray-100 p-8">
@@ -697,6 +791,8 @@ function LivePreviewPanel() {
 
 // Main Layout
 function DiagramacionLayout() {
+  const { state } = useDiagramacion();
+
   return (
     <div className="h-screen flex flex-col">
       <ToolbarPanel />
@@ -714,7 +810,7 @@ function DiagramacionLayout() {
 
         {/* Center Panel - Canvas */}
         <div className="flex-1 overflow-hidden">
-          <WordSearchCanvas />
+          <WordSearchCanvas key={`${state.gridConfig.rows}-${state.gridConfig.cols}-${state.gridConfig.type}`} />
         </div>
 
         {/* Right Panel - Preview */}

@@ -1,5 +1,5 @@
-import { temasRepository } from './repositories/TemasRepository';
 import type { Tema } from '../types';
+import { temasRepository } from './repositories/TemasRepository';
 
 // --- TIPOS ---
 
@@ -18,8 +18,20 @@ const VALIDATION_REGEX = /^[A-Za-zÁÉÍÓÚÜÑáéíóúüñ0-9_-]{2,32}$/;
 // =============================================================================
 
 export const temasService = {
-  async createTema(title: string, words: string[]): Promise<Tema> {
-    const response = await temasRepository.create(title, words);
+  async createTema(title: string, words: string[], options?: { categoria?: string; dificultad?: string; etiquetas?: string[] }): Promise<Tema> {
+    // Convertir words array a formato de objetos para la API
+    const palabras = words.map(texto => ({ texto }));
+
+    const temaData = {
+      nombre: title.trim(),
+      descripcion: '',
+      palabras,
+      categoria: options?.categoria || 'general',
+      etiquetas: options?.etiquetas || [],
+      dificultad: options?.dificultad || 'medio'
+    };
+
+    const response = await temasRepository.create(temaData);
     if (!response.ok) {
       throw new Error(response.error || 'Error al crear el tema');
     }
@@ -31,11 +43,30 @@ export const temasService = {
     if (!response.ok) {
       throw new Error('Error al cargar temas');
     }
-    return response.data as Tema[];
+    // Convertir el formato de la API al formato interno si es necesario
+    const temas = response.data as Tema[];
+    return temas.map(tema => ({
+      ...tema,
+      palabras: Array.isArray(tema.palabras) && tema.palabras.length > 0 && typeof tema.palabras[0] === 'object'
+        ? tema.palabras
+        : (tema.palabras as any)?.map((texto: string) => ({ texto })) || []
+    }));
   },
 
-  async updateTema(id: string, title: string, words: string[]): Promise<Tema> {
-    const response = await temasRepository.update(id, { nombre: title.trim(), words: words });
+  async updateTema(id: string, title: string, words: string[], options?: { categoria?: string; dificultad?: string; etiquetas?: string[] }): Promise<Tema> {
+    // Convertir words array a formato de objetos para la API
+    const palabras = words.map(texto => ({ texto }));
+
+    const temaData = {
+      nombre: title.trim(),
+      descripcion: '',
+      palabras,
+      categoria: options?.categoria || 'general',
+      etiquetas: options?.etiquetas || [],
+      dificultad: options?.dificultad || 'medio'
+    };
+
+    const response = await temasRepository.update(id, temaData);
     if (!response.ok) {
       throw new Error(response.error || 'Error al actualizar el tema');
     }
@@ -143,11 +174,11 @@ export async function getTemas(): Promise<Tema[]> {
   return await temasService.getTemas();
 }
 
-export async function createTema(payload: { nombre: string; words?: string[] }): Promise<Tema> { 
+export async function createTema(payload: { nombre: string; words?: string[] }): Promise<Tema> {
   return await temasService.createTema(payload.nombre, payload.words || []);
 }
 
-export async function updateTema(id: string, payload: { nombre: string; words?: string[] }): Promise<Tema> { 
+export async function updateTema(id: string, payload: { nombre: string; words?: string[] }): Promise<Tema> {
   return await temasService.updateTema(id, payload.nombre, payload.words || []);
 }
 

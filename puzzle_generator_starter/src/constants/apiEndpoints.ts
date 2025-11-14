@@ -1,9 +1,15 @@
 export const API_ENDPOINTS = {
   TEMAS: {
-    BASE: '/temas',
-    BY_ID: (id: string) => `/temas/${id}`,
-    PALABRAS: (id: string) => `/temas/${id}/palabras`,
-    PALABRA_BY_INDEX: (id: string, index: number) => `/temas/${id}/palabras/${index}`,
+    BASE: '/api/db/temas',
+    BY_ID: (id: string) => `/api/db/temas/${id}`,
+    PALABRAS: (id: string) => `/api/db/temas/${id}/palabras`,
+    PALABRA_BY_INDEX: (id: string, index: number) => `/api/db/temas/${id}/palabras/${index}`,
   },
-  HEALTH: '/health',
+  LIBROS: {
+    BASE: '/api/db/libros',
+    BY_ID: (id: string) => `/api/db/libros/${id}`,
+    PAGES: (id: string) => `/api/db/libros/${id}/paginas`,
+    PAGE_BY_ID: (id: string, pageId: string) => `/api/db/libros/${id}/paginas/${pageId}`,
+  },
+  HEALTH: '/api/health',
 };

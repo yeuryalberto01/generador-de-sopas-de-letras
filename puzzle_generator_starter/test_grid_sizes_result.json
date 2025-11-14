@@ -1,0 +1,51 @@
+{
+  "timestamp": "2025-11-11T09:07:02.869Z",
+  "testResults": [
+    {
+      "testCase": "Tema pequeño (4 palabras)",
+      "words": 4,
+      "pageSize": "LETTER",
+      "sizes": {
+        "auto": 12,
+        "compact": 10,
+        "spacious": 16
+      },
+      "areDifferent": true
+    },
+    {
+      "testCase": "Tema mediano (8 palabras)",
+      "words": 8,
+      "pageSize": "LETTER",
+      "sizes": {
+        "auto": 12,
+        "compact": 10,
+        "spacious": 16
+      },
+      "areDifferent": true
+    },
+    {
+      "testCase": "Tema grande (12 palabras)",
+      "words": 12,
+      "pageSize": "LETTER",
+      "sizes": {
+        "auto": 15,
+        "compact": 12,
+        "spacious": 21
+      },
+      "areDifferent": true
+    },
+    {
+      "testCase": "Tema con TABLOID",
+      "words": 4,
+      "pageSize": "TABLOID",
+      "sizes": {
+        "auto": 15,
+        "compact": 12,
+        "spacious": 21
+      },
+      "areDifferent": true
+    }
+  ],
+  "overallSuccess": true,
+  "summary": "Todos los tipos de grid generan tamaños diferentes correctamente"
+}

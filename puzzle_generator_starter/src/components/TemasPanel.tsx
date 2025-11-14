@@ -2,6 +2,7 @@ import { ArrowUpDown, Clock, Download, Loader2, Search, Star, Upload } from 'luc
 import { ChangeEvent, FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { exportToJSON, importFromJSON } from '../services/temas';
 import type { Tema } from '../types';
+import { getPalabrasForSearch } from '../utils/temaConverters';
 import TemaItem from './TemaItem';
 
 // Hook local para debounce
@@ -66,10 +67,13 @@ const TemasPanel: FC<TemasPanelProps> = ({
   const debouncedSearchTerm = useDebounce(searchTerm, 300);
 
   const filteredTemas = useMemo(() => {
-    let filtered = temas.filter(tema =>
-      tema.nombre.toLowerCase().includes(debouncedSearchTerm.toLowerCase()) ||
-      (tema.palabras && tema.palabras.some(word => word.toLowerCase().includes(debouncedSearchTerm.toLowerCase())))
-    );
+    let filtered = temas.filter(tema => {
+      const searchLower = debouncedSearchTerm.toLowerCase();
+      const nombreMatch = tema.nombre.toLowerCase().includes(searchLower);
+      const palabrasMatch = getPalabrasForSearch(tema.palabras || [])
+        .some(word => word.toLowerCase().includes(searchLower));
+      return nombreMatch || palabrasMatch;
+    });
 
     if (showOnlyFavorites) {
       filtered = filtered.filter(tema => favorites.has(tema.id));
@@ -206,8 +210,6 @@ const TemasPanel: FC<TemasPanelProps> = ({
               showToast={showToast}
               isFavorite={favorites.has(tema.id)}
               onToggleFavorite={onToggleFavorite ? () => onToggleFavorite(tema.id) : undefined}
-              isSelected={selectedId === tema.id}
-              onSelect={() => onSelect(tema.id)}
             />
           ))
         )}

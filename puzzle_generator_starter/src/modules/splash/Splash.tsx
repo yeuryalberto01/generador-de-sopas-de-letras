@@ -6,7 +6,7 @@ const Splash: FC = () => {
   const navigate = useNavigate();
 
   const handleStart = () => {
-    navigate('/temas');
+    navigate('/libros');
   };
 
   return (

@@ -1,0 +1,34 @@
+{
+  "timestamp": "2025-11-11T08:55:44.815Z",
+  "steps": [
+    {
+      "name": "Cargar temas",
+      "success": true
+    },
+    {
+      "name": "Seleccionar temas",
+      "success": true
+    },
+    {
+      "name": "Crear libro",
+      "success": true
+    },
+    {
+      "name": "Validar libro",
+      "success": true
+    },
+    {
+      "name": "Preview del libro",
+      "success": true
+    }
+  ],
+  "success": true,
+  "errors": [],
+  "summary": {
+    "totalSteps": 5,
+    "successfulSteps": 5,
+    "bookCreated": true,
+    "pagesGenerated": 2,
+    "totalWords": 8
+  }
+}

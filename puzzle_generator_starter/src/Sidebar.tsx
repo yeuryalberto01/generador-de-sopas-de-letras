@@ -30,7 +30,18 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
                 : "text-slate-300 hover:bg-slate-700 hover:text-white"
             }`}
           >
-            Inicio
+            🏠 Inicio
+          </Link>
+          <Link
+            to="/libros"
+            onClick={onClose}
+            className={`block px-4 py-2 text-sm transition-colors ${
+              location.pathname === "/libros"
+                ? "bg-blue-600 text-white"
+                : "text-slate-300 hover:bg-slate-700 hover:text-white"
+            }`}
+          >
+            📚 Libros
           </Link>
           <Link
             to="/temas"
@@ -41,7 +52,7 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
                 : "text-slate-300 hover:bg-slate-700 hover:text-white"
             }`}
           >
-            Temas
+            🏷️ Temas
           </Link>
           <Link
             to="/diagramacion"
@@ -52,7 +63,7 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
                 : "text-slate-300 hover:bg-slate-700 hover:text-white"
             }`}
           >
-            Diagramación
+            🎨 Diagramación
           </Link>
           <Link
             to="/panel-apis"

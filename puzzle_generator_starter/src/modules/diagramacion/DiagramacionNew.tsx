@@ -1,6 +1,9 @@
-import { AlertTriangle, BadgeCheck, Download, Eye, Grid, Layout, Printer, Save, Search, Settings, Type, ZoomIn, ZoomOut } from 'lucide-react';
+import { AlertTriangle, ArrowLeft, BadgeCheck, BookOpen, Download, Eye, Grid, Layout, Printer, Save, Search, Settings, Type, ZoomIn, ZoomOut } from 'lucide-react';
 import type { MouseEvent as ReactMouseEvent } from 'react';
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { UI_TEXTS } from '../../constants/uiTexts';
+import { useBook } from '../../context/BookContext';
 
 // ==================== CONSTANTS ====================
 const PAGE_SIZES = {
@@ -128,6 +131,7 @@ function DiagramacionProvider({ children }) {
     showGrid: true,
     showSolutions: false,
     wordColors: {},
+    generatedPuzzle: null,
   });
 
   const updateState = useCallback((updates) => {
@@ -143,7 +147,7 @@ function DiagramacionProvider({ children }) {
 
 function useDiagramacion() {
   const context = useContext(DiagramacionContext);
-  if (!context) throw new Error('useDiagramacion must be used within DiagramacionProvider');
+  if (!context) throw new Error(UI_TEXTS.CONTEXT_ERRORS.DIAGRAMACION_PROVIDER);
   return context;
 }
 
@@ -533,7 +537,7 @@ function TemaSelector() {
                 </>
               ) : (
                 <>
-                  <AlertTriangle size={14} /> Ajustar malla
+                  <AlertTriangle size={14} /> {UI_TEXTS.BUTTONS.ADJUST_GRID}
                 </>
               )}
             </span>
@@ -578,7 +582,7 @@ function TemaSelector() {
 
   const handleGenerate = () => {
     if (!state.selectedTema) {
-      alert('Por favor selecciona un tema primero');
+      alert(UI_TEXTS.INFO.SELECT_THEME_FIRST);
       return;
     }
 
@@ -603,7 +607,12 @@ function TemaSelector() {
       grid,
       placedWords,
       gridConfig: { ...state.gridConfig, rows, cols },
-      wordColors
+      wordColors,
+      generatedPuzzle: {
+        grid,
+        words: placedWords,
+        config: { ...state.gridConfig, rows, cols }
+      }
     });
   };
 
@@ -884,15 +893,63 @@ function SolutionInspectorPanel() {
 
 function LivePreviewPanel() {
   const { state } = useDiagramacion();
+  const { currentProject, addPuzzleToBook } = useBook();
   const pageSize = PAGE_SIZES[state.pageSize];
+  const navigate = useNavigate();
+
+  const handleAddToBook = async () => {
+    if (!currentProject) {
+      // Navegar automáticamente al módulo de libros para crear uno
+      navigate('/libros');
+      return;
+    }
+
+    if (!state.generatedPuzzle) {
+      alert(UI_TEXTS.INFO.GENERATE_PUZZLE_FIRST);
+      return;
+    }
+
+    try {
+      await addPuzzleToBook(state.selectedTema?.id || '', {
+        grid: state.grid,
+        words: state.generatedPuzzle.words,
+        config: state.gridConfig
+      });
+      alert(UI_TEXTS.SUCCESS.PUZZLE_ADDED_TO_BOOK);
+    } catch (error) {
+      alert(UI_TEXTS.ERRORS.ADDING_PUZZLE_TO_BOOK);
+    }
+  };
 
   return (
     <div className="h-full flex flex-col bg-gray-50 dark:bg-slate-900">
       <div className="p-4 border-b bg-white dark:bg-slate-800 border-gray-300 dark:border-slate-600">
-        <h3 className="font-semibold text-gray-900 dark:text-white">Vista Previa</h3>
-        <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-          Los cambios se reflejan en tiempo real
-        </p>
+        <div className="flex items-center justify-between">
+          <div>
+            <h3 className="font-semibold text-gray-900 dark:text-white">Vista Previa</h3>
+            <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+              Los cambios se reflejan en tiempo real
+            </p>
+            {currentProject && (
+              <div className="flex items-center gap-2 mt-2">
+                <BookOpen className="w-4 h-4 text-green-600" />
+                <span className="text-xs text-green-600 font-medium">
+                  Libro activo: {currentProject.name}
+                </span>
+              </div>
+            )}
+          </div>
+          {state.generatedPuzzle && (
+            <button
+              onClick={handleAddToBook}
+              className="flex items-center gap-2 px-3 py-2 bg-blue-600 text-white text-sm rounded-lg hover:bg-blue-700 transition-colors"
+              title="Agregar a libro"
+            >
+              <BookOpen className="w-4 h-4" />
+              Agregar a Libro
+            </button>
+          )}
+        </div>
       </div>
 
       <div className="flex-1 overflow-auto p-4">
@@ -975,6 +1032,8 @@ const RIGHT_PANEL_WIDTH = 384;
 const MIN_CANVAS_WIDTH = 520;
 
 function DiagramacionLayout() {
+  const navigate = useNavigate();
+
   const getInitialSidebar = () => {
     if (typeof window === 'undefined') return 320;
     const available = Math.max(MIN_SIDEBAR_WIDTH, window.innerWidth - RIGHT_PANEL_WIDTH - MIN_CANVAS_WIDTH);
@@ -1037,6 +1096,31 @@ function DiagramacionLayout() {
   return (
     <div className="h-screen flex flex-col bg-white dark:bg-slate-900">
       <ToolbarPanel onToggleInspector={() => setInspectorVisible(!isInspectorVisible)} />
+
+      {/* Navigation Bar */}
+      <div className="bg-gray-100 dark:bg-slate-800 border-b border-gray-200 dark:border-slate-700 px-4 py-2">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <button
+              onClick={() => navigate('/libros')}
+              className="flex items-center gap-2 px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors"
+            >
+              <ArrowLeft className="w-4 h-4" />
+              Volver a Libros
+            </button>
+            <button
+              onClick={() => navigate('/temas')}
+              className="flex items-center gap-2 px-3 py-1 bg-purple-600 text-white rounded hover:bg-purple-700 transition-colors"
+            >
+              <BookOpen className="w-4 h-4" />
+              Gestionar Temas
+            </button>
+          </div>
+          <div className="text-sm text-gray-600 dark:text-gray-300">
+            Editor de Diagramación - Crea y edita tus puzzles
+          </div>
+        </div>
+      </div>
 
       <div className="flex-1 flex flex-col lg:flex-row overflow-hidden">
         {/* Left Panel */}

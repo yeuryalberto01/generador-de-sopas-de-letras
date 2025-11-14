@@ -1,0 +1,7 @@
+{
+    "python.defaultInterpreterPath": "./backend_fastapi/.venv/Scripts/python.exe",
+    "python.terminal.activateEnvironment": true,
+    "python.linting.enabled": true,
+    "python.linting.pylintEnabled": true,
+    "python.linting.pylintPath": "./backend_fastapi/.venv/Scripts/pylint.exe"
+}

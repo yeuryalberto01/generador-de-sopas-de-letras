@@ -45,29 +45,62 @@ export function useDiagramacion() {
     });
   }, []);
 
-  const calculateOptimalGridSize = useCallback((words, pageSize) => {
+  const calculateGridSize = useCallback((words, pageSize, gridType = 'auto') => {
     const wordLengths = words.map(w => w.texto.length);
     const maxLength = Math.max(...wordLengths);
     const wordCount = words.length;
 
-    let size;
+    // Calcular tamaño base óptimo
+    let baseSize;
     if (wordCount <= 10) {
-      size = Math.max(12, maxLength + 3);
+      baseSize = Math.max(12, maxLength + 3);
     } else if (wordCount <= 20) {
-      size = Math.max(15, maxLength + 2);
+      baseSize = Math.max(15, maxLength + 2);
     } else if (wordCount <= 30) {
-      size = Math.max(18, maxLength + 1);
+      baseSize = Math.max(18, maxLength + 1);
     } else {
-      size = Math.max(20, maxLength);
+      baseSize = Math.max(20, maxLength);
     }
 
     // Ajustar según tamaño de página
     if (pageSize === 'TABLOID') {
-      size = Math.floor(size * 1.4);
+      baseSize = Math.floor(baseSize * 1.4);
     }
 
-    return Math.min(size, 30);
+    // Aplicar modificadores según tipo de grid
+    let finalSize;
+    switch (gridType) {
+      case 'compact':
+        // Reducir tamaño para hacer más compacto (mínimo 10x10)
+        finalSize = Math.max(10, Math.floor(baseSize * 0.8));
+        break;
+
+      case 'spacious':
+        // Aumentar tamaño para hacer más espacioso (máximo 35x35)
+        finalSize = Math.min(35, Math.floor(baseSize * 1.4));
+        break;
+
+      case 'auto':
+      default:
+        // Mantener tamaño óptimo
+        finalSize = baseSize;
+        break;
+    }
+
+    return Math.min(finalSize, 35);
   }, []);
+
+  // Mantener compatibilidad con la función anterior
+  const calculateOptimalGridSize = useCallback((words, pageSize) => {
+    return calculateGridSize(words, pageSize, 'auto');
+  }, [calculateGridSize]);
+
+  // Exportar para compatibilidad
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      window.calculateOptimalGridSize = calculateOptimalGridSize;
+    }
+  }, [calculateOptimalGridSize]);
 
   const generateWordSearch = useCallback(async () => {
     if (!state.selectedTema) {
@@ -82,9 +115,10 @@ export function useDiagramacion() {
       let rows = state.gridConfig.rows;
       let cols = state.gridConfig.cols;
 
-      // Calcular tamaño óptimo si es automático
-      if (state.gridConfig.type === GRID_TYPES.AUTO) {
-        const size = calculateOptimalGridSize(words, state.pageSize);
+      // Calcular tamaño según tipo de grid
+      if (state.gridConfig.type !== GRID_TYPES.MANUAL) {
+        const gridType = state.gridConfig.type.toLowerCase(); // Convertir a minúsculas para coincidir con la función
+        const size = calculateGridSize(words, state.pageSize, gridType);
         rows = cols = size;
       }
 
@@ -111,7 +145,7 @@ export function useDiagramacion() {
         isGenerating: false
       });
     }
-  }, [state.selectedTema, state.gridConfig, state.pageSize, calculateOptimalGridSize, updateState]);
+  }, [state.selectedTema, state.gridConfig, state.pageSize, calculateGridSize, updateState]);
 
   const exportToPDF = useCallback(async () => {
     if (state.grid.length === 0) {

@@ -1,0 +1,10 @@
+[MASTER]
+max-line-length=120
+max-module-lines=1200
+max-locals=30
+
+[MESSAGES CONTROL]
+disable=invalid-name
+
+[FORMAT]
+max-line-length=120

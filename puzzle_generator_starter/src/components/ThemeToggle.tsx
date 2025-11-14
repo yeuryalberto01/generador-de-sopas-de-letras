@@ -1,13 +1,14 @@
 import { Moon, Sun } from 'lucide-react';
 import type { FC } from 'react';
 import { useContext } from 'react';
+import { UI_TEXTS } from '../constants/uiTexts';
 import { AppContext } from '../context/AppContext';
 
 const ThemeToggle: FC = () => {
   const context = useContext(AppContext);
 
   if (!context) {
-    throw new Error('ThemeToggle must be used within an AppProvider');
+    throw new Error(UI_TEXTS.CONTEXT_ERRORS.THEME_PROVIDER);
   }
 
   const { userPreferences, toggleTheme } = context;

@@ -1,6 +1,8 @@
 import { FC, KeyboardEvent, memo, useCallback, useEffect, useMemo, useState } from 'react';
+import { UI_TEXTS } from '../../constants/uiTexts';
 import type { Tema } from '../../types';
 import { findDuplicates, validateWord } from '../../utils/parseWords';
+import { palabrasToStrings, stringsToPalabras } from '../../utils/temaConverters';
 
 // --- TIPOS ---
 
@@ -196,7 +198,7 @@ const TemaPanelEdicion = memo(function TemaPanelEdicion({ tema, onUpdateTitle, o
   );
 
   const handleEditWord = useCallback((index: number, newWord: string) => {
-    setLocalTema(prev => ({ ...prev, palabras: prev.palabras.map((word, i) => (i === index ? newWord : word)) }));
+    setLocalTema(prev => ({ ...prev, palabras: prev.palabras.map((word, i) => (i === index ? stringsToPalabras([newWord])[0] : word)) }));
     setEditingWordIndex(null);
   }, []);
 
@@ -210,13 +212,13 @@ const TemaPanelEdicion = memo(function TemaPanelEdicion({ tema, onUpdateTitle, o
   }, [localTema.palabras]);
 
   const handleAddWord = useCallback((newWord: string) => {
-    setLocalTema(prev => ({ ...prev, palabras: [...prev.palabras, newWord] }));
+    setLocalTema(prev => ({ ...prev, palabras: [...prev.palabras, stringsToPalabras([newWord])[0]] }));
   }, []);
 
   const handleSaveChanges = useCallback(async () => {
     if (!localTema.id) return;
     if (hasTitleChanges) await onUpdateTitle(localTema.id, titleDraft);
-    if (hasWordChanges) await onUpdateWords(localTema.id, localTema.palabras);
+    if (hasWordChanges) await onUpdateWords(localTema.id, palabrasToStrings(localTema.palabras));
     setLastSaved(localTema);
   }, [localTema, titleDraft, hasTitleChanges, hasWordChanges, onUpdateTitle, onUpdateWords]);
 
@@ -264,20 +266,20 @@ const TemaPanelEdicion = memo(function TemaPanelEdicion({ tema, onUpdateTitle, o
         <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 text-sm">
           <span className="text-primary">{localTema.palabras.length} palabra{localTema.palabras.length !== 1 ? 's' : ''}</span>
           {hasDuplicates && <span className="text-warning font-medium">{duplicates.length} duplicado{duplicates.length !== 1 ? 's' : ''}</span>}
-          {(hasWordChanges || hasTitleChanges) && !hasDuplicates && <span className="text-accent font-medium">Cambios sin guardar</span>}
+          {(hasWordChanges || hasTitleChanges) && !hasDuplicates && <span className="text-accent font-medium">{UI_TEXTS.INFO.CHANGES_NOT_SAVED}</span>}
         </div>
       </div>
 
-      <AgregarPalabraInput onAdd={handleAddWord} allWords={localTema.palabras} />
+      <AgregarPalabraInput onAdd={handleAddWord} allWords={palabrasToStrings(localTema.palabras)} />
 
       <div className="border border-primary rounded-md max-h-96 overflow-y-auto">
         {localTema.palabras.length === 0 ? (
-          <div className="p-4 text-center text-secondary">No hay palabras</div>
+          <div className="p-4 text-center text-secondary">{UI_TEXTS.INFO.NO_WORDS}</div>
         ) : (
           localTema.palabras.map((palabra, index) => (
             <PalabraItem
-              key={`${palabra}-${index}`}
-              palabra={palabra}
+              key={`${palabra.texto}-${index}`}
+              palabra={palabra.texto}
               index={index}
               onEdit={handleEditWord}
               onDelete={handleDeleteWord}
@@ -285,7 +287,7 @@ const TemaPanelEdicion = memo(function TemaPanelEdicion({ tema, onUpdateTitle, o
               isEditing={editingWordIndex === index}
               onStartEdit={setEditingWordIndex}
               onCancelEdit={() => setEditingWordIndex(null)}
-              allWords={localTema.palabras}
+              allWords={palabrasToStrings(localTema.palabras)}
             />
           ))
         )}

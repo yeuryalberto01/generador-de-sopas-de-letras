@@ -44,5 +44,15 @@
       "buho"
     ],
     "updated_at": "2025-11-03T01:51:32.192852+00:00"
+  },
+  {
+    "id": "simple-test-123",
+    "nombre": "Tema Simple",
+    "descripcion": "Prueba simple",
+    "words": [
+      "simple",
+      "test"
+    ],
+    "updated_at": "2025-01-01T00:00:00+00:00"
   }
 ]

@@ -3,11 +3,13 @@ import { useNavigate } from 'react-router-dom';
 import Modal from '../../components/Modal';
 import TemaPanelEntrada from '../../components/TemaPanelEntrada';
 import TemasPanel from '../../components/TemasPanel';
+import { UI_TEXTS } from '../../constants/uiTexts';
 import { useApp } from '../../hooks/useApp';
 import useLocalStorage from '../../hooks/useLocalStorage';
 import { useTemaOperations } from '../../hooks/useTemaOperations';
 import { temasService } from '../../services/temas';
 import type { Tema } from '../../types';
+import { normalizeTema, stringsToPalabras } from '../../utils/temaConverters';
 import TemaPanelEdicion from './TemaPanelEdicion';
 
 // --- TIPOS ---
@@ -49,18 +51,18 @@ export default function Temas() {
   const handleUpdateTitle = async (id: string, title: string) => {
     const result = await temaOps.updateExistingTema(id, { nombre: title });
     if (result.ok && result.data) {
-      setTemas(prev => prev.map(t => (t.id === id ? result.data as Tema : t)));
+      setTemas(prev => prev.map(t => (t.id === id ? normalizeTema(result.data as Tema) : t)));
     } else {
-      console.error('Error al actualizar título');
+      console.error(UI_TEXTS.ERRORS.UPDATING_TITLE);
     }
   };
 
   const handleUpdateWords = async (id: string, words: string[]) => {
     const result = await temaOps.replaceTemaPalabras(id, { palabras: words });
     if (result.ok) {
-      setTemas(prev => prev.map(t => (t.id === id ? { ...t, palabras: words } : t)));
+      setTemas(prev => prev.map(t => (t.id === id ? { ...t, palabras: stringsToPalabras(words) } : t)));
     } else {
-      console.error('Error al actualizar palabras');
+      console.error(UI_TEXTS.ERRORS.UPDATING_WORDS);
     }
   };
 
@@ -75,7 +77,7 @@ export default function Temas() {
       const loadedTemas = await temasService.getTemas();
       setTemas(loadedTemas);
     } catch (error) {
-      console.error('Error al cargar temas', error);
+      console.error(UI_TEXTS.ERRORS.LOADING_THEMES, error);
     } finally {
       setLoading(prev => ({ ...prev, load: false }));
     }
@@ -100,7 +102,7 @@ export default function Temas() {
       setTemas(prev => [result, ...prev]);
       handleSelectTema(result.id);
     } catch (error) {
-      console.error('Error al crear el tema', error);
+      console.error(UI_TEXTS.ERRORS.CREATING_THEME, error);
     } finally {
       setLoading(prev => ({ ...prev, create: false }));
     }
@@ -112,7 +114,7 @@ export default function Temas() {
       const updated = await temasService.updateTema(id, title, words);
       setTemas(prev => prev.map(t => (t.id === id ? updated : t)));
     } catch (error) {
-      console.error('Error al guardar cambios', error);
+      console.error(UI_TEXTS.ERRORS.SAVING_CHANGES, error);
     } finally {
       setLoading(prev => ({ ...prev, update: false }));
     }
@@ -126,7 +128,7 @@ export default function Temas() {
         setSelectedId(null);
       }
     } catch (error) {
-      console.error('Error al eliminar tema', error);
+      console.error(UI_TEXTS.ERRORS.DELETING_THEME, error);
     }
   };
 
@@ -136,7 +138,7 @@ export default function Temas() {
       const newTemas = await temasService.bulkImport(importedTemas);
       setTemas(newTemas);
     } catch (error) {
-      console.error('Error al importar temas', error);
+      console.error(UI_TEXTS.ERRORS.IMPORTING_THEMES, error);
     } finally {
       setLoading(prev => ({ ...prev, import: false }));
     }
@@ -218,14 +220,22 @@ export default function Temas() {
         </div>
       </div>
 
-      {/* Botón Continuar */}
-      <div className="fixed bottom-6 right-6 z-50">
+      {/* Navegación */}
+      <div className="fixed bottom-6 right-6 z-50 flex gap-3">
+        <button
+          onClick={() => nav('/libros')}
+          className="bg-gray-600 dark:bg-gray-500 text-white px-6 py-3 rounded-xl font-semibold hover:bg-gray-700 dark:hover:bg-gray-600 smooth-transition flex items-center gap-3 shadow-xl hover:shadow-2xl transform hover:scale-105 text-base"
+        >
+          <span className="text-lg">←</span>
+          <span>Volver a Libros</span>
+        </button>
+
         <button
           disabled={!selectedId || loading.load}
-          onClick={() => nav(`/diagramacion/${selectedId}`)}
-          className="bg-blue-600 dark:bg-blue-500 text-white px-6 py-3 rounded-xl font-semibold hover:bg-blue-700 dark:hover:bg-blue-600 disabled:bg-gray-400 dark:disabled:bg-slate-600 disabled:cursor-not-allowed smooth-transition flex items-center gap-3 shadow-xl hover:shadow-2xl transform hover:scale-105 text-base"
+          onClick={() => nav('/diagramacion')}
+          className="bg-green-600 dark:bg-green-500 text-white px-6 py-3 rounded-xl font-semibold hover:bg-green-700 dark:hover:bg-green-600 disabled:bg-gray-400 dark:disabled:bg-slate-600 disabled:cursor-not-allowed smooth-transition flex items-center gap-3 shadow-xl hover:shadow-2xl transform hover:scale-105 text-base"
         >
-          <span>Continuar</span>
+          <span>Diagramar con Tema</span>
           <span className="text-lg">→</span>
         </button>
       </div>

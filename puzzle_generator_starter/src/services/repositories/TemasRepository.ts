@@ -1,6 +1,6 @@
-import { del, get, post, put } from '../apiClient';
 import { API_ENDPOINTS } from '../../constants/apiEndpoints';
 import type { Tema } from '../../types';
+import { del, get, post, put } from '../apiClient';
 
 // --- TIPOS ---
 
@@ -12,12 +12,20 @@ interface ApiResponse<T> {
 
 interface CreateTemaPayload {
   nombre: string;
-  words: string[];
+  descripcion?: string;
+  palabras: { texto: string }[];
+  categoria?: string;
+  etiquetas?: string[];
+  dificultad?: string;
 }
 
 interface UpdateTemaPayload {
   nombre?: string;
-  words?: string[];
+  descripcion?: string;
+  palabras?: { texto: string }[];
+  categoria?: string;
+  etiquetas?: string[];
+  dificultad?: string;
 }
 
 interface PalabrasResponse {
@@ -30,17 +38,26 @@ interface PalabrasResponse {
 // =============================================================================
 
 export class TemasRepository {
-  async create(title: string, words: string[]): Promise<ApiResponse<Tema>> {
-    if (words.length > 500) {
+  async create(temaData: CreateTemaPayload): Promise<ApiResponse<Tema>> {
+    if (temaData.palabras.length > 500) {
       return { ok: false, error: `Máximo 500 palabras por tema` };
     }
 
-    const response: ApiResponse<Tema> = await post(API_ENDPOINTS.TEMAS.BASE, {
-      nombre: title.trim(),
-      words: words
-    });
-
+    const response: ApiResponse<Tema> = await post(API_ENDPOINTS.TEMAS.BASE, temaData);
     return response;
+  }
+
+  // Método legacy para compatibilidad
+  async createLegacy(title: string, words: string[]): Promise<ApiResponse<Tema>> {
+    const palabras = words.map(texto => ({ texto }));
+    return this.create({
+      nombre: title.trim(),
+      descripcion: '',
+      palabras,
+      categoria: 'general',
+      etiquetas: [],
+      dificultad: 'medio'
+    });
   }
 
   async getAll(): Promise<ApiResponse<Tema[]>> {
@@ -54,12 +71,21 @@ export class TemasRepository {
   }
 
   async update(id: string, payload: UpdateTemaPayload): Promise<ApiResponse<Tema>> {
-    if (payload.words && payload.words.length > 500) {
+    if (payload.palabras && payload.palabras.length > 500) {
       return { ok: false, error: `Máximo 500 palabras por tema` };
     }
 
     const response: ApiResponse<Tema> = await put(API_ENDPOINTS.TEMAS.BY_ID(id), payload);
     return response;
+  }
+
+  // Método legacy para compatibilidad
+  async updateLegacy(id: string, title: string, words: string[]): Promise<ApiResponse<Tema>> {
+    const palabras = words.map(texto => ({ texto }));
+    return this.update(id, {
+      nombre: title.trim(),
+      palabras
+    });
   }
 
   async delete(id: string): Promise<ApiResponse<any>> {

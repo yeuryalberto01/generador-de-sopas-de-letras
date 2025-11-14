@@ -30,7 +30,7 @@ export interface ExportOptions {
  */
 export function generatePuzzle(tema: Tema, options: ExportOptions = {}): PuzzleGrid {
   const { gridSize = 15, includeHints = true } = options
-  const words = [...tema.palabras].sort((a, b) => b.length - a.length) // Ordenar por longitud
+  const words = [...tema.palabras].sort((a, b) => b.texto.length - a.texto.length) // Ordenar por longitud
 
   // Crear grid vacío
   const grid: string[][] = Array(gridSize).fill(null).map(() => Array(gridSize).fill(''))
@@ -46,7 +46,7 @@ export function generatePuzzle(tema: Tema, options: ExportOptions = {}): PuzzleG
 
   // Colocar palabras (implementación básica)
   words.forEach(word => {
-    const upperWord = word.toUpperCase()
+    const upperWord = word.texto.toUpperCase()
 
     // Intentar colocar horizontalmente
     for (let attempts = 0; attempts < 50; attempts++) {

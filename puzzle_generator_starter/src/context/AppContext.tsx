@@ -2,6 +2,8 @@ import { createContext, FC, ReactNode, useCallback, useEffect, useState } from '
 import useLocalStorage from '../hooks/useLocalStorage';
 import { useTemaOperations } from '../hooks/useTemaOperations';
 import type { Tema } from '../types';
+import { normalizeTema, stringsToPalabras } from '../utils/temaConverters';
+import { BookProvider } from './BookContext';
 
 // --- TIPOS ---
 
@@ -61,7 +63,7 @@ export const AppProvider: FC<AppProviderProps> = ({ children }) => {
     const cargarTemasIniciales = async () => {
       const result = await temaOps.loadTemas();
       if (result.ok && result.data) {
-        setTemas(result.data as Tema[]);
+        setTemas((result.data as Tema[]).map(normalizeTema));
       }
     };
     cargarTemasIniciales();
@@ -103,8 +105,9 @@ export const AppProvider: FC<AppProviderProps> = ({ children }) => {
   const createNewTema = useCallback(async (data: { nombre: string; descripcion?: string }) => {
     const result = await temaOps.createNewTema(data);
     if (result.ok && result.data) {
-      setTemas((prev) => [result.data as Tema, ...prev]);
-      setSelectedTemaId((result.data as Tema).id);
+      const normalizedTema = normalizeTema(result.data as Tema);
+      setTemas((prev) => [normalizedTema, ...prev]);
+      setSelectedTemaId(normalizedTema.id);
     }
     return result;
   }, [temaOps, setSelectedTemaId]);
@@ -112,7 +115,7 @@ export const AppProvider: FC<AppProviderProps> = ({ children }) => {
   const updateTemaData = useCallback(async (id: string, data: { nombre: string; descripcion?: string }) => {
     const result = await temaOps.updateExistingTema(id, data);
     if (result.ok && result.data) {
-      setTemas((prev) => prev.map((t) => (t.id === id ? result.data as Tema : t)));
+      setTemas((prev) => prev.map((t) => (t.id === id ? normalizeTema(result.data as Tema) : t)));
     }
     return result;
   }, [temaOps]);
@@ -131,7 +134,7 @@ export const AppProvider: FC<AppProviderProps> = ({ children }) => {
   const replaceTemaPalabras = useCallback(async (id: string, palabras: string[]) => {
     const result = await temaOps.replaceTemaPalabras(id, { palabras });
     if (result.ok && result.data) {
-        setTemas(prev => prev.map(t => t.id === id ? { ...t, palabras: result.data!.palabras } : t));
+        setTemas(prev => prev.map(t => t.id === id ? { ...t, palabras: stringsToPalabras(result.data!.palabras) } : t));
     }
     return result;
   }, [temaOps]);
@@ -158,5 +161,9 @@ export const AppProvider: FC<AppProviderProps> = ({ children }) => {
     isLoading: temaOps.isLoading
   };
 
-  return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
+  return (
+    <BookProvider>
+      <AppContext.Provider value={value}>{children}</AppContext.Provider>
+    </BookProvider>
+  );
 }

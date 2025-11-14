@@ -34,7 +34,7 @@ export function validateTema(tema: Partial<Tema>): { isValid: boolean; errors: s
 
     // Validar palabras individuales
     const invalidWords = tema.palabras.filter(word => {
-      const trimmed = word.trim()
+      const trimmed = word.texto.trim()
       return !trimmed ||
              trimmed.length < 2 ||
              trimmed.length > 32 ||
@@ -46,7 +46,7 @@ export function validateTema(tema: Partial<Tema>): { isValid: boolean; errors: s
     }
 
     // Verificar duplicados
-    const uniqueWords = new Set(tema.palabras.map(w => w.toLowerCase().trim()))
+    const uniqueWords = new Set(tema.palabras.map(w => w.texto.toLowerCase().trim()))
     if (uniqueWords.size !== tema.palabras.length) {
       errors.push('No se permiten palabras duplicadas')
     }
@@ -110,9 +110,9 @@ export function getTemaStats(tema: Tema) {
   const words = tema.palabras || []
   const totalWords = words.length
   const avgLength = totalWords > 0
-    ? Math.round(words.reduce((sum, word) => sum + word.length, 0) / totalWords)
+    ? Math.round(words.reduce((sum, word) => sum + word.texto.length, 0) / totalWords)
     : 0
-  const uniqueChars = new Set(words.join('').toLowerCase()).size
+  const uniqueChars = new Set(words.map(w => w.texto).join('').toLowerCase()).size
 
   return {
     totalWords,
