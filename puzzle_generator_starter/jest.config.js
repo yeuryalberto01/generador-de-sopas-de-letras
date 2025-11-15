@@ -2,10 +2,20 @@
 export default {
   testEnvironment: 'jsdom',
   setupFilesAfterEnv: ['<rootDir>/src/setupTests.js'],
+  globals: {
+    'ts-jest': {
+      useESM: true
+    }
+  },
+  extensionsToTreatAsEsm: ['.ts', '.tsx'],
+  testEnvironmentOptions: {
+    customExportConditions: ['node', 'node-addons'],
+  },
   moduleNameMapper: {
     '\\.(css|less|scss|sass)$': 'identity-obj-proxy',
     '\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$':
-      '<rootDir>/__mocks__/fileMock.js'
+      '<rootDir>/__mocks__/fileMock.js',
+    '^import\\.meta$': '<rootDir>/src/__mocks__/importMeta.js'
   },
   transform: {
     '^.+\\.[tj]sx?$': 'babel-jest'

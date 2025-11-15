@@ -61,9 +61,36 @@ export const AppProvider: FC<AppProviderProps> = ({ children }) => {
 
   useEffect(() => {
     const cargarTemasIniciales = async () => {
-      const result = await temaOps.loadTemas();
-      if (result.ok && result.data) {
-        setTemas((result.data as Tema[]).map(normalizeTema));
+      try {
+        const result = await temaOps.loadTemas();
+        if (result.ok && result.data) {
+          const temasNormalizados = (result.data as Tema[]).map(normalizeTema);
+          setTemas(temasNormalizados);
+        } else {
+          // Fallback: cargar desde localStorage si existe
+          const temasLocales = localStorage.getItem('temas_backup');
+          if (temasLocales) {
+            try {
+              const parsedTemas = JSON.parse(temasLocales);
+              const temasNormalizados = parsedTemas.map(normalizeTema);
+              setTemas(temasNormalizados);
+            } catch (parseError) {
+              console.error('Error al parsear temas de localStorage:', parseError);
+            }
+          }
+        }
+      } catch (error) {
+        // Fallback: intentar localStorage
+        const temasLocales = localStorage.getItem('temas_backup');
+        if (temasLocales) {
+          try {
+            const parsedTemas = JSON.parse(temasLocales);
+            const temasNormalizados = parsedTemas.map(normalizeTema);
+            setTemas(temasNormalizados);
+          } catch (parseError) {
+            console.error('Error al parsear temas de localStorage:', parseError);
+          }
+        }
       }
     };
     cargarTemasIniciales();
@@ -106,7 +133,12 @@ export const AppProvider: FC<AppProviderProps> = ({ children }) => {
     const result = await temaOps.createNewTema(data);
     if (result.ok && result.data) {
       const normalizedTema = normalizeTema(result.data as Tema);
-      setTemas((prev) => [normalizedTema, ...prev]);
+      setTemas((prev) => {
+        const newTemas = [normalizedTema, ...prev];
+        // Backup to localStorage
+        localStorage.setItem('temas_backup', JSON.stringify(newTemas));
+        return newTemas;
+      });
       setSelectedTemaId(normalizedTema.id);
     }
     return result;
@@ -115,7 +147,12 @@ export const AppProvider: FC<AppProviderProps> = ({ children }) => {
   const updateTemaData = useCallback(async (id: string, data: { nombre: string; descripcion?: string }) => {
     const result = await temaOps.updateExistingTema(id, data);
     if (result.ok && result.data) {
-      setTemas((prev) => prev.map((t) => (t.id === id ? normalizeTema(result.data as Tema) : t)));
+      setTemas((prev) => {
+        const newTemas = prev.map((t) => (t.id === id ? normalizeTema(result.data as Tema) : t));
+        // Backup to localStorage
+        localStorage.setItem('temas_backup', JSON.stringify(newTemas));
+        return newTemas;
+      });
     }
     return result;
   }, [temaOps]);
@@ -123,7 +160,12 @@ export const AppProvider: FC<AppProviderProps> = ({ children }) => {
   const deleteTemaById = useCallback(async (id: string) => {
     const result = await temaOps.deleteExistingTema(id);
     if (result.ok) {
-      setTemas((prev) => prev.filter((t) => t.id !== id));
+      setTemas((prev) => {
+        const newTemas = prev.filter((t) => t.id !== id);
+        // Backup to localStorage
+        localStorage.setItem('temas_backup', JSON.stringify(newTemas));
+        return newTemas;
+      });
       if (selectedTemaId === id) {
         setSelectedTemaId(null);
       }

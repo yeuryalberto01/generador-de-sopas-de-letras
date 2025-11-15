@@ -164,10 +164,16 @@ export const BookProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   // ==================== API HELPERS ====================
 
-  const API_BASE = 'http://localhost:8000/api';
+  const API_BASE = (import.meta?.env?.VITE_API_BASE_URL as string | undefined) || '/api';
+
+  const buildEndpointUrl = (endpoint: string) => {
+    const normalizedBase = API_BASE.endsWith('/') ? API_BASE.slice(0, -1) : API_BASE;
+    const normalizedEndpoint = endpoint.startsWith('/') ? endpoint : `/${endpoint}`;
+    return `${normalizedBase}${normalizedEndpoint}`;
+  };
 
   const apiRequest = async (endpoint: string, options: RequestInit = {}) => {
-    const response = await fetch(`${API_BASE}${endpoint}`, {
+    const response = await fetch(buildEndpointUrl(endpoint), {
       headers: {
         'Content-Type': 'application/json',
         ...options.headers,
@@ -189,7 +195,7 @@ export const BookProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const loadBooks = async () => {
       try {
         setIsLoading(true);
-        const books = await apiRequest('/libros');
+        const books = await apiRequest('/db/libros');
         setProjects(books);
       } catch (error) {
         console.error(UI_TEXTS.ERRORS.LOADING_BOOKS, error);
@@ -238,7 +244,7 @@ export const BookProvider: React.FC<{ children: React.ReactNode }> = ({ children
         temaIds
       };
 
-      const createdBook = await apiRequest('/libros', {
+      const createdBook = await apiRequest('/db/libros', {
         method: 'POST',
         body: JSON.stringify(bookInput),
       });
@@ -292,7 +298,7 @@ export const BookProvider: React.FC<{ children: React.ReactNode }> = ({ children
               elements: []
             };
 
-            const createdPage = await apiRequest(`/libros/${createdBook.id}/pages`, {
+            const createdPage = await apiRequest(`/db/libros/${createdBook.id}/paginas`, {
               method: 'POST',
               body: JSON.stringify(pageInput),
             });
@@ -305,7 +311,7 @@ export const BookProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setCreationProgress(prev => ({ ...prev, current: prev.total, message: 'Finalizando...' }));
 
       // 4. Recargar libros y establecer proyecto actual
-      const updatedBooks = await apiRequest('/libros');
+      const updatedBooks = await apiRequest('/db/libros');
       setProjects(updatedBooks);
 
       const finalBook = updatedBooks.find((b: BookProject) => b.id === createdBook.id);
@@ -325,7 +331,7 @@ export const BookProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const loadProject = useCallback(async (projectId: string): Promise<BookProject | null> => {
     try {
-      const project = await apiRequest(`/libros/${projectId}`);
+      const project = await apiRequest(`/db/libros/${projectId}`);
       setCurrentProject(project);
       return project;
     } catch (error) {
@@ -344,7 +350,7 @@ export const BookProvider: React.FC<{ children: React.ReactNode }> = ({ children
         temaIds: currentProject.temaIds
       };
 
-      const updatedBook = await apiRequest(`/libros/${currentProject.id}`, {
+      const updatedBook = await apiRequest(`/db/libros/${currentProject.id}`, {
         method: 'PUT',
         body: JSON.stringify(updateData),
       });
@@ -380,7 +386,7 @@ export const BookProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const deleteProject = useCallback(async (projectId: string): Promise<boolean> => {
     try {
-      await apiRequest(`/libros/${projectId}`, {
+      await apiRequest(`/db/libros/${projectId}`, {
         method: 'DELETE',
       });
 
@@ -419,13 +425,13 @@ export const BookProvider: React.FC<{ children: React.ReactNode }> = ({ children
       elements: []
     };
 
-    const newPage = await apiRequest(`/libros/${currentProject.id}/pages`, {
+    const newPage = await apiRequest(`/db/libros/${currentProject.id}/paginas`, {
       method: 'POST',
       body: JSON.stringify(pageInput),
     });
 
     // Recargar el proyecto actualizado
-    const updatedBook = await apiRequest(`/libros/${currentProject.id}`);
+    const updatedBook = await apiRequest(`/db/libros/${currentProject.id}`);
     setCurrentProject(updatedBook);
     setProjects(prev => prev.map(p =>
       p.id === currentProject.id ? updatedBook : p
@@ -443,7 +449,7 @@ export const BookProvider: React.FC<{ children: React.ReactNode }> = ({ children
     try {
       // Nota: La API actual no tiene endpoint para actualizar páginas individuales
       // Por ahora, recargamos el libro completo
-      const updatedBook = await apiRequest(`/libros/${currentProject.id}`);
+      const updatedBook = await apiRequest(`/db/libros/${currentProject.id}`);
       setCurrentProject(updatedBook);
       setProjects(prev => prev.map(p =>
         p.id === currentProject.id ? updatedBook : p
@@ -459,12 +465,12 @@ export const BookProvider: React.FC<{ children: React.ReactNode }> = ({ children
     if (!currentProject) return false;
 
     try {
-      await apiRequest(`/libros/${currentProject.id}/pages/${pageId}`, {
+      await apiRequest(`/db/libros/${currentProject.id}/paginas/${pageId}`, {
         method: 'DELETE',
       });
 
       // Recargar el proyecto actualizado
-      const updatedBook = await apiRequest(`/libros/${currentProject.id}`);
+      const updatedBook = await apiRequest(`/db/libros/${currentProject.id}`);
       setCurrentProject(updatedBook);
       setProjects(prev => prev.map(p =>
         p.id === currentProject.id ? updatedBook : p
@@ -534,13 +540,13 @@ export const BookProvider: React.FC<{ children: React.ReactNode }> = ({ children
       temaIds: originalProject.temaIds
     };
 
-    const duplicatedBook = await apiRequest('/libros', {
+    const duplicatedBook = await apiRequest('/db/libros', {
       method: 'POST',
       body: JSON.stringify(duplicateInput),
     });
 
     // Recargar libros
-    const updatedBooks = await apiRequest('/libros');
+    const updatedBooks = await apiRequest('/db/libros');
     setProjects(updatedBooks);
 
     const finalBook = updatedBooks.find((b: BookProject) => b.id === duplicatedBook.id);

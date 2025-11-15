@@ -1,4 +1,4 @@
-"""
+﻿"""
 Backend FastAPI para el sistema de generación de sopas de letras
 
 Este módulo proporciona una API REST para gestionar temas y palabras
@@ -11,13 +11,13 @@ import os
 import random
 import traceback
 from datetime import datetime, timezone
-from typing import Optional, List
+from typing import Optional, List, Dict, Any
 from uuid import uuid4
 
 # Third party imports
 from fastapi import FastAPI, HTTPException, Depends
 from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from sqlalchemy.orm import Session
 
 # Database imports
@@ -25,24 +25,26 @@ from database import get_db, Tema, Libro, PaginaLibro
 
 # ========== MODELOS PYDANTIC ==========
 
-class TemaCreate(BaseModel):
-    """Modelo para crear un nuevo tema."""
+class PalabraSchema(BaseModel):
+    texto: str
+
+
+class TemaBase(BaseModel):
     nombre: str
     descripcion: Optional[str] = None
-    palabras: List[dict]  # [{"texto": "palabra"}]
+    palabras: List[PalabraSchema] = Field(default_factory=list)
     categoria: Optional[str] = None
-    etiquetas: Optional[List[str]] = None
+    etiquetas: List[str] = Field(default_factory=list)
     dificultad: Optional[str] = "medio"
 
-class TemaResponse(BaseModel):
+
+class TemaCreate(TemaBase):
+    """Modelo para crear o actualizar un tema."""
+
+
+class TemaResponse(TemaBase):
     """Modelo de respuesta para un tema."""
     id: str
-    nombre: str
-    descripcion: Optional[str]
-    palabras: List[dict]
-    categoria: Optional[str]
-    etiquetas: Optional[List[str]]
-    dificultad: str
     created_at: str
     updated_at: str
 
@@ -70,7 +72,7 @@ class PaginaCreate(BaseModel):
     numero_pagina: int
     titulo: Optional[str] = None
     tema_id: Optional[str] = None
-    contenido_json: Optional[dict] = None
+    contenido_json: Dict[str, Any] = Field(default_factory=dict)
 
 app = FastAPI(title="Puzzle API")
 
@@ -97,7 +99,7 @@ TEMAS = []
 LIBROS = []
 
 # Flag para evitar carga automática durante pruebas
-_SKIP_AUTO_LOAD = True
+_SKIP_AUTO_LOAD = False
 
 
 def load_temas():
@@ -551,12 +553,12 @@ def get_temas_db(db: Session = Depends(get_db)):
             id=tema.id,
             nombre=tema.nombre,
             descripcion=tema.descripcion,
-            palabras=json.loads(tema.palabras) if tema.palabras else [],
+            palabras=tema.palabras or [],
             categoria=tema.categoria,
-            etiquetas=json.loads(tema.etiquetas) if tema.etiquetas else [],
+            etiquetas=tema.etiquetas or [],
             dificultad=tema.dificultad,
             created_at=tema.created_at.isoformat(),
-            updated_at=tema.updated_at.isoformat()
+            updated_at=tema.updated_at.isoformat(),
         )
         for tema in temas
     ]
@@ -577,10 +579,10 @@ def create_tema_db(tema: TemaCreate, db: Session = Depends(get_db)):
         db_tema = Tema(
             nombre=tema.nombre,
             descripcion=tema.descripcion,
-            palabras=json.dumps(tema.palabras),
+            palabras=[palabra.dict() for palabra in tema.palabras],
             categoria=tema.categoria,
-            etiquetas=json.dumps(tema.etiquetas or []),
-            dificultad=tema.dificultad
+            etiquetas=tema.etiquetas or [],
+            dificultad=tema.dificultad,
         )
 
         print("DEBUG: Adding to database")
@@ -596,13 +598,12 @@ def create_tema_db(tema: TemaCreate, db: Session = Depends(get_db)):
             id=db_tema.id,
             nombre=db_tema.nombre,
             descripcion=db_tema.descripcion,
-            palabras=json.loads(db_tema.palabras),
+            palabras=db_tema.palabras or [],
             categoria=db_tema.categoria,
-            etiquetas=(json.loads(db_tema.etiquetas)
-                   if db_tema.etiquetas else []),
+            etiquetas=db_tema.etiquetas or [],
             dificultad=db_tema.dificultad,
             created_at=db_tema.created_at.isoformat(),
-            updated_at=db_tema.updated_at.isoformat()
+            updated_at=db_tema.updated_at.isoformat(),
         )
     except (ValueError, TypeError, AttributeError) as e:
         print(f"DEBUG: Error in create_tema_db: {e}")
@@ -620,9 +621,9 @@ def get_tema_db(tema_id: str, db: Session = Depends(get_db)):
         id=tema.id,
         nombre=tema.nombre,
         descripcion=tema.descripcion,
-        palabras=json.loads(tema.palabras) if tema.palabras else [],
+        palabras=tema.palabras or [],
         categoria=tema.categoria,
-        etiquetas=json.loads(tema.etiquetas) if tema.etiquetas else [],
+        etiquetas=tema.etiquetas or [],
         dificultad=tema.dificultad,
         created_at=tema.created_at.isoformat(),
         updated_at=tema.updated_at.isoformat()
@@ -642,9 +643,9 @@ def update_tema_db(tema_id: str, tema_update: TemaCreate, db: Session = Depends(
 
     tema.nombre = tema_update.nombre
     tema.descripcion = tema_update.descripcion
-    tema.palabras = json.dumps(tema_update.palabras)
+    tema.palabras = [palabra.dict() for palabra in tema_update.palabras]
     tema.categoria = tema_update.categoria
-    tema.etiquetas = json.dumps(tema_update.etiquetas or [])
+    tema.etiquetas = tema_update.etiquetas or []
     tema.dificultad = tema_update.dificultad
 
     db.commit()
@@ -654,9 +655,9 @@ def update_tema_db(tema_id: str, tema_update: TemaCreate, db: Session = Depends(
         id=tema.id,
         nombre=tema.nombre,
         descripcion=tema.descripcion,
-        palabras=json.loads(tema.palabras),
+        palabras=tema.palabras or [],
         categoria=tema.categoria,
-        etiquetas=json.loads(tema.etiquetas) if tema.etiquetas else [],
+        etiquetas=tema.etiquetas or [],
         dificultad=tema.dificultad,
         created_at=tema.created_at.isoformat(),
         updated_at=tema.updated_at.isoformat()
@@ -766,15 +767,16 @@ def create_pagina_db(libro_id: str, pagina: PaginaCreate, db: Session = Depends(
     if not libro:
         raise HTTPException(status_code=404, detail="Libro no encontrado")
 
+    contenido_data = pagina.contenido_json or {}
+
     db_pagina = PaginaLibro(
         libro_id=libro_id,
         numero_pagina=pagina.numero_pagina,
         titulo=pagina.titulo,
         tema_id=pagina.tema_id,
-        contenido_json=json.dumps(pagina.contenido_json) if pagina.contenido_json else None,
+        contenido_json=contenido_data,
         estado="completada",
-        elementos_count=(len(pagina.contenido_json.get("elementos", []))
-                         if pagina.contenido_json else 0)
+        elementos_count=len(contenido_data.get("elementos", [])),
     )
 
     db.add(db_pagina)
@@ -813,7 +815,7 @@ def get_paginas_libro_db(libro_id: str, db: Session = Depends(get_db)):
                 "numero_pagina": p.numero_pagina,
                 "titulo": p.titulo,
                 "tema_id": p.tema_id,
-                "contenido_json": json.loads(p.contenido_json) if p.contenido_json else None,
+                "contenido_json": p.contenido_json or None,
                 "estado": p.estado,
                 "elementos_count": p.elementos_count,
                 "created_at": p.created_at.isoformat(),
@@ -1001,3 +1003,4 @@ async def generate_puzzle(request: PuzzleRequest):
     )
 
     return response
+

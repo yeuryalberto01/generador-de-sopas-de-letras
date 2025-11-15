@@ -1,5 +1,5 @@
 import { AlertCircle, CheckCircle, X, XCircle } from 'lucide-react';
-import { useEffect } from 'react';
+import React, { useEffect } from 'react';
 
 /**
  * Componente de notificación Toast

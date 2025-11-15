@@ -1,6 +1,7 @@
 import { Download, Grid, Layout, Loader, Printer, Save, Settings, Type, ZoomIn, ZoomOut } from 'lucide-react';
-import { createContext, useCallback, useContext, useState } from 'react';
+import { createContext, useCallback, useContext, useEffect, useState } from 'react';
 import { UI_TEXTS } from '../../constants/uiTexts';
+import { temasService } from '../../services/temas';
 
 // ==================== CONSTANTS ====================
 const PAGE_SIZES = {
@@ -288,25 +289,25 @@ function PageSizeSelector() {
   );
 }
 
-// Tema Selector (Mock - se conectará a la API)
+// Tema Selector
 function TemaSelector() {
   const { state, updateState } = useDiagramacion();
-  
-  // Mock temas - en producción vendrá de la API
-  const mockTemas = [
-    { id: 1, nombre: 'Animales', palabras: [
-      { texto: 'Perro' }, { texto: 'Gato' }, { texto: 'León' }, 
-      { texto: 'Elefante' }, { texto: 'Jirafa' }, { texto: 'Tigre' }
-    ]},
-    { id: 2, nombre: 'Frutas', palabras: [
-      { texto: 'Manzana' }, { texto: 'Pera' }, { texto: 'Uva' },
-      { texto: 'Sandía' }, { texto: 'Melón' }
-    ]},
-    { id: 3, nombre: 'Colores', palabras: [
-      { texto: 'Rojo' }, { texto: 'Azul' }, { texto: 'Verde' },
-      { texto: 'Amarillo' }, { texto: 'Naranja' }, { texto: 'Morado' }
-    ]}
-  ];
+  const [temas, setTemas] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const loadTemas = async () => {
+      try {
+        const temasData = await temasService.getTemas();
+        setTemas(temasData);
+      } catch (error) {
+        console.error('Error loading temas:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    loadTemas();
+  }, []);
 
   return (
     <div className="p-4 bg-white rounded-lg border">
@@ -314,21 +315,28 @@ function TemaSelector() {
         <Type size={18} />
         Seleccionar Tema
       </h3>
-      <select
-        value={state.selectedTema?.id || ''}
-        onChange={(e) => {
-          const tema = mockTemas.find(t => t.id === parseInt(e.target.value));
-          updateState({ selectedTema: tema });
-        }}
-        className="w-full p-2 border rounded-lg"
-      >
-        <option value="">-- Seleccionar --</option>
-        {mockTemas.map(tema => (
-          <option key={tema.id} value={tema.id}>
-            {tema.nombre} ({tema.palabras.length} palabras)
-          </option>
-        ))}
-      </select>
+      {loading ? (
+        <div className="flex items-center justify-center p-4">
+          <Loader className="animate-spin" size={20} />
+          <span className="ml-2">Cargando temas...</span>
+        </div>
+      ) : (
+        <select
+          value={state.selectedTema?.id || ''}
+          onChange={(e) => {
+            const tema = temas.find(t => t.id === e.target.value);
+            updateState({ selectedTema: tema });
+          }}
+          className="w-full p-2 border rounded-lg"
+        >
+          <option value="">-- Seleccionar --</option>
+          {temas.map(tema => (
+            <option key={tema.id} value={tema.id}>
+              {tema.nombre} ({tema.palabras?.length || 0} palabras)
+            </option>
+          ))}
+        </select>
+      )}
       
       {state.selectedTema && (
         <div className="mt-3 p-3 bg-gray-50 rounded text-sm">

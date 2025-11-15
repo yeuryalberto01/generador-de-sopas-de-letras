@@ -284,6 +284,9 @@ function LibrosDashboard() {
   const { currentProject, projects, templates, isCreating, creationProgress, createProject, loadProject, deleteProject, duplicateProject, validateBookData, autoSaveEnabled, setAutoSaveEnabled } = useBook();
   const { temas, createNewTema } = useContext(AppContext);
   const temaOps = useTemaOperations();
+
+  console.log('LibrosDashboard - Temas cargados:', temas);
+  console.log('LibrosDashboard - Número de temas:', temas.length);
   const [showCreateDialog, setShowCreateDialog] = useState(false);
   const [showPreview, setShowPreview] = useState(false);
   const [previewProject, setPreviewProject] = useState<BookProject | null>(null);
@@ -291,12 +294,21 @@ function LibrosDashboard() {
   const [validationErrors, setValidationErrors] = useState<string[]>([]);
   const [showQuickTemaDialog, setShowQuickTemaDialog] = useState(false);
 
-  // Auto-open create dialog if no projects exist
+  // Auto-open create dialog if no projects exist and there are temas to use
   useEffect(() => {
-    if (projects.length === 0 && !showCreateDialog) {
+    if (projects.length === 0 && temas.length > 0 && !showCreateDialog) {
       setShowCreateDialog(true);
     }
-  }, [projects.length, showCreateDialog]);
+  }, [projects.length, temas.length, showCreateDialog]);
+
+  // Check if themes exist before allowing book creation
+  useEffect(() => {
+    if (temas.length === 0 && showCreateDialog) {
+      // Close the dialog and show a message
+      setShowCreateDialog(false);
+      // We'll handle this in the UI instead of redirecting automatically
+    }
+  }, [temas.length, showCreateDialog]);
 
   // Función para crear tema rápido
   const handleQuickCreateTema = async (titulo: string, palabras: string[]) => {
@@ -361,33 +373,64 @@ function LibrosDashboard() {
 
         {/* Quick Actions */}
         <div className="mb-8">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <button
-              onClick={() => setShowCreateDialog(true)}
-              className="flex items-center justify-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-            >
-              <Plus className="w-5 h-5" />
-              Crear Nuevo Libro
-            </button>
-
-            <button
-              onClick={() => navigate('/temas')}
-              className="flex items-center justify-center gap-2 px-6 py-3 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
-            >
-              <BookOpen className="w-5 h-5" />
-              Gestionar Temas
-            </button>
-
-            {currentProject && (
+          {temas.length === 0 ? (
+            /* No themes available - show message to create themes first */
+            <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-6 text-center">
+              <BookOpen className="w-12 h-12 text-yellow-600 mx-auto mb-4" />
+              <h3 className="text-lg font-semibold text-yellow-800 mb-2">
+                ¡Bienvenido al módulo de Libros!
+              </h3>
+              <p className="text-yellow-700 mb-4">
+                Para crear tu primer libro necesitas al menos un tema con palabras.
+                Los temas son colecciones de palabras que se convertirán en sopas de letras.
+              </p>
+              <div className="flex flex-col sm:flex-row gap-3 justify-center">
+                <button
+                  onClick={() => navigate('/temas')}
+                  className="flex items-center justify-center gap-2 px-6 py-3 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
+                >
+                  <Plus className="w-5 h-5" />
+                  Crear Mi Primer Tema
+                </button>
+                <button
+                  onClick={() => setShowQuickTemaDialog(true)}
+                  className="flex items-center justify-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                >
+                  <BookOpen className="w-5 h-5" />
+                  Tema Rápido
+                </button>
+              </div>
+            </div>
+          ) : (
+            /* Themes available - show normal actions */
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <button
-                onClick={() => navigate('/diagramacion')}
-                className="flex items-center justify-center gap-2 px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
+                onClick={() => setShowCreateDialog(true)}
+                className="flex items-center justify-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
               >
-                <Edit className="w-5 h-5" />
-                Diagramar Libro
+                <Plus className="w-5 h-5" />
+                Crear Nuevo Libro
               </button>
-            )}
-          </div>
+
+              <button
+                onClick={() => navigate('/temas')}
+                className="flex items-center justify-center gap-2 px-6 py-3 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
+              >
+                <BookOpen className="w-5 h-5" />
+                Gestionar Temas
+              </button>
+
+              {currentProject && (
+                <button
+                  onClick={() => navigate('/diagramacion')}
+                  className="flex items-center justify-center gap-2 px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
+                >
+                  <Edit className="w-5 h-5" />
+                  Diagramar Libro
+                </button>
+              )}
+            </div>
+          )}
         </div>
 
         {/* Current Project */}
@@ -411,21 +454,35 @@ function LibrosDashboard() {
           </h2>
 
           {projects.length === 0 ? (
-            <div className="text-center py-12 bg-white rounded-lg border-2 border-dashed border-gray-300">
-              <BookOpen className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-              <h3 className="text-lg font-medium text-gray-900 mb-2">
-                ¡Crea tu primer libro!
-              </h3>
-              <p className="text-gray-500 mb-4">
-                Organiza tus puzzles en libros profesionales con páginas, títulos e índices
-              </p>
-              <button
-                onClick={() => setShowCreateDialog(true)}
-                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
-              >
-                Crear Primer Libro
-              </button>
-            </div>
+            temas.length === 0 ? (
+              /* No themes available */
+              <div className="text-center py-12 bg-gray-50 rounded-lg border-2 border-dashed border-gray-300">
+                <BookOpen className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+                <h3 className="text-lg font-medium text-gray-900 mb-2">
+                  No hay libros disponibles
+                </h3>
+                <p className="text-gray-500">
+                  Crea primero algunos temas para poder generar libros con sopas de letras
+                </p>
+              </div>
+            ) : (
+              /* Themes available but no projects */
+              <div className="text-center py-12 bg-white rounded-lg border-2 border-dashed border-gray-300">
+                <BookOpen className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+                <h3 className="text-lg font-medium text-gray-900 mb-2">
+                  ¡Crea tu primer libro!
+                </h3>
+                <p className="text-gray-500 mb-4">
+                  Organiza tus puzzles en libros profesionales con páginas, títulos e índices
+                </p>
+                <button
+                  onClick={() => setShowCreateDialog(true)}
+                  className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+                >
+                  Crear Primer Libro
+                </button>
+              </div>
+            )
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {projects.map(project => (

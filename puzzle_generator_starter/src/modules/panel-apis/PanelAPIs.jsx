@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { del, get, post, put } from '../../services/apiClient';
 
 // Definición de los endpoints basados en el backend de FastAPI

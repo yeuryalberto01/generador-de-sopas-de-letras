@@ -1,4 +1,4 @@
-# 📋 Flujo de Trabajo - Sistema de Libros de Sopas de Letras
+﻿# 📋 Flujo de Trabajo - Sistema de Libros de Sopas de Letras
 
 ## 🎯 Visión General
 
@@ -133,6 +133,12 @@ LIBROS → EXPORTAR
 - [ ] Colaboración en tiempo real
 - [ ] Analytics de uso de libros
 - [ ] Integración con plataformas educativas
+
+## ✅ Control de errores y mejoras
+
+- Antes de iniciar cualquier cambio **lee el [LIBRO_DE_ERRORES.md](../LIBRO_DE_ERRORES.md)** para conocer incidentes abiertos y decisiones previas.
+- Al completar un fix o una mejora **documenta en el libro** la acción tomada y su estado.
+- Si una mejora no está registrada en el libro, se considera incompleta.
 
 ---
 

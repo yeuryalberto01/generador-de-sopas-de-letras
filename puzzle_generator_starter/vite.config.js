@@ -1,6 +1,10 @@
 import react from '@vitejs/plugin-react'
 import { defineConfig } from 'vite'
 
+const backendHost = process.env.VITE_BACKEND_HOST || process.env.BACKEND_HOST || '127.0.0.1'
+const backendPort = process.env.VITE_BACKEND_PORT || process.env.BACKEND_PORT || '8001'
+const backendTarget = `http://${backendHost}:${backendPort}`
+
 export default defineConfig({
   plugins: [react({
     jsxRuntime: 'automatic'
@@ -10,8 +14,8 @@ export default defineConfig({
   },
   esbuild: {
     /**
-     * Emit ASCII-only bundles so every acento/ñ is escaped as \uXXXX.
-     * Esto evita que navegadores que fuerzan ISO-8859-1 vean textos como "ConfiguraciÃ³n".
+     * Emit ASCII-only bundles so every accent is escaped as \uXXXX.
+     * Esto evita que navegadores que fuerzan ISO-8859-1 vean textos truncados.
      */
     charset: 'ascii'
   },
@@ -19,7 +23,7 @@ export default defineConfig({
     host: true,
     proxy: {
       '/api': {
-        target: 'http://127.0.0.1:8001',
+        target: backendTarget,
         changeOrigin: true,
         secure: false,
       }

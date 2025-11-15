@@ -15,6 +15,13 @@ const staticCommands = [
     path: '/',
   },
   {
+    id: 'libros',
+    title: 'Gestionar Libros',
+    section: 'Navegación',
+    icon: <FileText size={18} />,
+    path: '/libros',
+  },
+  {
     id: 'temas',
     title: 'Gestionar Temas',
     section: 'Navegación',
@@ -87,6 +94,8 @@ const CommandPalette = memo(function CommandPalette() {
 
   useEffect(() => {
     const handleKeyDown = (e) => {
+      if (!app.isCommandPaletteOpen) return;
+
       if (e.key === 'Escape') handleClose();
       if (e.key === 'ArrowDown') {
         setActiveIndex(i => (i + 1) % filteredCommands.length);
@@ -95,12 +104,13 @@ const CommandPalette = memo(function CommandPalette() {
         setActiveIndex(i => (i - 1 + filteredCommands.length) % filteredCommands.length);
       }
       if (e.key === 'Enter' && filteredCommands[activeIndex]) {
+        e.preventDefault();
         executeCommand(filteredCommands[activeIndex]);
       }
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [filteredCommands, activeIndex, handleClose, executeCommand]);
+  }, [filteredCommands, activeIndex, handleClose, executeCommand, app.isCommandPaletteOpen]);
 
   return (
     <AnimatePresence>

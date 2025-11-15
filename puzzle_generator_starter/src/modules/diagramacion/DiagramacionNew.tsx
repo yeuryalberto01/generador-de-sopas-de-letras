@@ -4,6 +4,7 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useState } 
 import { useNavigate } from 'react-router-dom';
 import { UI_TEXTS } from '../../constants/uiTexts';
 import { useBook } from '../../context/BookContext';
+import { temasService } from '../../services/temas';
 
 // ==================== CONSTANTS ====================
 const PAGE_SIZES = {
@@ -348,47 +349,35 @@ function PageSizeSelector() {
   );
 }
 
-// Tema Selector (Mock - se conectará a la API)
+// Tema Selector
 function TemaSelector() {
   const { state, updateState } = useDiagramacion();
   const [searchTerm, setSearchTerm] = useState('');
-
-  // Mock temas - en produccin vendr de la API
-  const mockTemas = [
-    {
-      id: 1,
-      nombre: 'Animales',
-      palabras: [
-        { texto: 'Perro' }, { texto: 'Gato' }, { texto: 'Len' },
-        { texto: 'Elefante' }, { texto: 'Jirafa' }, { texto: 'Tigre' }
-      ]
-    },
-    {
-      id: 2,
-      nombre: 'Frutas',
-      palabras: [
-        { texto: 'Manzana' }, { texto: 'Pera' }, { texto: 'Uva' },
-        { texto: 'Sanda' }, { texto: 'Meln' }
-      ]
-    },
-    {
-      id: 3,
-      nombre: 'Colores',
-      palabras: [
-        { texto: 'Rojo' }, { texto: 'Azul' }, { texto: 'Verde' },
-        { texto: 'Amarillo' }, { texto: 'Naranja' }, { texto: 'Morado' }
-      ]
-    }
-  ];
+  const [temas, setTemas] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (!state.selectedTema && mockTemas.length > 0) {
-      updateState({ selectedTema: normalizeTemaPayload(mockTemas[0]) });
+    const loadTemas = async () => {
+      try {
+        const temasData = await temasService.getTemas();
+        setTemas(temasData);
+      } catch (error) {
+        console.error('Error loading temas:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    loadTemas();
+  }, []);
+
+  useEffect(() => {
+    if (!state.selectedTema && temas.length > 0) {
+      updateState({ selectedTema: normalizeTemaPayload(temas[0]) });
     }
-  }, []); // Runs once to set default
+  }, [temas, state.selectedTema, updateState]);
 
   const catalog = useMemo(() => {
-    const baseCatalog = mockTemas.map(normalizeTemaPayload);
+    const baseCatalog = temas.map(normalizeTemaPayload);
     const selected = normalizeTemaPayload(state.selectedTema);
 
     if (!selected) return baseCatalog;

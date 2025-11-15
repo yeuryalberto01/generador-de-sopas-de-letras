@@ -58,15 +58,15 @@ const PalabraItem: FC<PalabraItemProps> = memo(({
     if (isEditing) {
       const result = validateWord(editValue);
       setValidation(result);
-      
+
       const otherWords = allWords.filter((_, i) => i !== index);
       const normalizedEdit = editValue.toLowerCase().trim();
       const normalizedOthers = otherWords.map(w => w.toLowerCase().trim());
-      
+
       if (normalizedOthers.includes(normalizedEdit)) {
-        setValidation({ 
-          valid: false, 
-          message: 'Esta palabra ya existe en la lista' 
+        setValidation({
+          valid: false,
+          message: 'Esta palabra ya existe en la lista'
         });
       }
     }
@@ -132,17 +132,20 @@ const AgregarPalabraInput: FC<AgregarPalabraInputProps> = memo(({ onAdd, allWord
   }, [value, validation.valid, onAdd]);
 
   const handleKeyDown = useCallback((e: KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter') handleAdd();
+    if (e.key === 'Enter') {
+      e.preventDefault(); // Previene el envío del formulario principal
+      handleAdd();
+    }
   }, [handleAdd]);
 
   useEffect(() => {
     if (value.trim()) {
       const result = validateWord(value.trim());
       setValidation(result);
-      
+
       const normalizedValue = value.toLowerCase().trim();
       const normalizedWords = allWords.map(w => w.toLowerCase().trim());
-      
+
       if (normalizedWords.includes(normalizedValue)) {
         setValidation({ valid: false, message: 'Esta palabra ya existe' });
       }

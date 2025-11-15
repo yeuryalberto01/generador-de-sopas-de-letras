@@ -4,6 +4,15 @@ import '@testing-library/jest-dom'
 global.TextEncoder = require('util').TextEncoder
 global.TextDecoder = require('util').TextDecoder
 
+// Mock import.meta
+global.import = {
+  meta: {
+    env: {
+      VITE_API_BASE_URL: '/api'
+    }
+  }
+}
+
 // Mock the apiClient module to avoid import.meta issues
 jest.mock('./services/apiClient', () => ({
   get: jest.fn(),

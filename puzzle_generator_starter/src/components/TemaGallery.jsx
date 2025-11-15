@@ -1,5 +1,5 @@
 import { AnimatePresence, motion } from 'framer-motion'
-import { memo, useMemo, useState } from 'react'
+import React, { memo, useMemo, useState } from 'react'
 import TemaCard from './TemaCard'
 
 const CATEGORIAS = {

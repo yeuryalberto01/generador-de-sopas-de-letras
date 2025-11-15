@@ -1,5 +1,5 @@
 import { AlertCircle, AlertTriangle, Info } from 'lucide-react'
-import { useEffect } from 'react'
+import React, { useEffect } from 'react'
 
 /**
  * Componente de diálogo modal para confirmaciones

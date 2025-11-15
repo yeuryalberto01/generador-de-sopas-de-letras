@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { checkHealth } from '../services/health'
 
 export default function NetBadge(){

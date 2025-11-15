@@ -1,5 +1,5 @@
 import { AlertCircle, Loader2, Plus, Save } from 'lucide-react';
-import { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import PalabraItem from './PalabraItem'; // Asumiendo que PalabraItem se extrae a su propio archivo
 
 const VALIDATION_REGEX = /^[A-Za-zÁÉÍÓÚÜÑáéíóúüñ0-9_-]{2,32}$/;
