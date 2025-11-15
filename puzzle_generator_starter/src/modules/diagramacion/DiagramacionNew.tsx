@@ -565,44 +565,77 @@ function TemaSelector() {
       )}
     </div>
   );
-}function GridConfigurator() {
+}
+
+function GridConfigurator() {
   const { state, updateState } = useDiagramacion();
   const { generateGrid } = useWordSearchAlgorithm();
 
-  const handleGenerate = () => {
+  const handleGenerate = async () => {
     if (!state.selectedTema) {
       alert(UI_TEXTS.INFO.SELECT_THEME_FIRST);
       return;
     }
 
-    const words = state.selectedTema.palabras;
-    const wordLengths = words.map(w => w.texto.length);
-    let rows = state.gridConfig.rows;
-    let cols = state.gridConfig.cols;
+    // Mostrar loading
+    updateState({ isGenerating: true });
 
-    if (state.gridConfig.type === GRID_TYPES.AUTO) {
-      const size = calculateOptimalGrid(words.length, wordLengths, state.pageSize);
-      rows = cols = size;
-    }
+    try {
+      const palabras = state.selectedTema.palabras.map(p => p.texto);
 
-    const { grid, placedWords } = generateGrid(rows, cols, words);
+      const response = await fetch("/api/diagramacion/generate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ palabras })
+      });
 
-    const wordColors = {};
-    placedWords.forEach((word, index) => {
-      wordColors[word.id] = SOLUTION_COLORS[index % SOLUTION_COLORS.length];
-    });
+      const data = await response.json();
 
-    updateState({
-      grid,
-      placedWords,
-      gridConfig: { ...state.gridConfig, rows, cols },
-      wordColors,
-      generatedPuzzle: {
-        grid,
-        words: placedWords,
-        config: { ...state.gridConfig, rows, cols }
+      if (!response.ok) {
+        throw new Error(data.detail || "Error del servidor");
       }
-    });
+
+      // Convertir el formato del backend al formato del frontend
+      const grid = data.grid;
+      const placedWords = data.soluciones.map((sol, index) => ({
+        id: `word-${index}`,
+        text: sol.palabra,
+        positions: [], // El backend no proporciona posiciones detalladas
+        start: sol.inicio,
+        end: sol.fin,
+        direction: sol.direccion
+      }));
+
+      const wordColors = {};
+      placedWords.forEach((word, index) => {
+        wordColors[word.id] = SOLUTION_COLORS[index % SOLUTION_COLORS.length];
+      });
+
+      updateState({
+        grid,
+        placedWords,
+        gridConfig: {
+          ...state.gridConfig,
+          rows: data.tamaño,
+          cols: data.tamaño
+        },
+        wordColors,
+        generatedPuzzle: {
+          grid,
+          words: placedWords,
+          config: {
+            rows: data.tamaño,
+            cols: data.tamaño
+          }
+        },
+        isGenerating: false
+      });
+
+    } catch (error) {
+      console.error("Error generando sopa:", error);
+      alert("Error generando la sopa de letras. Inténtalo de nuevo.");
+      updateState({ isGenerating: false });
+    }
   };
 
   return (

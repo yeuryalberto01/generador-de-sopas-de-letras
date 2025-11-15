@@ -2,7 +2,7 @@ import react from '@vitejs/plugin-react'
 import { defineConfig } from 'vite'
 
 const backendHost = process.env.VITE_BACKEND_HOST || process.env.BACKEND_HOST || '127.0.0.1'
-const backendPort = process.env.VITE_BACKEND_PORT || process.env.BACKEND_PORT || '8001'
+const backendPort = process.env.VITE_BACKEND_PORT || process.env.BACKEND_PORT || '8000'
 const backendTarget = `http://${backendHost}:${backendPort}`
 
 export default defineConfig({

@@ -21,7 +21,10 @@ from pydantic import BaseModel, Field
 from sqlalchemy.orm import Session
 
 # Database imports
-from database import get_db, Tema, Libro, PaginaLibro
+from database import get_db, Tema, Libro, PaginaLibro, SopaGenerada, LibroItem
+
+# Router imports
+from routers.diagramacion import router as diagramacion_router
 
 # ========== MODELOS PYDANTIC ==========
 
@@ -53,6 +56,7 @@ class LibroCreate(BaseModel):
     nombre: str
     descripcion: Optional[str] = None
     plantilla: Optional[str] = "basico"
+    temaIds: Optional[List[str]] = None
 
 class LibroResponse(BaseModel):
     """Modelo de respuesta para un libro."""
@@ -74,6 +78,56 @@ class PaginaCreate(BaseModel):
     tema_id: Optional[str] = None
     contenido_json: Dict[str, Any] = Field(default_factory=dict)
 
+class SopaGeneradaBase(BaseModel):
+    tema_id: Optional[str] = None
+    palabras: List[str]
+    grid: List[List[str]]
+    word_positions: List[Dict[str, Any]]
+    grid_size: int = 15
+    dificultad: str = "medio"
+    tiempo_generacion: Optional[float] = None
+    compartible: bool = False
+
+class SopaGeneradaCreate(SopaGeneradaBase):
+    pass
+
+class SopaGeneradaResponse(SopaGeneradaBase):
+    id: str
+    enlace_publico: Optional[str] = None
+    created_at: str
+
+class LibroItemBase(BaseModel):
+    tema_id: str
+    orden: int = 0
+    configuracion: Dict[str, Any] = Field(default_factory=dict)
+
+class LibroItemCreate(LibroItemBase):
+    pass
+
+class LibroItemResponse(LibroItemBase):
+    id: str
+    libro_id: str
+    tema_nombre: str
+    created_at: str
+
+    class Config:
+        from_attributes = True
+
+class LibroConItemsResponse(BaseModel):
+    id: str
+    nombre: str
+    descripcion: str
+    plantilla: str
+    estado: str
+    progreso_creacion: float
+    paginas_totales: int
+    created_at: str
+    updated_at: str
+    items: List[LibroItemResponse] = []
+
+    class Config:
+        from_attributes = True
+
 app = FastAPI(title="Puzzle API")
 
 # CORS opcional si no usas proxy de Vite
@@ -84,6 +138,9 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# Incluir routers
+app.include_router(diagramacion_router)
 
 # Configuración de persistencia
 DATA_DIR = os.path.join(os.path.dirname(__file__), "data")
@@ -545,9 +602,16 @@ def test_endpoint(data: dict):
 # ==================== TEMAS (BASE DE DATOS) ====================
 
 @app.get("/api/db/temas", response_model=List[TemaResponse])
-def get_temas_db(db: Session = Depends(get_db)):
-    """Obtener todos los temas de la base de datos."""
-    temas = db.query(Tema).all()
+def get_temas_db(include_public: bool = False, db: Session = Depends(get_db)):
+    """Obtener todos los temas de la base de datos (excluyendo eliminados)."""
+    query = db.query(Tema).filter(Tema.deleted_at.is_(None))
+
+    # Si se solicita incluir temas públicos, añadirlos
+    if include_public:
+        # Por ahora, como no hay usuarios, todos son "públicos" para compatibilidad
+        pass  # En futuro: query = query.filter(or_(Tema.user_id == current_user.id, Tema.es_publico == True))
+
+    temas = query.all()
     return [
         TemaResponse(
             id=tema.id,
@@ -675,12 +739,122 @@ def delete_tema_db(tema_id: str, db: Session = Depends(get_db)):
 
     return {"message": f"Tema '{tema.nombre}' eliminado correctamente"}
 
+# ==================== SOPAS GENERADAS ====================
+
+@app.post("/api/db/sopas", response_model=SopaGeneradaResponse)
+def create_sopa_generada(sopa: SopaGeneradaCreate, db: Session = Depends(get_db)):
+    """Guardar una sopa de letras generada en el histórico."""
+    import time
+    import secrets
+
+    # Generar enlace público si es compartible
+    enlace_publico = None
+    if sopa.compartible:
+        enlace_publico = secrets.token_urlsafe(16)
+
+    db_sopa = SopaGenerada(
+        tema_id=sopa.tema_id,
+        palabras=sopa.palabras,
+        grid=sopa.grid,
+        word_positions=sopa.word_positions,
+        grid_size=sopa.grid_size,
+        dificultad=sopa.dificultad,
+        tiempo_generacion=sopa.tiempo_generacion,
+        compartible=sopa.compartible,
+        enlace_publico=enlace_publico
+    )
+
+    db.add(db_sopa)
+    db.commit()
+    db.refresh(db_sopa)
+
+    return SopaGeneradaResponse(
+        id=db_sopa.id,
+        tema_id=db_sopa.tema_id,
+        palabras=db_sopa.palabras,
+        grid=db_sopa.grid,
+        word_positions=db_sopa.word_positions,
+        grid_size=db_sopa.grid_size,
+        dificultad=db_sopa.dificultad,
+        tiempo_generacion=db_sopa.tiempo_generacion,
+        compartible=db_sopa.compartible,
+        enlace_publico=db_sopa.enlace_publico,
+        created_at=db_sopa.created_at.isoformat()
+    )
+
+@app.get("/api/db/sopas", response_model=List[SopaGeneradaResponse])
+def get_sopas_generadas(limit: int = 50, db: Session = Depends(get_db)):
+    """Obtener histórico de sopas generadas."""
+    sopas = db.query(SopaGenerada).order_by(SopaGenerada.created_at.desc()).limit(limit).all()
+    return [
+        SopaGeneradaResponse(
+            id=sopa.id,
+            tema_id=sopa.tema_id,
+            palabras=sopa.palabras,
+            grid=sopa.grid,
+            word_positions=sopa.word_positions,
+            grid_size=sopa.grid_size,
+            dificultad=sopa.dificultad,
+            tiempo_generacion=sopa.tiempo_generacion,
+            compartible=sopa.compartible,
+            enlace_publico=sopa.enlace_publico,
+            created_at=sopa.created_at.isoformat()
+        )
+        for sopa in sopas
+    ]
+
+@app.get("/api/db/sopas/{sopa_id}", response_model=SopaGeneradaResponse)
+def get_sopa_generada(sopa_id: str, db: Session = Depends(get_db)):
+    """Obtener una sopa generada específica."""
+    sopa = db.query(SopaGenerada).filter(SopaGenerada.id == sopa_id).first()
+    if not sopa:
+        raise HTTPException(status_code=404, detail="Sopa no encontrada")
+
+    return SopaGeneradaResponse(
+        id=sopa.id,
+        tema_id=sopa.tema_id,
+        palabras=sopa.palabras,
+        grid=sopa.grid,
+        word_positions=sopa.word_positions,
+        grid_size=sopa.grid_size,
+        dificultad=sopa.dificultad,
+        tiempo_generacion=sopa.tiempo_generacion,
+        compartible=sopa.compartible,
+        enlace_publico=sopa.enlace_publico,
+        created_at=sopa.created_at.isoformat()
+    )
+
+@app.get("/api/public/sopas/{enlace}", response_model=SopaGeneradaResponse)
+def get_sopa_publica(enlace: str, db: Session = Depends(get_db)):
+    """Obtener una sopa compartible por enlace público."""
+    sopa = db.query(SopaGenerada).filter(
+        SopaGenerada.enlace_publico == enlace,
+        SopaGenerada.compartible == True
+    ).first()
+
+    if not sopa:
+        raise HTTPException(status_code=404, detail="Sopa no encontrada o no compartible")
+
+    return SopaGeneradaResponse(
+        id=sopa.id,
+        tema_id=sopa.tema_id,
+        palabras=sopa.palabras,
+        grid=sopa.grid,
+        word_positions=sopa.word_positions,
+        grid_size=sopa.grid_size,
+        dificultad=sopa.dificultad,
+        tiempo_generacion=sopa.tiempo_generacion,
+        compartible=sopa.compartible,
+        enlace_publico=sopa.enlace_publico,
+        created_at=sopa.created_at.isoformat()
+    )
+
 # ==================== LIBROS (BASE DE DATOS) ====================
 
 @app.get("/api/db/libros", response_model=List[LibroResponse])
 def get_libros_db(db: Session = Depends(get_db)):
-    """Obtener todos los libros de la base de datos."""
-    libros = db.query(Libro).all()
+    """Obtener todos los libros de la base de datos (excluyendo eliminados)."""
+    libros = db.query(Libro).filter(Libro.deleted_at.is_(None)).all()
     return [
         LibroResponse(
             id=libro.id,
@@ -825,6 +999,134 @@ def get_paginas_libro_db(libro_id: str, db: Session = Depends(get_db)):
         ]
     }
 
+# ==================== GESTIÓN DE LIBROS CON ITEMS ====================
+
+@app.get("/api/db/libros/{libro_id}/items", response_model=List[LibroItemResponse])
+def get_libro_items(libro_id: str, db: Session = Depends(get_db)):
+    """Obtener todos los items de un libro."""
+    libro = db.query(Libro).filter(Libro.id == libro_id, Libro.deleted_at.is_(None)).first()
+    if not libro:
+        raise HTTPException(status_code=404, detail="Libro no encontrado")
+
+    items = (db.query(LibroItem)
+             .filter(LibroItem.libro_id == libro_id)
+             .order_by(LibroItem.orden).all())
+
+    result = []
+    for item in items:
+        result.append(LibroItemResponse(
+            id=item.id,
+            libro_id=item.libro_id,
+            tema_id=item.tema_id,
+            orden=item.orden,
+            configuracion=item.configuracion or {},
+            tema_nombre=item.tema.nombre if item.tema else "Tema desconocido",
+            created_at=item.created_at.isoformat()
+        ))
+
+    return result
+
+@app.post("/api/db/libros/{libro_id}/items", response_model=LibroItemResponse)
+def add_tema_to_libro(libro_id: str, item: LibroItemCreate, db: Session = Depends(get_db)):
+    """Añadir un tema a un libro como item."""
+    libro = db.query(Libro).filter(Libro.id == libro_id, Libro.deleted_at.is_(None)).first()
+    if not libro:
+        raise HTTPException(status_code=404, detail="Libro no encontrado")
+
+    tema = db.query(Tema).filter(Tema.id == item.tema_id, Tema.deleted_at.is_(None)).first()
+    if not tema:
+        raise HTTPException(status_code=404, detail="Tema no encontrado")
+
+    # Obtener el último orden
+    ultimo_orden = (db.query(LibroItem.orden)
+                   .filter(LibroItem.libro_id == libro_id)
+                   .order_by(LibroItem.orden.desc())
+                   .first())
+
+    nuevo_orden = (ultimo_orden[0] + 1) if ultimo_orden else 0
+
+    db_item = LibroItem(
+        libro_id=libro_id,
+        tema_id=item.tema_id,
+        orden=nuevo_orden,
+        configuracion=item.configuracion
+    )
+
+    db.add(db_item)
+    db.commit()
+    db.refresh(db_item)
+
+    return LibroItemResponse(
+        id=db_item.id,
+        libro_id=db_item.libro_id,
+        tema_id=db_item.tema_id,
+        orden=db_item.orden,
+        configuracion=db_item.configuracion or {},
+        tema_nombre=tema.nombre,
+        created_at=db_item.created_at.isoformat()
+    )
+
+@app.put("/api/db/libros/{libro_id}/items/reorder")
+def reorder_libro_items(libro_id: str, nuevos_ordenes: List[Dict[str, int]], db: Session = Depends(get_db)):
+    """Reordenar los items de un libro."""
+    libro = db.query(Libro).filter(Libro.id == libro_id, Libro.deleted_at.is_(None)).first()
+    if not libro:
+        raise HTTPException(status_code=404, detail="Libro no encontrado")
+
+    # nuevos_ordenes = [{"item_id": "uuid", "orden": 0}, {"item_id": "uuid", "orden": 1}, ...]
+    for item_data in nuevos_ordenes:
+        item_id = item_data["item_id"]
+        nuevo_orden = item_data["orden"]
+
+        db.query(LibroItem).filter(LibroItem.id == item_id).update({"orden": nuevo_orden})
+
+    db.commit()
+    return {"message": "Items reordenados correctamente"}
+
+@app.delete("/api/db/libros/items/{item_id}")
+def remove_item_from_libro(item_id: str, db: Session = Depends(get_db)):
+    """Eliminar un item de un libro."""
+    item = db.query(LibroItem).filter(LibroItem.id == item_id).first()
+    if not item:
+        raise HTTPException(status_code=404, detail="Item no encontrado")
+
+    db.delete(item)
+    db.commit()
+
+    return {"message": "Item eliminado correctamente"}
+
+@app.get("/api/db/libros/{libro_id}/completo", response_model=LibroConItemsResponse)
+def get_libro_completo(libro_id: str, db: Session = Depends(get_db)):
+    """Obtener un libro completo con todos sus items."""
+    libro = db.query(Libro).filter(Libro.id == libro_id, Libro.deleted_at.is_(None)).first()
+    if not libro:
+        raise HTTPException(status_code=404, detail="Libro no encontrado")
+
+    items = []
+    for item in libro.items:
+        items.append(LibroItemResponse(
+            id=item.id,
+            libro_id=item.libro_id,
+            tema_id=item.tema_id,
+            orden=item.orden,
+            configuracion=item.configuracion or {},
+            tema_nombre=item.tema.nombre if item.tema else "Tema desconocido",
+            created_at=item.created_at.isoformat()
+        ))
+
+    return LibroConItemsResponse(
+        id=libro.id,
+        nombre=libro.nombre,
+        descripcion=libro.descripcion,
+        plantilla=libro.plantilla,
+        estado=libro.estado,
+        progreso_creacion=libro.progreso_creacion,
+        paginas_totales=libro.paginas_totales,
+        created_at=libro.created_at.isoformat(),
+        updated_at=libro.updated_at.isoformat(),
+        items=items
+    )
+
 
 # ==================== DIAGRAMACIÓN ====================
 
@@ -965,29 +1267,45 @@ def generate_word_search(words: List[str], grid_size: str, difficulty: str) -> d
     }
 
 @app.post("/api/diagramacion/generate", response_model=PuzzleResponse)
-async def generate_puzzle(request: PuzzleRequest):
+async def generate_puzzle(request: PuzzleRequest, db: Session = Depends(get_db)):
     """
-    Genera una sopa de letras basada en un tema.
+    Genera una sopa de letras basada en un tema y guarda en histórico.
 
     - **tema_id**: ID del tema a usar
     - **grid_size**: Tamaño del grid (ej: "15x15")
     - **difficulty**: Dificultad ("easy", "medium", "hard")
     """
-    # Validar que el tema existe
-    tema = None
-    for t in TEMAS:
-        if t.id == request.tema_id:
-            tema = t
-            break
+    import time
 
+    # Validar que el tema existe en la base de datos
+    tema = db.query(Tema).filter(Tema.id == request.tema_id, Tema.deleted_at.is_(None)).first()
     if not tema:
         raise HTTPException(status_code=404, detail="Tema no encontrado")
 
-    if not tema.words or len(tema.words) == 0:
+    if not tema.palabras or len(tema.palabras) == 0:
         raise HTTPException(status_code=422, detail="El tema no tiene palabras")
 
-    # Generar puzzle
-    puzzle_data = generate_word_search(tema.words, request.grid_size, request.difficulty)
+    # Extraer palabras del tema
+    palabras_texto = [p.get("texto", "") for p in tema.palabras if p.get("texto")]
+
+    # Medir tiempo de generación
+    start_time = time.time()
+    puzzle_data = generate_word_search(palabras_texto, request.grid_size, request.difficulty)
+    generation_time = time.time() - start_time
+
+    # Guardar en histórico de sopas generadas
+    db_sopa = SopaGenerada(
+        tema_id=request.tema_id,
+        palabras=palabras_texto,
+        grid=puzzle_data["grid"],
+        word_positions=puzzle_data["word_positions"],
+        grid_size=request.grid_size,
+        dificultad=request.difficulty,
+        tiempo_generacion=generation_time,
+        compartible=False  # Por defecto no compartible
+    )
+    db.add(db_sopa)
+    db.commit()
 
     # Crear respuesta
     response = PuzzleResponse(

@@ -9,10 +9,12 @@ from datetime import datetime, timezone
 
 from sqlalchemy import (
     JSON,
+    Boolean,
     Column,
     DateTime,
     Float,
     ForeignKey,
+    Index,
     Integer,
     LargeBinary,
     String,
@@ -41,10 +43,14 @@ SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 # Base para modelos
 Base = declarative_base()
 
+# Mixin para soft-delete
+class SoftDeleteMixin:
+    deleted_at = Column(DateTime(timezone=True), nullable=True)
+
 
 # ========== MODELOS DE BASE DE DATOS ==========
 
-class Tema(Base):
+class Tema(Base, SoftDeleteMixin):
     """Modelo para temas reutilizables."""
 
     __tablename__ = "temas"
@@ -58,6 +64,7 @@ class Tema(Base):
     categoria = Column(String(100))
     etiquetas = Column(JSON_TYPE, default=list)
     dificultad = Column(String(20), default="medio")
+    es_publico = Column(Boolean, default=False)  # Para temas compartidos
     created_at = Column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc))
     updated_at = Column(
         DateTime(timezone=True),
@@ -65,9 +72,19 @@ class Tema(Base):
         onupdate=lambda: datetime.now(timezone.utc),
     )
 
+    # Índices para rendimiento
+    __table_args__ = (
+        Index('ix_tema_nombre', "nombre"),
+        Index('ix_tema_categoria', "categoria"),
+        Index('ix_tema_dificultad', "dificultad"),
+        Index('ix_tema_es_publico', "es_publico"),
+        Index('ix_tema_deleted_at', "deleted_at"),
+    )
+
     # Relaciones
     recursos = relationship("RecursoTema", back_populates="tema", cascade="all, delete-orphan")
     paginas = relationship("PaginaLibro", back_populates="tema")
+    libro_items = relationship("LibroItem", back_populates="tema", cascade="all, delete-orphan")
 
 
 class RecursoTema(Base):
@@ -86,7 +103,7 @@ class RecursoTema(Base):
     tema = relationship("Tema", back_populates="recursos")
 
 
-class Libro(Base):
+class Libro(Base, SoftDeleteMixin):
     """Modelo para libros de sopas de letras."""
 
     __tablename__ = "libros"
@@ -105,8 +122,16 @@ class Libro(Base):
         onupdate=lambda: datetime.now(timezone.utc),
     )
 
+    # Índices para rendimiento
+    __table_args__ = (
+        Index('ix_libro_estado', "estado"),
+        Index('ix_libro_plantilla', "plantilla"),
+        Index('ix_libro_deleted_at', "deleted_at"),
+    )
+
     # Relaciones
     paginas = relationship("PaginaLibro", back_populates="libro", cascade="all, delete-orphan")
+    items = relationship("LibroItem", back_populates="libro", cascade="all, delete-orphan", order_by="LibroItem.orden")
 
 
 class PaginaLibro(Base):
@@ -157,6 +182,59 @@ class RecursoPagina(Base):
 
     # Relaciones
     pagina = relationship("PaginaLibro", back_populates="recursos")
+
+
+class SopaGenerada(Base):
+    """Histórico de sopas de letras generadas."""
+
+    __tablename__ = "sopas_generadas"
+
+    id = Column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    tema_id = Column(String(36), ForeignKey("temas.id"), nullable=True)
+    palabras = Column(JSON_TYPE, nullable=False)  # Lista de palabras usadas
+    grid = Column(JSON_TYPE, nullable=False)      # Matriz de la sopa
+    word_positions = Column(JSON_TYPE, nullable=False)  # Posiciones de las palabras
+    grid_size = Column(Integer, default=15)       # Tamaño del grid
+    dificultad = Column(String(20), default="medio")
+    tiempo_generacion = Column(Float)             # Tiempo en segundos
+    compartible = Column(Boolean, default=False)  # Si se puede compartir por enlace
+    enlace_publico = Column(String(255), unique=True, nullable=True)
+    created_at = Column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc))
+
+    # Índices para rendimiento
+    __table_args__ = (
+        Index('ix_sopa_tema_id', "tema_id"),
+        Index('ix_sopa_dificultad', "dificultad"),
+        Index('ix_sopa_compartible', "compartible"),
+        Index('ix_sopa_enlace_publico', "enlace_publico"),
+    )
+
+    # Relaciones
+    tema = relationship("Tema", backref="sopas_generadas")
+
+
+class LibroItem(Base):
+    """Elementos individuales dentro de un libro (temas organizados)."""
+
+    __tablename__ = "libro_items"
+
+    id = Column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    libro_id = Column(String(36), ForeignKey("libros.id"), nullable=False)
+    tema_id = Column(String(36), ForeignKey("temas.id"), nullable=False)
+    orden = Column(Integer, default=0)  # Orden dentro del libro
+    configuracion = Column(JSON_TYPE, default=dict)  # Configuración específica (grid_size, dificultad, etc.)
+    created_at = Column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc))
+
+    # Índices para rendimiento
+    __table_args__ = (
+        Index('ix_libro_item_libro_id', "libro_id"),
+        Index('ix_libro_item_tema_id', "tema_id"),
+        Index('ix_libro_item_orden', "orden"),
+    )
+
+    # Relaciones
+    libro = relationship("Libro", back_populates="items")
+    tema = relationship("Tema", back_populates="libro_items")
 
 
 # ========== FUNCIONES DE UTILIDAD ==========

@@ -84,6 +84,43 @@ export interface BookContextValue {
   setAutoSaveEnabled: (enabled: boolean) => void;
 }
 
+// ==================== UTILITY FUNCTIONS ====================
+
+/**
+ * Convierte un objeto libro del backend al formato BookProject del frontend
+ */
+function convertBackendBookToBookProject(backendBook: any, templates: BookTemplate[]): BookProject {
+  // Buscar la plantilla correspondiente
+  const template = templates.find(t => t.id === backendBook.plantilla) || templates[0];
+
+  // Valores por defecto para propiedades faltantes
+  const defaultMetadata = {
+    author: 'Usuario',
+    createdAt: backendBook.created_at,
+    updatedAt: backendBook.updated_at,
+    version: '1.0'
+  };
+
+  const defaultSettings = {
+    autoGeneratePages: true,
+    includeIndex: true,
+    includeSolutions: true
+  };
+
+  return {
+    id: backendBook.id,
+    name: backendBook.nombre,
+    description: backendBook.descripcion || '',
+    template,
+    temaIds: [], // TODO: Obtener temaIds del backend cuando se implemente
+    pages: [], // TODO: Obtener páginas del backend cuando se implemente
+    metadata: defaultMetadata,
+    settings: defaultSettings,
+    createdAt: backendBook.created_at,
+    updatedAt: backendBook.updated_at
+  };
+}
+
 // ==================== DEFAULT TEMPLATES ====================
 
 const DEFAULT_TEMPLATES: BookTemplate[] = [
@@ -196,7 +233,9 @@ export const BookProvider: React.FC<{ children: React.ReactNode }> = ({ children
       try {
         setIsLoading(true);
         const books = await apiRequest('/db/libros');
-        setProjects(books);
+        // Convertir libros del backend al formato BookProject
+        const convertedBooks = books.map((book: any) => convertBackendBookToBookProject(book, templates));
+        setProjects(convertedBooks);
       } catch (error) {
         console.error(UI_TEXTS.ERRORS.LOADING_BOOKS, error);
         // Fallback to empty array if API fails
@@ -207,7 +246,7 @@ export const BookProvider: React.FC<{ children: React.ReactNode }> = ({ children
     };
 
     loadBooks();
-  }, []);
+  }, [templates]);
 
   // ==================== PROJECT MANAGEMENT ====================
 
@@ -239,8 +278,9 @@ export const BookProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
       // 2. Crear libro en el backend
       const bookInput = {
-        name: name.trim(),
-        description: `Libro creado con plantilla ${template.name}`,
+        nombre: name.trim(),
+        descripcion: `Libro creado con plantilla ${template.name}`,
+        plantilla: template.id,
         temaIds
       };
 
@@ -312,9 +352,10 @@ export const BookProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
       // 4. Recargar libros y establecer proyecto actual
       const updatedBooks = await apiRequest('/db/libros');
-      setProjects(updatedBooks);
+      const convertedBooks = updatedBooks.map((book: any) => convertBackendBookToBookProject(book, templates));
+      setProjects(convertedBooks);
 
-      const finalBook = updatedBooks.find((b: BookProject) => b.id === createdBook.id);
+      const finalBook = convertedBooks.find((b: BookProject) => b.id === createdBook.id);
       setCurrentProject(finalBook);
 
       setCreationProgress({ current: 0, total: 0, message: '' });
@@ -332,13 +373,14 @@ export const BookProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const loadProject = useCallback(async (projectId: string): Promise<BookProject | null> => {
     try {
       const project = await apiRequest(`/db/libros/${projectId}`);
-      setCurrentProject(project);
-      return project;
+      const convertedProject = convertBackendBookToBookProject(project, templates);
+      setCurrentProject(convertedProject);
+      return convertedProject;
     } catch (error) {
       console.error(UI_TEXTS.ERRORS.LOADING_PROJECT, error);
       return null;
     }
-  }, []);
+  }, [templates]);
 
   const saveProject = useCallback(async (): Promise<boolean> => {
     if (!currentProject) return false;
@@ -547,9 +589,10 @@ export const BookProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     // Recargar libros
     const updatedBooks = await apiRequest('/db/libros');
-    setProjects(updatedBooks);
+    const convertedBooks = updatedBooks.map((book: any) => convertBackendBookToBookProject(book, templates));
+    setProjects(convertedBooks);
 
-    const finalBook = updatedBooks.find((b: BookProject) => b.id === duplicatedBook.id);
+    const finalBook = convertedBooks.find((b: BookProject) => b.id === duplicatedBook.id);
     setCurrentProject(finalBook);
 
     return finalBook;

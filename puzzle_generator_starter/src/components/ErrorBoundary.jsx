@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import { Component } from 'react'
 
 class ErrorBoundary extends Component {
   constructor(props) {
@@ -35,7 +35,7 @@ class ErrorBoundary extends Component {
           <details style={{ whiteSpace: 'pre-wrap', color: '#7f1d1d' }}>
             {this.state.error && this.state.error.toString()}
             <br />
-            {this.state.errorInfo.componentStack}
+            {this.state.errorInfo && this.state.errorInfo.componentStack}
           </details>
           <button
             onClick={() => this.setState({ hasError: false, error: null, errorInfo: null })}
