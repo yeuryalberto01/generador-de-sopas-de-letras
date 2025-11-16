@@ -63,7 +63,7 @@ class WordSearchGenerator:
     def generate(self) -> Dict:
         original_grid_size = self.grid_size
         max_attempts_per_size = 200
-        max_grid_size = original_grid_size + 20  # Máximo aumento de 20 celdas
+        max_grid_size = 100  # Sin límite práctico, máximo 100x100
 
         while self.grid_size <= max_grid_size:
             attempts = 0

@@ -177,3 +177,5 @@ docker compose up --build -d
 - **🔧 API Backend**: http://localhost:8001
 - **📚 Documentación API**: http://localhost:8001/docs
 - **❤️ Health Check**: http://localhost:8001/api/health
+
+
