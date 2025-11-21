@@ -19,12 +19,14 @@ from fastapi import FastAPI, HTTPException, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 from sqlalchemy.orm import Session
+from sqlalchemy import text
 
 # Database imports
 from database import get_db, Tema, Libro, PaginaLibro, SopaGenerada, LibroItem
 
 # Router imports
 from routers.diagramacion import router as diagramacion_router
+
 
 # ========== MODELOS PYDANTIC ==========
 
@@ -343,9 +345,19 @@ if not _SKIP_AUTO_LOAD:
 
 
 @app.get("/api/health")
-def health():
-    """Endpoint de salud para verificar que la API está funcionando."""
-    return {"status": "ok", "version": "0.1.0"}
+def health(db: Session = Depends(get_db)):
+    """
+    Endpoint de salud para verificar que la API y la conexión a la BD están funcionando.
+    """
+    try:
+        # Realizar una consulta simple para verificar la conexión a la BD
+        db.execute(text("SELECT 1"))
+        db_status = "ok"
+    except Exception as e:
+        print(f"ERROR: Health check failed to connect to DB: {e}")
+        db_status = "error"
+
+    return {"status": "ok", "version": "0.1.0", "database": db_status}
 
 
 @app.get("/api/temas")

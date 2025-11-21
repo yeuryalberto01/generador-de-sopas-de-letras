@@ -12,9 +12,8 @@ import Layout from './Layout';
 
 // Lazy loading de componentes para mejor performance
 const Splash = lazy(() => import('./modules/splash/Splash'));
+const AsistenteCreacion = lazy(() => import('./modules/creacion/AsistenteCreacion'));
 const Libros = lazy(() => import('./modules/libros/LibrosModule'));
-const Temas = lazy(() => import('./modules/temas/Temas'));
-const Diagramacion = lazy(() => import('./modules/diagramacion/DiagramacionNew'));
 const Edicion = lazy(() => import('./modules/edicion').then(module => ({ default: module.EdicionModule })));
 const PanelAPIs = lazy(() => import('./modules/panel-apis/PanelAPIs'));
 
@@ -33,10 +32,8 @@ const AnimatedRoutes: FC = () => {
         <Suspense fallback={<LoadingFallback />}>
           <Routes location={location} key={location.pathname}>
             <Route path={ROUTES.HOME} element={<Splash />} />
+            <Route path={ROUTES.CREAR} element={<AsistenteCreacion />} />
             <Route path={ROUTES.LIBROS} element={<Libros />} />
-            <Route path={ROUTES.TEMAS} element={<Temas />} />
-            <Route path={ROUTES.DIAGRAMACION} element={<Diagramacion />} />
-            <Route path={ROUTES.DIAGRAMACION_TEMA} element={<Diagramacion />} />
             <Route path={ROUTES.EDICION} element={<Edicion />} />
             <Route path={ROUTES.PANEL_APIS} element={<PanelAPIs />} />
           </Routes>
@@ -53,7 +50,7 @@ const AppContent: FC = () => {
     throw new Error(UI_TEXTS.CONTEXT_ERRORS.APP_PROVIDER);
   }
 
-  const { isCommandPaletteOpen, setCommandPaletteOpen } = context; // Removed userPreferences and isDarkMode
+  const { isCommandPaletteOpen, setCommandPaletteOpen } = context;
 
   // Listener para el atajo de teclado
   useEffect(() => {
@@ -65,7 +62,7 @@ const AppContent: FC = () => {
     };
     window.addEventListener('keydown', handler);
     return () => window.removeEventListener('keydown', handler);
-  }, [setCommandPaletteOpen, isCommandPaletteOpen]); // Added isCommandPaletteOpen to dependencies
+  }, [setCommandPaletteOpen, isCommandPaletteOpen]);
 
   return (
     <>

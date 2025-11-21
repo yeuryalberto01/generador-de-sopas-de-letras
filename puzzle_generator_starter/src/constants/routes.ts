@@ -1,8 +1,6 @@
 export const ROUTES = {
   HOME: '/',
-  TEMAS: '/temas',
-  DIAGRAMACION: '/diagramacion',
-  DIAGRAMACION_TEMA: '/diagramacion/:temaId',
+  CREAR: '/crear',
   LIBROS: '/libros',
   EDICION: '/edicion',
   PANEL_APIS: '/panel-apis',
