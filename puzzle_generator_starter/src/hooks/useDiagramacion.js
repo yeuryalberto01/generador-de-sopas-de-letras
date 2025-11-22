@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { generatePDF } from '../services/pdfExporter';
 import WordSearchGenerator from '../services/wordSearchAlgorithm';
 import { GRID_TYPES, WORD_BOX_STYLES } from '../utils/diagramacionConstants';

@@ -252,7 +252,7 @@ def init_database():
     """Inicializar base de datos y crear tablas."""
     try:
         Base.metadata.create_all(bind=engine)
-        print("✔ Base de datos inicializada correctamente")
+        print("Base de datos inicializada correctamente")
     except Exception as exc:
         print(f"⚠ Error inicializando base de datos: {exc}")
         raise

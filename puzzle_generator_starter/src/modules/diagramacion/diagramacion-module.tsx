@@ -55,6 +55,7 @@ function DiagramacionProvider({ children }) {
     placedWords: [],
     grid: [],
     zoom: 100,
+    showSolutionHighlight: true,
     showGrid: true
   });
 
@@ -436,7 +437,9 @@ function GridConfigurator() {
       placedWords,
       gridConfig: { ...state.gridConfig, rows, cols }
     });
-  };  return (
+  };
+
+  return (
     <div className="p-4 bg-white rounded-lg border">
       <h3 className="font-semibold mb-3 flex items-center gap-2">
         <Grid size={18} />
@@ -513,6 +516,19 @@ function GridConfigurator() {
             </div>
           </div>
         )}
+
+        <div className="flex items-center gap-2 mt-4">
+          <input
+            type="checkbox"
+            id="showHighlight"
+            checked={state.showSolutionHighlight}
+            onChange={(e) => updateState({ showSolutionHighlight: e.target.checked })}
+            className="w-4 h-4"
+          />
+          <label htmlFor="showHighlight" className="text-sm">
+            Resaltar palabras en la solución
+          </label>
+        </div>
 
         <button
           onClick={handleGenerate}
@@ -656,7 +672,7 @@ function WordSearchCanvas() {
                   className="border border-gray-300 flex items-center justify-center font-bold"
                   style={{
                     fontSize: `${cellSize * 0.5}px`,
-                    backgroundColor: cell.isWord ? '#eff6ff' : 'white'
+                    backgroundColor: cell.isWord && state.showSolutionHighlight ? '#eff6ff' : 'white'
                   }}
                 >
                   {cell.letter}
@@ -755,7 +771,7 @@ function LivePreviewPanel() {
                         key={`${rowIdx}-${colIdx}`}
                         className="border border-gray-300 flex items-center justify-center"
                         style={{
-                          backgroundColor: cell.isWord ? '#eff6ff' : 'white'
+                          backgroundColor: cell.isWord && state.showSolutionHighlight ? '#eff6ff' : 'white'
                         }}
                       >
                         {cell.letter}

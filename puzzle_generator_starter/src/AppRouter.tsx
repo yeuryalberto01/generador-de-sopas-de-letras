@@ -15,6 +15,8 @@ const Splash = lazy(() => import('./modules/splash/Splash'));
 const AsistenteCreacion = lazy(() => import('./modules/creacion/AsistenteCreacion'));
 const Libros = lazy(() => import('./modules/libros/LibrosModule'));
 const Edicion = lazy(() => import('./modules/edicion').then(module => ({ default: module.EdicionModule })));
+const Temas = lazy(() => import('./modules/temas/Temas'));
+const Diagramacion = lazy(() => import('./modules/diagramacion/DiagramacionNew'));
 const PanelAPIs = lazy(() => import('./modules/panel-apis/PanelAPIs'));
 
 // Componente de carga
@@ -35,6 +37,8 @@ const AnimatedRoutes: FC = () => {
             <Route path={ROUTES.CREAR} element={<AsistenteCreacion />} />
             <Route path={ROUTES.LIBROS} element={<Libros />} />
             <Route path={ROUTES.EDICION} element={<Edicion />} />
+            <Route path={ROUTES.TEMAS} element={<Temas />} />
+            <Route path={ROUTES.DIAGRAMACION} element={<Diagramacion />} />
             <Route path={ROUTES.PANEL_APIS} element={<PanelAPIs />} />
           </Routes>
         </Suspense>

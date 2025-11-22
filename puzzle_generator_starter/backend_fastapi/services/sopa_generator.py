@@ -20,7 +20,13 @@ def normalize_text(text: str) -> str:
     return text.upper().translate(replacements)
 
 class WordSearchGenerator:
-    def __init__(self, words: List[str], grid_size: Optional[int] = None):
+    def __init__(
+        self,
+        words: List[str],
+        grid_size: Optional[int] = None,
+        allow_diagonal: bool = True,
+        allow_reverse: bool = True,
+    ):
         self.original_words = [w.strip() for w in words if w.strip()]
         self.words = [normalize_text(w) for w in self.original_words]
         self.words = list(dict.fromkeys(self.words))  # eliminar duplicados
@@ -30,8 +36,25 @@ class WordSearchGenerator:
 
         min_size = max(len(w) for w in self.words)
         self.grid_size = grid_size or max(16, min_size + 6)
+        self.allow_diagonal = allow_diagonal
+        self.allow_reverse = allow_reverse
+        self.directions = self._build_directions()
         self.grid = None
         self.placed_words = []
+
+    def _build_directions(self) -> List[Direction]:
+        """Construir la lista de direcciones permitidas según la configuración."""
+        directions = [Direction.HORIZONTAL, Direction.VERTICAL]
+
+        if self.allow_diagonal:
+            directions.extend([Direction.DIAGONAL, Direction.ANTI_DIAGONAL])
+
+        if self.allow_reverse:
+            directions.extend([Direction.HORIZONTAL_INV, Direction.VERTICAL_INV])
+            if self.allow_diagonal:
+                directions.extend([Direction.DIAGONAL_INV, Direction.ANTI_DIAGONAL_INV])
+
+        return directions or [Direction.HORIZONTAL, Direction.VERTICAL]
 
     def can_place(self, word: str, row: int, col: int, direction: Direction) -> bool:
         dr, dc = direction.value
@@ -81,6 +104,7 @@ class WordSearchGenerator:
                         "grid": self.grid,
                         "soluciones": self.placed_words,
                         "tamaño": self.grid_size,
+                        "grid_size": self.grid_size,
                         "todas_colocadas": True
                     }
                 attempts += 1
@@ -92,17 +116,21 @@ class WordSearchGenerator:
         return {
             "success": False,
             "error": "No se pudieron colocar todas las palabras incluso con grid aumentado",
-            "tamaño": self.grid_size
+            "tamaño": self.grid_size,
+            "grid_size": self.grid_size
         }
 
     def _place_all_words(self, words: List[str]) -> bool:
+        if not self.directions:
+            return False
+
         for idx, word_norm in enumerate(words):
             original = self.original_words[self.words.index(word_norm)]
             placed = False
             local_attempts = 0
 
             while local_attempts < 400 and not placed:
-                direction = random.choice(ALL_DIRECTIONS)
+                direction = random.choice(self.directions)
                 row = random.randint(0, self.grid_size - 1)
                 col = random.randint(0, self.grid_size - 1)
 
