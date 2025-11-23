@@ -6,7 +6,17 @@ const PAGE_SIZES_MM = {
 };
 
 export async function generatePDF(config) {
-  const { grid, tema, pageSize, gridConfig, wordBoxConfig } = config;
+  const {
+    grid,
+    tema,
+    pageSize,
+    gridConfig,
+    wordBoxConfig,
+    showGridBorders = true,
+    showSolution = false,
+    title = 'SOPA DE LETRAS · NIVEL',
+    instructions = 'Encuentra las palabras de la lista. Pueden estar en cualquier dirección (horizontal, vertical o diagonal, hacia adelante o hacia atrás).'
+  } = config;
 
   const pageSizeMM = PAGE_SIZES_MM[pageSize];
   const pdf = new jsPDF({
@@ -15,30 +25,43 @@ export async function generatePDF(config) {
     format: [pageSizeMM.width, pageSizeMM.height]
   });
 
-  const margin = 20;
+  const margin = 15;
   const usableWidth = pageSizeMM.width - (margin * 2);
   const usableHeight = pageSizeMM.height - (margin * 2);
 
-  // Título
-  pdf.setFontSize(20);
+  // Encabezado
+  const headerY = margin;
   pdf.setFont('helvetica', 'bold');
-  pdf.text(`Sopa de Letras: ${tema.nombre}`, pageSizeMM.width / 2, margin, {
-    align: 'center'
-  });
+  pdf.setFontSize(18);
+  pdf.text(title, margin, headerY);
 
-  // Calcular tamaño de celda
+  pdf.setFontSize(12);
+  pdf.text(`Tema: ${tema.nombre}`, margin, headerY + 8);
+
+  pdf.setFont('helvetica', 'normal');
+  pdf.setFontSize(10);
+  const instructionY = headerY + 16;
+  pdf.text(instructions, margin, instructionY, { maxWidth: usableWidth });
+
+  // Áreas: grilla a la izquierda, lista a la derecha
+  const layoutGap = 8;
+  const leftAreaWidth = usableWidth * 0.55;
+  const rightAreaWidth = usableWidth - leftAreaWidth - layoutGap;
+  const topAreaY = instructionY + 8;
+
+  // Calcular tamaño de celda consistente con viewer
   const cellSize = Math.min(
-    usableWidth / gridConfig.cols,
-    (usableHeight * 0.7) / gridConfig.rows
+    leftAreaWidth / gridConfig.cols,
+    (usableHeight * 0.65) / gridConfig.rows
   );
 
   const gridWidth = cellSize * gridConfig.cols;
   const gridHeight = cellSize * gridConfig.rows;
-  const startX = (pageSizeMM.width - gridWidth) / 2;
-  const startY = margin + 15;
+  const startX = margin;
+  const startY = topAreaY;
 
   // Dibujar cuadrícula
-  pdf.setFontSize(cellSize * 2.5);
+  pdf.setFontSize(cellSize * 2.2);
   pdf.setFont('helvetica', 'bold');
 
   for (let row = 0; row < gridConfig.rows; row++) {
@@ -47,8 +70,20 @@ export async function generatePDF(config) {
       const x = startX + (col * cellSize);
       const y = startY + (row * cellSize);
 
-      // Dibujar celda
-      pdf.rect(x, y, cellSize, cellSize);
+      // Relleno para solución
+      if (showSolution && cell.isWord) {
+        pdf.setFillColor(224, 242, 254); // #e0f2fe igual que el viewer
+        pdf.rect(x, y, cellSize, cellSize, 'F');
+      } else if (showGridBorders) {
+        pdf.setFillColor(255, 255, 255);
+        pdf.rect(x, y, cellSize, cellSize, 'F');
+      }
+
+      // Dibujar contorno si aplica
+      if (showGridBorders) {
+        pdf.setDrawColor(0, 0, 0);
+        pdf.rect(x, y, cellSize, cellSize);
+      }
 
       // Dibujar letra
       pdf.text(
@@ -60,30 +95,38 @@ export async function generatePDF(config) {
     }
   }
 
-  // Caja de palabras
+  // Caja de palabras al lado derecho
   if (wordBoxConfig.visible) {
-    const wordBoxY = startY + gridHeight + 10;
+    const wordBoxX = startX + gridWidth + layoutGap;
+    const wordBoxY = topAreaY;
+    const wordBoxWidth = rightAreaWidth;
+    const wordBoxHeight = gridHeight;
 
-    pdf.setFontSize(14);
+    pdf.setDrawColor(0, 0, 0);
+    pdf.rect(wordBoxX, wordBoxY, wordBoxWidth, wordBoxHeight);
+
     pdf.setFont('helvetica', 'bold');
-    pdf.text('Encuentra estas palabras:', margin, wordBoxY);
+    pdf.setFontSize(12);
+    pdf.text('Lista de palabras', wordBoxX + 4, wordBoxY + 8);
 
-    pdf.setFontSize(11);
     pdf.setFont('helvetica', 'normal');
+    pdf.setFontSize(10);
 
     const wordsPerColumn = Math.ceil(tema.palabras.length / wordBoxConfig.columns);
-    const columnWidth = usableWidth / wordBoxConfig.columns;
+    const columnWidth = wordBoxWidth / wordBoxConfig.columns;
+    const lineHeight = 6;
+    const startListY = wordBoxY + 14;
 
     tema.palabras.forEach((palabra, index) => {
       const column = Math.floor(index / wordsPerColumn);
       const row = index % wordsPerColumn;
 
-      const x = margin + (column * columnWidth);
-      const y = wordBoxY + 10 + (row * 7);
+      const x = wordBoxX + 4 + (column * columnWidth);
+      const y = startListY + (row * lineHeight);
 
       const text = wordBoxConfig.numbered
         ? `${index + 1}. ${palabra.texto}`
-        : palabra.texto;
+        : `• ${palabra.texto}`;
 
       pdf.text(text, x, y);
     });

@@ -14,7 +14,14 @@ type WordPlacement = {
 type GridResult = {
   grid: { letter: string; isWord: boolean }[][];
   placements: WordPlacement[];
-  stats: { totalWords: number; placedWords: number; successRate: number; gridSize: number };
+  stats: {
+    totalWords: number;
+    placedWords: number;
+    successRate: number;
+    gridRows: number;
+    gridCols: number;
+    difficulty?: string;
+  };
 };
 
 const sanitizeWords = (tema?: Tema | null) => {
@@ -34,19 +41,37 @@ export default function DiagramacionSimple() {
   const [temas, setTemas] = useState<Tema[]>([]);
   const [isLoadingTemas, setIsLoadingTemas] = useState(true);
   const [selectedTemaId, setSelectedTemaId] = useState('');
-  const [gridSize, setGridSize] = useState(15);
+  const [gridRows, setGridRows] = useState(15);
+  const [gridCols, setGridCols] = useState(15);
   const [allowDiagonal, setAllowDiagonal] = useState(true);
   const [allowReverse, setAllowReverse] = useState(true);
   const [showGridBorders, setShowGridBorders] = useState(true);
   const [showSolution, setShowSolution] = useState(false);
+  const [difficulty, setDifficulty] = useState<'easy' | 'medium' | 'hard'>('medium');
   const [pageSize, setPageSize] = useState<'LETTER' | 'TABLOID'>('LETTER');
+  const [wordBoxStyle, setWordBoxStyle] = useState<'columns' | 'grid' | 'tags' | 'list'>('columns');
   const [wordBoxColumns, setWordBoxColumns] = useState(3);
   const [wordBoxNumbered, setWordBoxNumbered] = useState(true);
+  const [autoRender, setAutoRender] = useState(true);
   const [result, setResult] = useState<GridResult | null>(null);
-  const [gridSizeUsed, setGridSizeUsed] = useState<number | null>(null);
+  const [gridSizeUsed, setGridSizeUsed] = useState<{ rows: number; cols: number } | null>(null);
   const [isGenerating, setIsGenerating] = useState(false);
   const [isExporting, setIsExporting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  const parseGridSize = (value: any): { rows: number; cols: number } | null => {
+    if (typeof value === 'string' && value.includes('x')) {
+      const [r, c] = value.split('x').map((v) => parseInt(v, 10));
+      if (Number.isFinite(r) && Number.isFinite(c) && r > 0 && c > 0) return { rows: r, cols: c };
+    }
+    if (typeof value === 'number' && Number.isFinite(value)) {
+      return { rows: value, cols: value };
+    }
+    if (Array.isArray(value) && value.length === 2 && Number.isFinite(value[0]) && Number.isFinite(value[1])) {
+      return { rows: Number(value[0]), cols: Number(value[1]) };
+    }
+    return null;
+  };
 
   useEffect(() => {
     let mounted = true;
@@ -92,10 +117,14 @@ export default function DiagramacionSimple() {
     setIsGenerating(true);
     try {
       const response = await post('/diagramacion/generate', {
-        palabras: words.map((w) => w.texto),
-        grid_size: gridSize,
+        tema_id: selectedTema.id,
+        grid_size: `${gridRows}x${gridCols}`,
+        difficulty,
         allow_diagonal: allowDiagonal,
         allow_reverse: allowReverse,
+        word_box_style: wordBoxStyle,
+        word_box_columns: wordBoxColumns,
+        word_box_numbered: wordBoxNumbered,
       });
 
       if (!response.ok || !response.data) {
@@ -111,37 +140,77 @@ export default function DiagramacionSimple() {
       }
 
       const sizeFromApi =
-        Number(data.tamaño || data.grid_size || data.tamano || 0) ||
-        (Array.isArray(data.grid) ? data.grid.length : gridSize);
+        parseGridSize(data.grid_size || data.tamaño || data.tamano) ||
+        (Array.isArray(data.grid)
+          ? { rows: data.grid.length, cols: Array.isArray(data.grid[0]) ? data.grid[0].length : data.grid.length }
+          : { rows: gridRows, cols: gridCols });
 
       const wordCells = new Set<string>();
-      const placements: WordPlacement[] = (data.soluciones || []).map((sol: any) => {
-        const wordText = String(sol.palabra || '').trim();
-        const startRaw = Array.isArray(sol.inicio) ? sol.inicio : [0, 0];
-        const endRaw = Array.isArray(sol.fin) ? sol.fin : startRaw;
-        const startRow = Number(startRaw[0]) || 0;
-        const startCol = Number(startRaw[1]) || 0;
-        const endRow = Number(endRaw[0]) || startRow;
-        const endCol = Number(endRaw[1]) || startCol;
-        const length =
-          Math.max(wordText.length, Math.abs(endRow - startRow) + 1, Math.abs(endCol - startCol) + 1) ||
-          1;
-        const dr = length > 1 ? Math.sign(endRow - startRow) : 0;
-        const dc = length > 1 ? Math.sign(endCol - startCol) : 0;
+      let placements: WordPlacement[] = [];
 
-        const positions: { row: number; col: number }[] = [];
-        for (let i = 0; i < Math.max(length, 1); i++) {
-          const row = startRow + dr * i;
-          const col = startCol + dc * i;
-          positions.push({ row, col });
-          wordCells.add(`${row}-${col}`);
-        }
+      if (Array.isArray(data.word_positions)) {
+        placements = data.word_positions.map((pos: any) => {
+          const wordText = String(pos.word || '').trim();
+          const startRow = Number(pos.start_row) || 0;
+          const startCol = Number(pos.start_col) || 0;
+          const endRow = Number(pos.end_row ?? startRow);
+          const endCol = Number(pos.end_col ?? startCol);
+          const length =
+            Math.max(
+              wordText.length || 1,
+              Math.abs(endRow - startRow) + 1,
+              Math.abs(endCol - startCol) + 1
+            ) || 1;
+          const dr = length > 1 ? Math.sign(endRow - startRow) : 0;
+          const dc = length > 1 ? Math.sign(endCol - startCol) : 0;
 
-        return {
-          palabra: wordText || sol.palabra || '',
-          positions,
-        };
-      });
+          const positions: { row: number; col: number }[] = [];
+          for (let i = 0; i < length; i++) {
+            const row = startRow + dr * i;
+            const col = startCol + dc * i;
+            positions.push({ row, col });
+            wordCells.add(`${row}-${col}`);
+          }
+
+          return {
+            palabra: wordText,
+            positions,
+          };
+        });
+      } else if (Array.isArray(data.soluciones)) {
+        placements = (data.soluciones || []).map((sol: any) => {
+          const wordText = String(sol.palabra || '').trim();
+          const startRaw = Array.isArray(sol.inicio) ? sol.inicio : [0, 0];
+          const endRaw = Array.isArray(sol.fin) ? sol.fin : startRaw;
+          const startRow = Number(startRaw[0]) || 0;
+          const startCol = Number(startRaw[1]) || 0;
+          const endRow = Number(endRaw[0]) || startRow;
+          const endCol = Number(endRaw[1]) || startCol;
+          const length =
+            Math.max(wordText.length, Math.abs(endRow - startRow) + 1, Math.abs(endCol - startCol) + 1) ||
+            1;
+          const dr = length > 1 ? Math.sign(endRow - startRow) : 0;
+          const dc = length > 1 ? Math.sign(endCol - startCol) : 0;
+
+          const positions: { row: number; col: number }[] = [];
+          for (let i = 0; i < Math.max(length, 1); i++) {
+            const row = startRow + dr * i;
+            const col = startCol + dc * i;
+            positions.push({ row, col });
+            wordCells.add(`${row}-${col}`);
+          }
+
+          return {
+            palabra: wordText || sol.palabra || '',
+            positions,
+          };
+        });
+      }
+
+      const effectiveTotalWords = Math.max(
+        words.length,
+        Array.isArray(data.words) ? data.words.length : placements.length
+      );
 
       const decoratedGrid = data.grid.map((row: any[], rowIndex: number) =>
         row.map((cell: any, colIndex: number) => ({
@@ -154,13 +223,24 @@ export default function DiagramacionSimple() {
         grid: decoratedGrid,
         placements,
         stats: {
-          totalWords: words.length,
+          totalWords: effectiveTotalWords,
           placedWords: placements.length,
-          successRate: (placements.length / words.length) * 100,
-          gridSize: sizeFromApi || gridSize,
+          successRate: effectiveTotalWords ? (placements.length / effectiveTotalWords) * 100 : 0,
+          gridRows: sizeFromApi.rows || gridRows,
+          gridCols: sizeFromApi.cols || gridCols,
+          difficulty: data.difficulty || difficulty,
         },
       });
-      setGridSizeUsed(sizeFromApi || gridSize);
+      if (data.word_box_style) {
+        setWordBoxStyle(data.word_box_style);
+      }
+      if (data.word_box_columns) {
+        setWordBoxColumns(Number(data.word_box_columns));
+      }
+      if (typeof data.word_box_numbered === 'boolean') {
+        setWordBoxNumbered(data.word_box_numbered);
+      }
+      setGridSizeUsed(sizeFromApi);
     } catch (err: any) {
       console.error('Error generando sopa', err);
       setError('No se pudo generar la sopa de letras. Intenta con otra configuración.');
@@ -168,6 +248,19 @@ export default function DiagramacionSimple() {
       setIsGenerating(false);
     }
   };
+
+  // Auto-generar cuando cambien las configuraciones clave
+  useEffect(() => {
+    if (!autoRender) return;
+    if (!selectedTema) return;
+    if (isGenerating) return;
+
+    const timer = setTimeout(() => {
+      handleGenerate();
+    }, 400);
+
+    return () => clearTimeout(timer);
+  }, [autoRender, selectedTemaId, gridRows, gridCols, allowDiagonal, allowReverse, difficulty]);
 
   const handleExportPdf = async () => {
     if (!result || !selectedTema) {
@@ -178,7 +271,8 @@ export default function DiagramacionSimple() {
     setError(null);
     setIsExporting(true);
     try {
-      const effectiveSize = gridSizeUsed || result.stats.gridSize || gridSize;
+      const effectiveRows = gridSizeUsed?.rows || result.stats.gridRows || gridRows;
+      const effectiveCols = gridSizeUsed?.cols || result.stats.gridCols || gridCols;
       const printableTema = { ...selectedTema, palabras: sanitizeWords(selectedTema) };
       const columnCount = Math.min(4, Math.max(1, wordBoxColumns));
 
@@ -186,13 +280,16 @@ export default function DiagramacionSimple() {
         grid: result.grid,
         tema: printableTema,
         pageSize,
-        gridConfig: { rows: effectiveSize, cols: effectiveSize },
+        gridConfig: { rows: effectiveRows, cols: effectiveCols },
         wordBoxConfig: {
           visible: true,
+          style: wordBoxStyle,
           columns: columnCount,
           numbered: wordBoxNumbered,
           position: 'bottom',
         },
+        showGridBorders,
+        showSolution,
       });
     } catch (err) {
       console.error('Error exportando PDF', err);
@@ -203,8 +300,87 @@ export default function DiagramacionSimple() {
   };
 
   const wordsList = sanitizeWords(selectedTema);
-  const currentGridSize = result?.stats.gridSize || gridSizeUsed || gridSize;
-  const cellSizePx = Math.max(22, Math.floor(520 / Math.max(currentGridSize, 1)));
+  const currentRows = result?.stats.gridRows || gridSizeUsed?.rows || gridRows;
+  const currentCols = result?.stats.gridCols || gridSizeUsed?.cols || gridCols;
+  const cellSizePx = Math.max(22, Math.floor(520 / Math.max(currentRows, currentCols, 1)));
+
+  const renderWordBox = () => {
+    if (!wordsList.length) {
+      return <p className="text-gray-500 text-sm">Este tema no tiene palabras.</p>;
+    }
+
+    if (wordBoxStyle === 'columns') {
+      const cols = Math.max(1, Math.min(4, wordBoxColumns));
+      const rowsPerCol = Math.ceil(wordsList.length / cols);
+      const columns = Array.from({ length: cols }, (_, colIdx) =>
+        wordsList.slice(colIdx * rowsPerCol, (colIdx + 1) * rowsPerCol)
+      );
+
+      return (
+        <div className="grid gap-3" style={{ gridTemplateColumns: `repeat(${cols}, minmax(0,1fr))` }}>
+          {columns.map((col, colIdx) => (
+            <div key={colIdx} className="space-y-2">
+              {col.map((p, idx) => (
+                <div key={`${colIdx}-${idx}`} className="text-xs text-gray-800 flex items-start gap-1">
+                  {wordBoxNumbered && <span className="text-gray-400 min-w-[18px]">{colIdx * rowsPerCol + idx + 1}.</span>}
+                  <span className="font-medium">{p.texto}</span>
+                </div>
+              ))}
+            </div>
+          ))}
+        </div>
+      );
+    }
+
+    if (wordBoxStyle === 'grid') {
+      const cols = Math.max(2, Math.min(6, wordBoxColumns));
+      return (
+        <div
+          className="grid gap-2"
+          style={{ gridTemplateColumns: `repeat(${cols}, minmax(0,1fr))` }}
+        >
+          {wordsList.map((p, idx) => (
+            <div
+              key={idx}
+              className="text-xs font-semibold px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-center shadow-sm"
+            >
+              {wordBoxNumbered ? `${idx + 1}. ${p.texto}` : p.texto}
+            </div>
+          ))}
+        </div>
+      );
+    }
+
+    if (wordBoxStyle === 'tags') {
+      return (
+        <div className="flex flex-wrap gap-2">
+          {wordsList.map((p, idx) => (
+            <span
+              key={idx}
+              className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-amber-100 text-amber-800 text-xs font-semibold border border-amber-200 shadow-sm"
+            >
+              {wordBoxNumbered && <span className="text-[11px] font-bold">{idx + 1}</span>}
+              {p.texto}
+            </span>
+          ))}
+        </div>
+      );
+    }
+
+    // list
+    return (
+      <ol className="divide-y divide-slate-200 rounded-lg border border-slate-200 bg-white shadow-sm">
+        {wordsList.map((p, idx) => (
+          <li key={idx} className="px-3 py-2 text-sm flex items-center gap-2">
+            {wordBoxNumbered ? (
+              <span className="text-xs font-bold text-slate-500 w-6">{idx + 1}.</span>
+            ) : null}
+            <span className="font-medium text-slate-800">{p.texto}</span>
+          </li>
+        ))}
+      </ol>
+    );
+  };
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -263,21 +439,44 @@ export default function DiagramacionSimple() {
 
           <div className="bg-white rounded shadow p-4 space-y-3">
             <h2 className="font-semibold">2. Configura el tablero</h2>
-            <label className="block text-sm">
-              Tamaño sugerido: <strong>{gridSize} × {gridSize}</strong>
-            </label>
-            <input
-              type="range"
-              min={10}
-              max={30}
-              value={gridSize}
-              onChange={(e) => setGridSize(Number(e.target.value))}
-              className="w-full"
-            />
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <label className="block text-sm font-medium">Filas</label>
+                <input
+                  type="number"
+                  min={8}
+                  max={40}
+                  value={gridRows}
+                  onChange={(e) => setGridRows(Number(e.target.value))}
+                  className="w-full border rounded px-3 py-2 text-sm"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium">Columnas</label>
+                <input
+                  type="number"
+                  min={8}
+                  max={40}
+                  value={gridCols}
+                  onChange={(e) => setGridCols(Number(e.target.value))}
+                  className="w-full border rounded px-3 py-2 text-sm"
+                />
+              </div>
+            </div>
             <p className="text-xs text-gray-500">
-              El servidor puede ampliar la grilla si las palabras no caben.
-              {gridSizeUsed ? ` Último tamaño generado: ${gridSizeUsed} × ${gridSizeUsed}` : ''}
+              El backend acepta tamaños rectangulares en formato NxM y ajusta automáticamente si no caben todas las palabras.
+              {gridSizeUsed ? ` Último tamaño generado: ${gridSizeUsed.rows} × ${gridSizeUsed.cols}` : ''}
             </p>
+            <label className="block text-sm font-medium">Dificultad</label>
+            <select
+              value={difficulty}
+              onChange={(e) => setDifficulty(e.target.value as 'easy' | 'medium' | 'hard')}
+              className="w-full border rounded px-3 py-2 text-sm"
+            >
+              <option value="easy">Fácil (menos palabras)</option>
+              <option value="medium">Media</option>
+              <option value="hard">Difícil (más palabras)</option>
+            </select>
             <label className="flex items-center gap-2 text-sm">
               <input
                 type="checkbox"
@@ -345,7 +544,10 @@ export default function DiagramacionSimple() {
                     Colocadas: {result.stats.placedWords} / {result.stats.totalWords}
                   </div>
                   <div>Éxito: {result.stats.successRate.toFixed(1)}%</div>
-                  <div>Tamaño: {result.stats.gridSize} × {result.stats.gridSize}</div>
+                  <div>
+                    Tamaño: {result.stats.gridRows} × {result.stats.gridCols}
+                  </div>
+                  {result.stats.difficulty && <div>Dificultad: {result.stats.difficulty}</div>}
                 </div>
                 <button
                   onClick={handleExportPdf}
@@ -373,15 +575,18 @@ export default function DiagramacionSimple() {
               <div className="p-4 flex flex-col gap-6">
                 <div className="space-y-2">
                   <div className="text-sm text-gray-600">
-                    Generada en grilla {currentGridSize} × {currentGridSize}
-                    {gridSizeUsed && gridSizeUsed > gridSize ? ' (ajustada automáticamente)' : ''}
+                    Generada en grilla {currentRows} × {currentCols}
+                    {gridSizeUsed &&
+                    (gridSizeUsed.rows > gridRows || gridSizeUsed.cols > gridCols)
+                      ? ' (ajustada automáticamente)'
+                      : ''}
                   </div>
                   <div className="overflow-auto flex justify-center">
                     <div className="inline-block bg-white p-4 rounded-lg shadow-sm border border-gray-200">
                       <div
                         className={`grid gap-px ${showGridBorders ? 'border-2 border-gray-800' : 'border border-transparent'}`}
                         style={{
-                          gridTemplateColumns: `repeat(${currentGridSize}, ${cellSizePx}px)`,
+                          gridTemplateColumns: `repeat(${currentCols}, ${cellSizePx}px)`,
                         }}
                       >
                         {result.grid.map((row, rowIndex) =>
@@ -403,7 +608,8 @@ export default function DiagramacionSimple() {
                       </div>
                     </div>
                   </div>
-                  {gridSizeUsed && gridSizeUsed > gridSize ? (
+                  {gridSizeUsed &&
+                  (gridSizeUsed.rows > gridRows || gridSizeUsed.cols > gridCols) ? (
                     <p className="text-xs text-gray-500 text-center">
                       El generador aumentó el tamaño para acomodar todas las palabras.
                     </p>
@@ -412,16 +618,7 @@ export default function DiagramacionSimple() {
 
                 <div>
                   <h3 className="font-semibold text-sm mb-2">Palabras a encontrar</h3>
-                  <div className="flex flex-wrap gap-2 text-xs">
-                    {wordsList.map((p, idx) => (
-                      <span
-                        key={idx}
-                        className="px-2 py-1 bg-gray-100 rounded border text-gray-700"
-                      >
-                        {p.texto}
-                      </span>
-                    ))}
-                  </div>
+                  {renderWordBox()}
                 </div>
               </div>
             ) : (
@@ -468,7 +665,10 @@ export default function DiagramacionSimple() {
               </div>
               <div className="flex justify-between">
                 <span>Tamaño generado</span>
-                <strong>{(gridSizeUsed || result?.stats.gridSize || gridSize)} × {(gridSizeUsed || result?.stats.gridSize || gridSize)}</strong>
+                <strong>
+                  {(gridSizeUsed?.rows || result?.stats.gridRows || gridRows)} ×{' '}
+                  {(gridSizeUsed?.cols || result?.stats.gridCols || gridCols)}
+                </strong>
               </div>
               <div className="flex justify-between">
                 <span>Éxito</span>
@@ -499,6 +699,19 @@ export default function DiagramacionSimple() {
                   className="w-16 border rounded px-2 py-1 text-xs"
                 />
               </div>
+              <div className="flex items-center justify-between text-sm">
+                <span>Estilo caja</span>
+                <select
+                  value={wordBoxStyle}
+                  onChange={(e) => setWordBoxStyle(e.target.value as typeof wordBoxStyle)}
+                  className="border rounded px-2 py-1 text-xs"
+                >
+                  <option value="columns">Columnas</option>
+                  <option value="grid">Tarjetas en grilla</option>
+                  <option value="tags">Chips/Pastillas</option>
+                  <option value="list">Lista rayada</option>
+                </select>
+              </div>
               <label className="flex items-center gap-2 text-sm">
                 <input
                   type="checkbox"
@@ -506,6 +719,14 @@ export default function DiagramacionSimple() {
                   onChange={(e) => setWordBoxNumbered(e.target.checked)}
                 />
                 Numerar lista de palabras
+              </label>
+              <label className="flex items-center gap-2 text-sm">
+                <input
+                  type="checkbox"
+                  checked={autoRender}
+                  onChange={(e) => setAutoRender(e.target.checked)}
+                />
+                Autogenerar al cambiar ajustes
               </label>
             </div>
           </div>

@@ -1,17 +1,17 @@
 import {
-    ChevronRight,
-    Clock,
-    Home,
-    Layout,
-    Menu,
-    Palette,
-    Search,
-    Settings,
-    Star,
-    X,
-    Zap
+  ChevronRight,
+  Clock,
+  Home,
+  Layout,
+  Menu,
+  Palette,
+  Search,
+  Settings,
+  Star,
+  X,
+  Zap
 } from 'lucide-react';
-import React, { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useApp } from '../hooks/useApp';
 
