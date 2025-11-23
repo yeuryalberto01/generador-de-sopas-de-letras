@@ -18,6 +18,7 @@ const Edicion = lazy(() => import('./modules/edicion').then(module => ({ default
 const Temas = lazy(() => import('./modules/temas/Temas'));
 const Diagramacion = lazy(() => import('./modules/diagramacion/DiagramacionNew'));
 const PanelAPIs = lazy(() => import('./modules/panel-apis/PanelAPIs'));
+const DiagramacionTemplate = lazy(() => import('./modules/diagramacion/DiagramacionPage'));
 
 // Componente de carga
 const LoadingFallback: FC = () => (
@@ -39,6 +40,8 @@ const AnimatedRoutes: FC = () => {
             <Route path={ROUTES.EDICION} element={<Edicion />} />
             <Route path={ROUTES.TEMAS} element={<Temas />} />
             <Route path={ROUTES.DIAGRAMACION} element={<Diagramacion />} />
+            <Route path={`${ROUTES.DIAGRAMACION}/:temaId`} element={<Diagramacion />} />
+            <Route path={ROUTES.DIAGRAMACION_TEMPLATE} element={<DiagramacionTemplate />} />
             <Route path={ROUTES.PANEL_APIS} element={<PanelAPIs />} />
           </Routes>
         </Suspense>

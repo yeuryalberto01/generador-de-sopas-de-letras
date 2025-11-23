@@ -5,5 +5,6 @@ export const ROUTES = {
   EDICION: '/edicion',
   TEMAS: '/temas',
   DIAGRAMACION: '/diagramacion',
+  DIAGRAMACION_TEMPLATE: '/diagramacion-template',
   PANEL_APIS: '/panel-apis',
 };

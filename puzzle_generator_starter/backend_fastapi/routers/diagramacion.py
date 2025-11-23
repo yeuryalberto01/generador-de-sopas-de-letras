@@ -18,9 +18,11 @@ class GenerateRequest(BaseModel):
     grid_size: Optional[Union[int, str]] = None
     allow_diagonal: bool = True
     allow_reverse: bool = True
+    title: Optional[str] = None
     word_box_style: Optional[str] = "columns"
     word_box_columns: Optional[int] = 3
     word_box_numbered: Optional[bool] = True
+    word_box_position: Optional[str] = "bottom"
 
 @router.post("/generate")
 async def generar_sopa_de_letras(request: GenerateRequest, db: Session = Depends(get_db)):
@@ -73,9 +75,11 @@ async def generar_sopa_de_letras(request: GenerateRequest, db: Session = Depends
         resultado = generator.generate()
         resultado["grid_size"] = resultado.get("tamaño", generator.grid_size)
         resultado["tamaño"] = resultado.get("tamaño", generator.grid_size)
+        resultado["title"] = request.title
         resultado["word_box_style"] = request.word_box_style
         resultado["word_box_columns"] = request.word_box_columns
         resultado["word_box_numbered"] = request.word_box_numbered
+        resultado["word_box_position"] = request.word_box_position
         return resultado
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error generando la sopa: {str(e)}")

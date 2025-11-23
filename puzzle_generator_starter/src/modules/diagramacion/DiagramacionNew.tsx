@@ -1,10 +1,11 @@
 import { useEffect, useMemo, useState } from 'react';
 import { ArrowLeft, BookOpen, Download, Loader2, RefreshCcw } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { post } from '../../services/apiClient';
 import { generatePDF } from '../../services/pdfExporter';
 import { temasService } from '../../services/temas';
 import type { Tema } from '../../types';
+import SopaTemplateOverlay from './components/SopaTemplateOverlay';
 
 type WordPlacement = {
   palabra: string;
@@ -38,6 +39,7 @@ const sanitizeWords = (tema?: Tema | null) => {
 
 export default function DiagramacionSimple() {
   const navigate = useNavigate();
+  const { temaId } = useParams();
   const [temas, setTemas] = useState<Tema[]>([]);
   const [isLoadingTemas, setIsLoadingTemas] = useState(true);
   const [selectedTemaId, setSelectedTemaId] = useState('');
@@ -50,9 +52,11 @@ export default function DiagramacionSimple() {
   const [difficulty, setDifficulty] = useState<'easy' | 'medium' | 'hard'>('medium');
   const [pageSize, setPageSize] = useState<'LETTER' | 'TABLOID'>('LETTER');
   const [wordBoxStyle, setWordBoxStyle] = useState<'columns' | 'grid' | 'tags' | 'list'>('columns');
+  const [wordBoxPosition, setWordBoxPosition] = useState<'bottom' | 'right' | 'left'>('bottom');
   const [wordBoxColumns, setWordBoxColumns] = useState(3);
   const [wordBoxNumbered, setWordBoxNumbered] = useState(true);
   const [autoRender, setAutoRender] = useState(true);
+  const [customTitle, setCustomTitle] = useState('');
   const [result, setResult] = useState<GridResult | null>(null);
   const [gridSizeUsed, setGridSizeUsed] = useState<{ rows: number; cols: number } | null>(null);
   const [isGenerating, setIsGenerating] = useState(false);
@@ -81,7 +85,8 @@ export default function DiagramacionSimple() {
         if (!mounted) return;
         setTemas(loadedTemas);
         if (loadedTemas.length) {
-          setSelectedTemaId(loadedTemas[0].id);
+          const match = loadedTemas.find((t) => t.id === temaId);
+          setSelectedTemaId(match ? match.id : loadedTemas[0].id);
         }
       } catch (err: any) {
         console.error('Error cargando temas', err);
@@ -122,9 +127,11 @@ export default function DiagramacionSimple() {
         difficulty,
         allow_diagonal: allowDiagonal,
         allow_reverse: allowReverse,
+        title: customTitle,
         word_box_style: wordBoxStyle,
         word_box_columns: wordBoxColumns,
         word_box_numbered: wordBoxNumbered,
+        word_box_position: wordBoxPosition,
       });
 
       if (!response.ok || !response.data) {
@@ -240,6 +247,12 @@ export default function DiagramacionSimple() {
       if (typeof data.word_box_numbered === 'boolean') {
         setWordBoxNumbered(data.word_box_numbered);
       }
+      if (data.word_box_position) {
+        setWordBoxPosition(data.word_box_position);
+      }
+      if (typeof data.title === 'string') {
+        setCustomTitle(data.title);
+      }
       setGridSizeUsed(sizeFromApi);
     } catch (err: any) {
       console.error('Error generando sopa', err);
@@ -302,7 +315,9 @@ export default function DiagramacionSimple() {
   const wordsList = sanitizeWords(selectedTema);
   const currentRows = result?.stats.gridRows || gridSizeUsed?.rows || gridRows;
   const currentCols = result?.stats.gridCols || gridSizeUsed?.cols || gridCols;
-  const cellSizePx = Math.max(22, Math.floor(520 / Math.max(currentRows, currentCols, 1)));
+  const gridBoxMM = 150;
+  const cellMM = gridBoxMM / Math.max(currentRows, currentCols, 1);
+  const previewScale = 1;
 
   const renderWordBox = () => {
     if (!wordsList.length) {
@@ -582,31 +597,25 @@ export default function DiagramacionSimple() {
                       : ''}
                   </div>
                   <div className="overflow-auto flex justify-center">
-                    <div className="inline-block bg-white p-4 rounded-lg shadow-sm border border-gray-200">
-                      <div
-                        className={`grid gap-px ${showGridBorders ? 'border-2 border-gray-800' : 'border border-transparent'}`}
-                        style={{
-                          gridTemplateColumns: `repeat(${currentCols}, ${cellSizePx}px)`,
-                        }}
-                      >
-                        {result.grid.map((row, rowIndex) =>
-                          row.map((cell, colIndex) => (
-                            <div
-                              key={`${rowIndex}-${colIndex}`}
-                              className={`flex items-center justify-center font-semibold ${showGridBorders ? 'border border-gray-200' : 'border border-transparent'}`}
-                              style={{
-                                width: `${cellSizePx}px`,
-                                height: `${cellSizePx}px`,
-                                fontSize: `${Math.max(12, Math.floor(cellSizePx * 0.55))}px`,
-                                background: showSolution && cell.isWord ? '#e0f2fe' : '#fff',
-                              }}
-                            >
-                              {cell.letter || '·'}
-                            </div>
-                          ))
-                        )}
-                      </div>
-                    </div>
+                    <SopaTemplateOverlay
+                      page="LETTER"
+                      title={customTitle || selectedTema?.nombre || 'Sopa de Letras'}
+                      grid={result.grid.map((row) => row.map((c) => c.letter || ''))}
+                      words={wordsList.map((w) => w.texto)}
+                      cellMM={Math.max(5, Math.min(10, gridBoxMM / Math.max(currentCols, currentRows)))}
+                      strokeMM={0.25}
+                      bgSrc="/template_bg.png"
+                      gridBox={{ xMM: 15, yMM: 70, wMM: 150, hMM: 150 }}
+                      wordsBox={
+                        wordBoxPosition === 'right'
+                          ? { xMM: 170, yMM: 74, wMM: 30 }
+                          : wordBoxPosition === 'left'
+                          ? { xMM: 10, yMM: 74, wMM: 30 }
+                          : { xMM: 15, yMM: 230, wMM: 150 }
+                      }
+                      wordsColumns={wordBoxStyle === 'list' ? 1 : Math.max(1, Math.min(4, wordBoxColumns))}
+                      borderColorHex="#0f172a"
+                    />
                   </div>
                   {gridSizeUsed &&
                   (gridSizeUsed.rows > gridRows || gridSizeUsed.cols > gridCols) ? (
@@ -676,7 +685,17 @@ export default function DiagramacionSimple() {
               </div>
             </div>
 
-            <div className="pt-3 border-t border-gray-200 space-y-2">
+              <div className="pt-3 border-t border-gray-200 space-y-2">
+              <div>
+                <label className="block text-sm font-medium mb-1">Título de la hoja</label>
+                <input
+                  type="text"
+                  value={customTitle}
+                  onChange={(e) => setCustomTitle(e.target.value)}
+                  placeholder="Ej: Sopa de Letras - Animales"
+                  className="w-full border rounded px-2 py-1 text-xs"
+                />
+              </div>
               <div className="flex items-center justify-between text-sm">
                 <span>Tamaño de página</span>
                 <select
@@ -728,6 +747,18 @@ export default function DiagramacionSimple() {
                 />
                 Autogenerar al cambiar ajustes
               </label>
+              <div className="flex items-center justify-between text-sm">
+                <span>Posición caja</span>
+                <select
+                  value={wordBoxPosition}
+                  onChange={(e) => setWordBoxPosition(e.target.value as typeof wordBoxPosition)}
+                  className="border rounded px-2 py-1 text-xs"
+                >
+                  <option value="bottom">Abajo</option>
+                  <option value="right">Derecha</option>
+                  <option value="left">Izquierda</option>
+                </select>
+              </div>
             </div>
           </div>
         </aside>
