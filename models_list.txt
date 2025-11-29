@@ -1,5 +1,0 @@
-MODEL: models/imagen-4.0-generate-preview-06-06
-MODEL: models/imagen-4.0-ultra-generate-preview-06-06
-MODEL: models/imagen-4.0-generate-001
-MODEL: models/imagen-4.0-ultra-generate-001
-MODEL: models/imagen-4.0-fast-generate-001

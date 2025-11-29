@@ -29,7 +29,7 @@ class AIRequest(BaseModel):
 class ImageRequest(BaseModel):
     prompt: str
     style: str = 'color' # 'bw' or 'color'
-    model: Optional[str] = 'imagen-3.0-generate-001'
+    model: Optional[str] = 'imagen-3.0-generate-002'
 
 class SVGRequest(BaseModel):
     prompt: str
@@ -53,8 +53,18 @@ async def generate_content(request: AIRequest, x_api_key: Optional[str] = Header
         raise HTTPException(status_code=400, detail=f"Provider '{request.provider}' not supported.")
 
 async def call_gemini(request: AIRequest, header_key: Optional[str]):
-    api_key = header_key or os.getenv("GEMINI_API_KEY")
+    # Robust fallback: Use header key only if it's a non-empty string
+    env_key = os.getenv("GEMINI_API_KEY")
+    
+    if header_key and header_key.strip():
+        api_key = header_key
+        logging.info("Using API Key from Header")
+    else:
+        api_key = env_key
+        logging.info("Using API Key from Environment")
+
     if not api_key:
+        logging.error("No API Key found in Header or Environment")
         raise HTTPException(status_code=401, detail="Missing Gemini API Key")
 
     url = f"https://generativelanguage.googleapis.com/v1beta/models/{request.model or 'gemini-2.0-flash'}:generateContent?key={api_key}"
@@ -198,7 +208,7 @@ async def generate_image(request: ImageRequest, x_api_key: Optional[str] = Heade
         client = google_genai.Client(api_key=api_key)
         
         response = client.models.generate_images(
-            model=request.model or 'imagen-4.0-fast-generate-001',
+            model=request.model or 'imagen-3.0-generate-002',
             prompt=final_prompt,
             config=types.GenerateImagesConfig(
                 number_of_images=1,
@@ -258,3 +268,75 @@ async def generate_svg(request: SVGRequest, x_api_key: Optional[str] = Header(No
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"SVG Generation Failed: {str(e)}")
+class SmartDesignRequest(BaseModel):
+    prompt: str
+    mask_image: str # Base64 encoded image
+    style: str = 'color'
+
+@router.post("/generate-smart-design")
+async def generate_smart_design(request: SmartDesignRequest, x_api_key: Optional[str] = Header(None)):
+    logging.info(f"Received Smart Design Request")
+    api_key = x_api_key or os.getenv("GEMINI_API_KEY")
+    if not api_key:
+        raise HTTPException(status_code=401, detail="Missing Gemini API Key")
+
+    genai.configure(api_key=api_key)
+
+    try:
+        # 1. Prepare the Mask Image
+        if "base64," in request.mask_image:
+            mask_data = request.mask_image.split("base64,")[1]
+        else:
+            mask_data = request.mask_image
+            
+        image_bytes = base64.b64decode(mask_data)
+        
+        # Create a Part object for the image (Gemini 1.5 way)
+        cookie_picture = {
+            'mime_type': 'image/jpeg',
+            'data': image_bytes
+        }
+
+        # 2. Construct the Multimodal Prompt
+        prompt_text = f"""
+            You are an expert graphic designer and SVG artist.
+            
+            TASK: Generate a decorative SVG frame/border for the provided puzzle layout.
+            
+            INPUT IMAGE ANALYSIS:
+            - The BLACK areas in the image are the PUZZLE CONTENT (Title, Grid, Words).
+            - The WHITE areas are EMPTY SPACE available for decoration.
+            
+            CRITICAL RULES:
+            1. DO NOT DRAW ON THE BLACK AREAS. The text must remain readable.
+            2. Draw ONLY in the WHITE areas (margins and gaps).
+            3. If the grid is a shape (e.g., Circle, Heart), draw curves that HUG the shape.
+            
+            DESIGN REQUEST: {request.prompt}
+            STYLE: {'Black and white line art, coloring book style.' if request.style == 'bw' else 'Flat vector art, vibrant colors, sticker style.'}
+            
+            OUTPUT FORMAT:
+            - Return ONLY the raw <svg>...</svg> code.
+            - ViewBox: "0 0 816 1056" (Matches 8.5x11 inches at 96 DPI).
+            - Use transparent background (do not add a white rect).
+        """
+
+        # 3. Call Gemini 1.5 Flash (Vision)
+        model = genai.GenerativeModel('gemini-2.0-flash')
+        response = model.generate_content([prompt_text, cookie_picture])
+        
+        svg_text = response.text
+        
+        # Cleanup
+        svg_text = svg_text.replace('```svg', '').replace('```xml', '').replace('```', '').strip()
+        
+        if '<svg' not in svg_text:
+             raise HTTPException(status_code=500, detail="Invalid SVG generated")
+
+        # Encode
+        base64_svg = base64.b64encode(svg_text.encode('utf-8')).decode('utf-8')
+        return {"image": f"data:image/svg+xml;base64,{base64_svg}"}
+
+    except Exception as e:
+        logging.error(f"Smart Design Error: {e}")
+        raise HTTPException(status_code=500, detail=f"Smart Design Failed: {str(e)}")

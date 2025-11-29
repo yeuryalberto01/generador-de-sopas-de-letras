@@ -61,8 +61,17 @@ class SmartService:
             return
 
         if self.check_port_in_use():
-            log_queue.write("ERROR", f"Puerto {self.port} ocupado! No se puede iniciar {self.name}.")
-            return False
+            log_queue.write("SYSTEM", f"Puerto {self.port} ocupado. Intentando liberar...")
+            for i in range(3): # Retry 3 times
+                self.force_kill_port()
+                time.sleep(1)
+                if not self.check_port_in_use():
+                    log_queue.write("SYSTEM", f"Puerto {self.port} liberado exitosamente.")
+                    break
+            
+            if self.check_port_in_use():
+                log_queue.write("ERROR", f"No se pudo liberar el puerto {self.port} tras 3 intentos. Algo lo bloquea.")
+                return False
 
         try:
             log_queue.write("SYSTEM", f"Iniciando {self.name}...")
@@ -88,11 +97,12 @@ class SmartService:
             return False
 
     def stop(self):
+        log_queue.write("SYSTEM", f"Deteniendo {self.name}...")
+        
+        # 1. Kill by Process Object
         if self.process:
-            log_queue.write("SYSTEM", f"Deteniendo {self.name}...")
             try:
                 if sys.platform == 'win32':
-                    # Force kill process tree on Windows to ensure ports are freed
                     subprocess.run(f"taskkill /F /T /PID {self.process.pid}", shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
                 else:
                     parent = psutil.Process(self.process.pid)
@@ -100,8 +110,26 @@ class SmartService:
                         child.kill()
                     parent.kill()
             except Exception as e:
-                log_queue.write("ERROR", f"Fallo al detener {self.name}: {e}")
+                log_queue.write("ERROR", f"Error al matar proceso {self.name}: {e}")
             self.process = None
+
+        # 2. Force Kill by Port (The "Nuclear Option")
+        self.force_kill_port()
+
+    def force_kill_port(self):
+        """Finds any process listening on the service port and kills it using psutil."""
+        try:
+            for proc in psutil.process_iter(['pid', 'name']):
+                try:
+                    for conn in proc.connections(kind='inet'):
+                        if conn.laddr.port == self.port:
+                            log_queue.write("SYSTEM", f"Forzando cierre de puerto {self.port} (PID: {proc.pid} - {proc.name()})...")
+                            proc.kill()
+                            break
+                except (psutil.NoSuchProcess, psutil.AccessDenied, psutil.ZombieProcess):
+                    pass
+        except Exception as e:
+            log_queue.write("ERROR", f"Error limpiando puerto {self.port}: {e}")
 
     def is_running(self):
         if self.process:
@@ -215,7 +243,12 @@ class App(ctk.CTk):
         self.stop_all_btn = ctk.CTkButton(self.actions_frame, text="DETENER TODO 🛑", height=40,
                                         fg_color="#E74C3C", hover_color="#C0392B", 
                                         command=self.stop_all)
-        self.stop_all_btn.grid(row=0, column=1, padx=(10, 0), sticky="ew")
+        self.stop_all_btn.grid(row=0, column=1, padx=(10, 10), sticky="ew")
+
+        self.web_btn = ctk.CTkButton(self.actions_frame, text="🌐 ABRIR WEB", height=40,
+                                        fg_color="#8E44AD", hover_color="#9B59B6", 
+                                        command=self.open_web)
+        self.web_btn.grid(row=0, column=2, padx=(0, 0), sticky="ew")
 
     def create_service_card(self, parent, title, subtitle, service, row):
         card = ctk.CTkFrame(parent)
@@ -260,8 +293,8 @@ class App(ctk.CTk):
         threading.Thread(target=self._smart_start_thread).start()
 
     def _smart_start_thread(self):
-        self.smart_btn.configure(state="disabled", text="INICIANDO SISTEMA...")
-        self.restart_btn.configure(state="disabled")
+        self.after(0, lambda: self.smart_btn.configure(state="disabled", text="INICIANDO SISTEMA..."))
+        self.after(0, lambda: self.restart_btn.configure(state="disabled"))
         
         # 1. Start Backend
         if not self.backend.is_running():
@@ -275,7 +308,7 @@ class App(ctk.CTk):
                         break
                     time.sleep(1)
             else:
-                self.reset_buttons()
+                self.after(0, self.reset_buttons)
                 return
         
         # 2. Start Frontend
@@ -284,19 +317,19 @@ class App(ctk.CTk):
             self.frontend.start()
             time.sleep(3) # Give it a moment to spin up
         
-        # 3. Open Browser
-        log_queue.write("SYSTEM", "Abriendo navegador...")
-        webbrowser.open(f"http://localhost:{FRONTEND_PORT}")
+        # 3. Open Browser (MANUAL ONLY NOW)
+        log_queue.write("SYSTEM", "Sistema listo. Usa el botón 'ABRIR WEB' para entrar.")
+        # webbrowser.open(f"http://localhost:{FRONTEND_PORT}")
         
-        self.reset_buttons()
-        self.select_frame("terminal") # Switch to terminal to show user what's happening
+        self.after(0, self.reset_buttons)
+        self.after(0, lambda: self.select_frame("terminal")) # Switch to terminal to show user what's happening
 
     def restart_all(self):
         threading.Thread(target=self._restart_thread).start()
 
     def _restart_thread(self):
-        self.smart_btn.configure(state="disabled")
-        self.restart_btn.configure(state="disabled", text="REINICIANDO...")
+        self.after(0, lambda: self.smart_btn.configure(state="disabled"))
+        self.after(0, lambda: self.restart_btn.configure(state="disabled", text="REINICIANDO..."))
         
         log_queue.write("SYSTEM", "=== REINICIO SOLICITADO ===")
         
@@ -325,6 +358,9 @@ class App(ctk.CTk):
     def reset_buttons(self):
         self.smart_btn.configure(state="normal", text="⚡ SMART START SYSTEM")
         self.restart_btn.configure(state="normal", text="REINICIAR TODO 🔄")
+
+    def open_web(self):
+        webbrowser.open(f"http://localhost:{FRONTEND_PORT}")
 
 
     def update_logs(self):
