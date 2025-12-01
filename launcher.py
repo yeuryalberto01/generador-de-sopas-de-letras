@@ -117,17 +117,59 @@ class SmartService:
         self.force_kill_port()
 
     def force_kill_port(self):
-        """Finds any process listening on the service port and kills it using psutil."""
+        """Finds any process listening on the service port and kills it using psutil and taskkill."""
+        log_queue.write("SYSTEM", f"Escaneando puerto {self.port} para liberar...")
+        killed = False
         try:
+            # Method 1: psutil
             for proc in psutil.process_iter(['pid', 'name']):
                 try:
-                    for conn in proc.connections(kind='inet'):
+                    # Fix deprecation: use net_connections instead of connections
+                    for conn in proc.net_connections(kind='inet'):
                         if conn.laddr.port == self.port:
-                            log_queue.write("SYSTEM", f"Forzando cierre de puerto {self.port} (PID: {proc.pid} - {proc.name()})...")
-                            proc.kill()
-                            break
+                            pid = proc.pid
+                            name = proc.name()
+                            log_queue.write("SYSTEM", f"Matando proceso {name} (PID: {pid}) en puerto {self.port}...")
+                            
+                            # Try graceful kill first
+                            try:
+                                proc.kill()
+                            except:
+                                pass
+                            
+                            # Double tap with taskkill on Windows
+                            if sys.platform == 'win32':
+                                subprocess.run(f"taskkill /F /PID {pid}", shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+                            
+                            killed = True
                 except (psutil.NoSuchProcess, psutil.AccessDenied, psutil.ZombieProcess):
                     pass
+            
+            # Method 2: netstat (Fallback for stubborn processes on Windows)
+            if sys.platform == 'win32':
+                try:
+                    # Find PID using netstat
+                    cmd = f"netstat -ano | findstr :{self.port}"
+                    # Use shell=True to allow pipe usage
+                    process = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                    stdout, _ = process.communicate()
+                    
+                    if stdout:
+                        output = stdout.decode(errors='ignore')
+                        lines = output.strip().split('\n')
+                        for line in lines:
+                            parts = line.strip().split()
+                            # TCP 0.0.0.0:5173 0.0.0.0:0 LISTENING 1234
+                            if len(parts) >= 5:
+                                port_part = parts[1]
+                                pid = parts[-1]
+                                if f":{self.port}" in port_part and pid.isdigit() and int(pid) > 0:
+                                    log_queue.write("SYSTEM", f"Forzando cierre de PID {pid} detectado por netstat...")
+                                    subprocess.run(f"taskkill /F /PID {pid}", shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+                except Exception as e:
+                    # Ignore errors if netstat fails (e.g. no process found)
+                    pass
+
         except Exception as e:
             log_queue.write("ERROR", f"Error limpiando puerto {self.port}: {e}")
 

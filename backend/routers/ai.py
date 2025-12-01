@@ -276,8 +276,13 @@ class SmartDesignRequest(BaseModel):
 @router.post("/generate-smart-design")
 async def generate_smart_design(request: SmartDesignRequest, x_api_key: Optional[str] = Header(None)):
     logging.info(f"Received Smart Design Request")
+    logging.info(f"Prompt length: {len(request.prompt)}")
+    logging.info(f"Mask length: {len(request.mask_image)}")
+    logging.info(f"Style: {request.style}")
+
     api_key = x_api_key or os.getenv("GEMINI_API_KEY")
     if not api_key:
+        logging.error("Missing API Key")
         raise HTTPException(status_code=401, detail="Missing Gemini API Key")
 
     genai.configure(api_key=api_key)
@@ -289,7 +294,15 @@ async def generate_smart_design(request: SmartDesignRequest, x_api_key: Optional
         else:
             mask_data = request.mask_image
             
+        # Fix padding
+        mask_data = mask_data.strip()
+        missing_padding = len(mask_data) % 4
+        if missing_padding:
+            mask_data += '=' * (4 - missing_padding)
+
+        logging.info("Decoding base64 mask...")
         image_bytes = base64.b64decode(mask_data)
+        logging.info(f"Mask decoded. Bytes: {len(image_bytes)}")
         
         # Create a Part object for the image (Gemini 1.5 way)
         cookie_picture = {
@@ -320,17 +333,21 @@ async def generate_smart_design(request: SmartDesignRequest, x_api_key: Optional
             - ViewBox: "0 0 816 1056" (Matches 8.5x11 inches at 96 DPI).
             - Use transparent background (do not add a white rect).
         """
+        
+        logging.info("Calling Gemini 2.0 Flash...")
 
         # 3. Call Gemini 1.5 Flash (Vision)
         model = genai.GenerativeModel('gemini-2.0-flash')
         response = model.generate_content([prompt_text, cookie_picture])
         
+        logging.info("Gemini response received.")
         svg_text = response.text
         
         # Cleanup
         svg_text = svg_text.replace('```svg', '').replace('```xml', '').replace('```', '').strip()
         
         if '<svg' not in svg_text:
+             logging.error(f"Invalid SVG generated: {svg_text[:100]}...")
              raise HTTPException(status_code=500, detail="Invalid SVG generated")
 
         # Encode
