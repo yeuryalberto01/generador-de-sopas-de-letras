@@ -117,40 +117,28 @@ class SmartService:
         self.force_kill_port()
 
     def force_kill_port(self):
-        """Finds any process listening on the service port and kills it using psutil and taskkill."""
+        """Finds any process listening on the service port and kills it using multiple methods."""
         log_queue.write("SYSTEM", f"Escaneando puerto {self.port} para liberar...")
         killed = False
+        pids_to_kill = []
+        
         try:
-            # Method 1: psutil
+            # Method 1: psutil - Most reliable
             for proc in psutil.process_iter(['pid', 'name']):
                 try:
-                    # Fix deprecation: use net_connections instead of connections
                     for conn in proc.net_connections(kind='inet'):
                         if conn.laddr.port == self.port:
                             pid = proc.pid
                             name = proc.name()
-                            log_queue.write("SYSTEM", f"Matando proceso {name} (PID: {pid}) en puerto {self.port}...")
-                            
-                            # Try graceful kill first
-                            try:
-                                proc.kill()
-                            except:
-                                pass
-                            
-                            # Double tap with taskkill on Windows
-                            if sys.platform == 'win32':
-                                subprocess.run(f"taskkill /F /PID {pid}", shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-                            
-                            killed = True
+                            log_queue.write("SYSTEM", f"Encontrado proceso {name} (PID: {pid}) en puerto {self.port}")
+                            pids_to_kill.append(pid)
                 except (psutil.NoSuchProcess, psutil.AccessDenied, psutil.ZombieProcess):
                     pass
             
-            # Method 2: netstat (Fallback for stubborn processes on Windows)
+            # Method 2: netstat - Fallback for processes psutil can't detect
             if sys.platform == 'win32':
                 try:
-                    # Find PID using netstat
                     cmd = f"netstat -ano | findstr :{self.port}"
-                    # Use shell=True to allow pipe usage
                     process = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
                     stdout, _ = process.communicate()
                     
@@ -159,16 +147,66 @@ class SmartService:
                         lines = output.strip().split('\n')
                         for line in lines:
                             parts = line.strip().split()
-                            # TCP 0.0.0.0:5173 0.0.0.0:0 LISTENING 1234
                             if len(parts) >= 5:
                                 port_part = parts[1]
-                                pid = parts[-1]
-                                if f":{self.port}" in port_part and pid.isdigit() and int(pid) > 0:
-                                    log_queue.write("SYSTEM", f"Forzando cierre de PID {pid} detectado por netstat...")
-                                    subprocess.run(f"taskkill /F /PID {pid}", shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+                                pid_str = parts[-1]
+                                if f":{self.port}" in port_part and pid_str.isdigit():
+                                    pid = int(pid_str)
+                                    if pid > 0 and pid not in pids_to_kill:
+                                        log_queue.write("SYSTEM", f"Netstat detectó PID {pid} en puerto {self.port}")
+                                        pids_to_kill.append(pid)
                 except Exception as e:
-                    # Ignore errors if netstat fails (e.g. no process found)
                     pass
+            
+            # Now kill all detected PIDs using multiple methods
+            for pid in pids_to_kill:
+                log_queue.write("SYSTEM", f"Terminando PID {pid}...")
+                
+                # Method A: taskkill /F /T (kills process tree)
+                try:
+                    result = subprocess.run(
+                        f"taskkill /F /T /PID {pid}",
+                        shell=True,
+                        stdout=subprocess.PIPE,
+                        stderr=subprocess.PIPE,
+                        timeout=5
+                    )
+                    if result.returncode == 0:
+                        log_queue.write("SYSTEM", f"✅ PID {pid} terminado con taskkill")
+                        killed = True
+                        continue
+                except Exception as e:
+                    pass
+                
+                # Method B: PowerShell Stop-Process (more forceful)
+                try:
+                    result = subprocess.run(
+                        f"powershell -Command \"Stop-Process -Id {pid} -Force -ErrorAction SilentlyContinue\"",
+                        shell=True,
+                        stdout=subprocess.PIPE,
+                        stderr=subprocess.PIPE,
+                        timeout=5
+                    )
+                    log_queue.write("SYSTEM", f"✅ PID {pid} terminado con PowerShell")
+                    killed = True
+                except Exception as e:
+                    pass
+                
+                # Method C: psutil (direct Python kill)
+                try:
+                    proc = psutil.Process(pid)
+                    proc.kill()
+                    log_queue.write("SYSTEM", f"✅ PID {pid} terminado con psutil")
+                    killed = True
+                except Exception as e:
+                    pass
+            
+            if not pids_to_kill:
+                log_queue.write("SYSTEM", f"No se encontraron procesos en puerto {self.port}")
+            elif killed:
+                log_queue.write("SYSTEM", f"✅ Puerto {self.port} liberado exitosamente")
+            else:
+                log_queue.write("ERROR", f"⚠️ No se pudo liberar el puerto {self.port}")
 
         except Exception as e:
             log_queue.write("ERROR", f"Error limpiando puerto {self.port}: {e}")
@@ -186,6 +224,26 @@ class SmartService:
             if conn.laddr.port == self.port:
                 return True
         return False
+
+    def scan_port_status(self):
+        """Returns detailed information about what process is using the port"""
+        try:
+            for proc in psutil.process_iter(['pid', 'name', 'cmdline']):
+                try:
+                    for conn in proc.net_connections(kind='inet'):
+                        if conn.laddr.port == self.port:
+                            return {
+                                'pid': proc.pid,
+                                'name': proc.name(),
+                                'cmdline': ' '.join(proc.cmdline()) if proc.cmdline() else 'N/A',
+                                'status': conn.status,
+                                'port': self.port
+                            }
+                except (psutil.NoSuchProcess, psutil.AccessDenied, psutil.ZombieProcess):
+                    pass
+        except Exception as e:
+            log_queue.write("ERROR", f"Error escaneando puerto {self.port}: {e}")
+        return None
 
     def check_health(self):
         if not self.check_url:
@@ -292,23 +350,58 @@ class App(ctk.CTk):
                                         command=self.open_web)
         self.web_btn.grid(row=0, column=2, padx=(0, 0), sticky="ew")
 
+        # Diagnostic and Force Cleanup Row
+        self.diag_frame = ctk.CTkFrame(self.dash_frame, fg_color="transparent")
+        self.diag_frame.grid(row=5, column=0, padx=20, pady=(0, 20), sticky="ew")
+        self.diag_frame.grid_columnconfigure((0, 1), weight=1)
+
+        self.scan_btn = ctk.CTkButton(self.diag_frame, text="🔍 DIAGNOSTICAR PUERTOS", height=40,
+                                       fg_color="#F39C12", hover_color="#E67E22",
+                                       command=self.run_diagnostics)
+        self.scan_btn.grid(row=0, column=0, padx=(0, 10), sticky="ew")
+
+        self.force_cleanup_btn = ctk.CTkButton(self.diag_frame, text="💥 FORZAR LIMPIEZA", height=40,
+                                                fg_color="#E74C3C", hover_color="#C0392B",
+                                                command=self.force_cleanup_all)
+        self.force_cleanup_btn.grid(row=0, column=1, padx=(10, 0), sticky="ew")
+
     def create_service_card(self, parent, title, subtitle, service, row):
         card = ctk.CTkFrame(parent)
         card.grid(row=row, column=0, padx=20, pady=10, sticky="ew")
         card.grid_columnconfigure(1, weight=1)
 
         ctk.CTkLabel(card, text=title, font=ctk.CTkFont(size=16, weight="bold")).grid(row=0, column=0, padx=15, pady=(15,0), sticky="w")
-        ctk.CTkLabel(card, text=subtitle, text_color="gray").grid(row=1, column=0, padx=15, pady=(0,15), sticky="w")
+        ctk.CTkLabel(card, text=subtitle, text_color="gray").grid(row=1, column=0, padx=15, pady=(0,5), sticky="w")
 
         # Status Indicator
         status_lbl = ctk.CTkLabel(card, text="OFFLINE", text_color="#E74C3C", font=ctk.CTkFont(weight="bold"))
         status_lbl.grid(row=0, column=2, padx=15, pady=15, sticky="e")
-        service.status_label = status_lbl # Attach to service object for easy update
+        service.status_label = status_lbl
 
         # Stats
         stats_lbl = ctk.CTkLabel(card, text="CPU: 0% | RAM: 0MB", font=ctk.CTkFont(family="Consolas"))
-        stats_lbl.grid(row=1, column=1, columnspan=2, padx=15, pady=15, sticky="e")
+        stats_lbl.grid(row=1, column=1, columnspan=2, padx=15, pady=(0,5), sticky="e")
         service.stats_label = stats_lbl
+
+        # Individual Control Buttons
+        btn_frame = ctk.CTkFrame(card, fg_color="transparent")
+        btn_frame.grid(row=2, column=0, columnspan=3, padx=15, pady=(0,15), sticky="ew")
+        btn_frame.grid_columnconfigure((0,1,2), weight=1)
+
+        start_btn = ctk.CTkButton(btn_frame, text="▶️ Iniciar", height=30,
+                                   fg_color="#2CC985", hover_color="#229A65",
+                                   command=lambda: threading.Thread(target=service.start).start())
+        start_btn.grid(row=0, column=0, padx=(0,5), sticky="ew")
+
+        stop_btn = ctk.CTkButton(btn_frame, text="⏹️ Detener", height=30,
+                                  fg_color="#E74C3C", hover_color="#C0392B",
+                                  command=lambda: threading.Thread(target=service.stop).start())
+        stop_btn.grid(row=0, column=1, padx=5, sticky="ew")
+
+        kill_btn = ctk.CTkButton(btn_frame, text="💀 Forzar", height=30,
+                                  fg_color="#95A5A6", hover_color="#7F8C8D",
+                                  command=lambda: self.force_kill_service(service))
+        kill_btn.grid(row=0, column=2, padx=(5,0), sticky="ew")
 
         return card
 
@@ -392,9 +485,39 @@ class App(ctk.CTk):
         self._smart_start_thread()
 
     def stop_all(self):
+        threading.Thread(target=self._stop_all_thread).start()
+    
+    def _stop_all_thread(self):
+        self.after(0, lambda: self.stop_all_btn.configure(state="disabled", text="DETENIENDO..."))
+        
+        log_queue.write("SYSTEM", "=== DETENIENDO SERVICIOS ===")
+        
+        # Stop both services
         self.backend.stop()
         self.frontend.stop()
-        self.reset_buttons()
+        
+        # Wait for ports to be released (up to 10 seconds)
+        log_queue.write("SYSTEM", "Esperando liberación de puertos...")
+        for i in range(10):
+            backend_free = not self.backend.check_port_in_use()
+            frontend_free = not self.frontend.check_port_in_use()
+            
+            if backend_free and frontend_free:
+                log_queue.write("SYSTEM", "✅ Todos los puertos liberados exitosamente")
+                break
+            
+            if not backend_free:
+                log_queue.write("SYSTEM", f"Esperando backend (puerto {BACKEND_PORT})...")
+            if not frontend_free:
+                log_queue.write("SYSTEM", f"Esperando frontend (puerto {FRONTEND_PORT})...")
+            
+            time.sleep(1)
+        
+        # Final verification
+        if self.backend.check_port_in_use() or self.frontend.check_port_in_use():
+            log_queue.write("ERROR", "⚠️ Algunos puertos siguen ocupados. Usa 'FORZAR LIMPIEZA' si persiste.")
+        
+        self.after(0, self.reset_buttons)
         log_queue.write("SYSTEM", "Todos los servicios detenidos.")
 
     def reset_buttons(self):
@@ -403,6 +526,104 @@ class App(ctk.CTk):
 
     def open_web(self):
         webbrowser.open(f"http://localhost:{FRONTEND_PORT}")
+
+    def run_diagnostics(self):
+        """Scan and display diagnostic information about port usage"""
+        log_queue.write("SYSTEM", "=== DIAGNÓSTICO DE PUERTOS ===")
+        
+        for service in [self.backend, self.frontend]:
+            log_queue.write("SYSTEM", f"\nEscaneando puerto {service.port} ({service.name})...")
+            
+            if service.check_port_in_use():
+                info = service.scan_port_status()
+                if info:
+                    log_queue.write("SYSTEM", f"  ⚠️ PUERTO OCUPADO")
+                    log_queue.write("SYSTEM", f"  PID: {info['pid']}")
+                    log_queue.write("SYSTEM", f"  Proceso: {info['name']}")
+                    log_queue.write("SYSTEM", f"  Comando: {info['cmdline'][:100]}..." if len(info['cmdline']) > 100 else f"  Comando: {info['cmdline']}")
+                    log_queue.write("SYSTEM", f"  Estado: {info['status']}")
+                else:
+                    log_queue.write("SYSTEM", f"  ⚠️ PUERTO OCUPADO (no se pudo identificar proceso)")
+            else:
+                log_queue.write("SYSTEM", f"  ✅ Puerto {service.port} LIBRE")
+        
+        log_queue.write("SYSTEM", "\n=== FIN DIAGNÓSTICO ===")
+        self.after(0, lambda: self.select_frame("terminal"))
+
+    def force_cleanup_all(self):
+        """Force kill all processes on the configured ports"""
+        result = messagebox.askyesno(
+            "Confirmación de Limpieza Forzada",
+            f"Esto FORZARÁ el cierre de todos los procesos en los puertos {BACKEND_PORT} y {FRONTEND_PORT}.\n\n"
+            "¿Estás seguro de continuar?"
+        )
+        
+        if result:
+            threading.Thread(target=self._force_cleanup_thread).start()
+
+    def _force_cleanup_thread(self):
+        log_queue.write("SYSTEM", "=== LIMPIEZA FORZADA INICIADA ===")
+        
+        # Stop services normally first
+        self.backend.stop()
+        self.frontend.stop()
+        
+        time.sleep(2)
+        
+        # Force kill any remaining processes
+        for service in [self.backend, self.frontend]:
+            log_queue.write("SYSTEM", f"Forzando limpieza de puerto {service.port}...")
+            for attempt in range(3):
+                service.force_kill_port()
+                time.sleep(1)
+                if not service.check_port_in_use():
+                    log_queue.write("SYSTEM", f"✅ Puerto {service.port} liberado")
+                    break
+                else:
+                    log_queue.write("SYSTEM", f"Intento {attempt + 1}/3: Puerto {service.port} aún ocupado...")
+        
+        log_queue.write("SYSTEM", "=== LIMPIEZA FORZADA COMPLETADA ===")
+        log_queue.write("SYSTEM", "Ahora puedes usar SMART START para reiniciar el sistema.")
+        self.after(0, self.reset_buttons)
+        self.after(0, lambda: self.select_frame("terminal"))
+
+    def force_kill_service(self, service):
+        """Force kill a specific service's port"""
+        result = messagebox.askyesno(
+            "Confirmación de Fuerza",
+            f"Esto FORZARÁ el cierre de todos los procesos en el puerto {service.port} ({service.name}).\\n\\n"
+            "¿Estás seguro de continuar?"
+        )
+        
+        if result:
+            threading.Thread(target=self._force_kill_service_thread, args=(service,)).start()
+    
+    def _force_kill_service_thread(self, service):
+        log_queue.write("SYSTEM", f"=== FORZAR LIMPIEZA: {service.name} (Puerto {service.port}) ===")
+        
+        # First try normal stop
+        service.stop()
+        time.sleep(1)
+        
+        # Then force kill
+        for attempt in range(3):
+            log_queue.write("SYSTEM", f"Intento {attempt + 1}/3...")
+            service.force_kill_port()
+            time.sleep(1)
+            
+            if not service.check_port_in_use():
+                log_queue.write("SYSTEM", f"✅ {service.name} - Puerto {service.port} LIBERADO")
+                break
+            else:
+                log_queue.write("SYSTEM", f"⚠️ Puerto {service.port} aún ocupado, reintentando...")
+        
+        # Final check
+        if service.check_port_in_use():
+            log_queue.write("ERROR", f"❌ No se pudo liberar el puerto {service.port} tras 3 intentos")
+            log_queue.write("SYSTEM", "Intenta cerrar manualmente cualquier aplicación que use ese puerto")
+        
+        log_queue.write("SYSTEM", f"=== FIN LIMPIEZA: {service.name} ===")
+        self.after(0, lambda: self.select_frame("terminal"))
 
 
     def update_logs(self):

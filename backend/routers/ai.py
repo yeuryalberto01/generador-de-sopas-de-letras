@@ -275,84 +275,55 @@ class SmartDesignRequest(BaseModel):
 
 @router.post("/generate-smart-design")
 async def generate_smart_design(request: SmartDesignRequest, x_api_key: Optional[str] = Header(None)):
-    logging.info(f"Received Smart Design Request")
-    logging.info(f"Prompt length: {len(request.prompt)}")
-    logging.info(f"Mask length: {len(request.mask_image)}")
-    logging.info(f"Style: {request.style}")
+    logging.info(f"Received Smart Design Request (Imagen 3 Mode)")
+    logging.info(f"Prompt: {request.prompt}")
 
     api_key = x_api_key or os.getenv("GEMINI_API_KEY")
     if not api_key:
         logging.error("Missing API Key")
         raise HTTPException(status_code=401, detail="Missing Gemini API Key")
 
-    genai.configure(api_key=api_key)
-
     try:
-        # 1. Prepare the Mask Image
-        if "base64," in request.mask_image:
-            mask_data = request.mask_image.split("base64,")[1]
-        else:
-            mask_data = request.mask_image
+        # Construct a prompt that enforces the frame layout
+        # We ignore the mask_image for generation because Imagen 3 follows text instructions well for layout
+        final_prompt = f"""
+            Create a high-quality, detailed illustration acting as a PAGE BORDER / FRAME about: {request.prompt}.
             
-        # Fix padding
-        mask_data = mask_data.strip()
-        missing_padding = len(mask_data) % 4
-        if missing_padding:
-            mask_data += '=' * (4 - missing_padding)
-
-        logging.info("Decoding base64 mask...")
-        image_bytes = base64.b64decode(mask_data)
-        logging.info(f"Mask decoded. Bytes: {len(image_bytes)}")
-        
-        # Create a Part object for the image (Gemini 1.5 way)
-        cookie_picture = {
-            'mime_type': 'image/jpeg',
-            'data': image_bytes
-        }
-
-        # 2. Construct the Multimodal Prompt
-        prompt_text = f"""
-            You are an expert graphic designer and SVG artist.
+            CRITICAL LAYOUT RULES:
+            1. The art must be ONLY around the edges (top, bottom, sides).
+            2. The CENTER (approx 70-80% of the page) must be COMPLETELY EMPTY WHITE SPACE.
+            3. Do not place any objects, heavy textures, or lines in the center. It must be clean white.
             
-            TASK: Generate a decorative SVG frame/border for the provided puzzle layout.
-            
-            INPUT IMAGE ANALYSIS:
-            - The BLACK areas in the image are the PUZZLE CONTENT (Title, Grid, Words).
-            - The WHITE areas are EMPTY SPACE available for decoration.
-            
-            CRITICAL RULES:
-            1. DO NOT DRAW ON THE BLACK AREAS. The text must remain readable.
-            2. Draw ONLY in the WHITE areas (margins and gaps).
-            3. If the grid is a shape (e.g., Circle, Heart), draw curves that HUG the shape.
-            
-            DESIGN REQUEST: {request.prompt}
-            STYLE: {'Black and white line art, coloring book style.' if request.style == 'bw' else 'Flat vector art, vibrant colors, sticker style.'}
-            
-            OUTPUT FORMAT:
-            - Return ONLY the raw <svg>...</svg> code.
-            - ViewBox: "0 0 816 1056" (Matches 8.5x11 inches at 96 DPI).
-            - Use transparent background (do not add a white rect).
+            Style & Content:
+            1. Style: High quality digital art, detailed, vibrant.
+            2. Content: {request.prompt}.
+            3. Aspect Ratio: Vertical Portrait (3:4).
+            4. Background: White.
         """
-        
-        logging.info("Calling Gemini 2.0 Flash...")
 
-        # 3. Call Gemini 1.5 Flash (Vision)
-        model = genai.GenerativeModel('gemini-2.0-flash')
-        response = model.generate_content([prompt_text, cookie_picture])
+        logging.info("Calling Imagen 3...")
         
-        logging.info("Gemini response received.")
-        svg_text = response.text
+        # Use google_genai Client for Imagen 3
+        client = google_genai.Client(api_key=api_key)
         
-        # Cleanup
-        svg_text = svg_text.replace('```svg', '').replace('```xml', '').replace('```', '').strip()
+        response = client.models.generate_images(
+            model='imagen-3.0-generate-002',
+            prompt=final_prompt,
+            config=types.GenerateImagesConfig(
+                number_of_images=1,
+                aspect_ratio="3:4",
+                safety_filter_level="block_low_and_above",
+                person_generation="allow_adult"
+            )
+        )
         
-        if '<svg' not in svg_text:
-             logging.error(f"Invalid SVG generated: {svg_text[:100]}...")
-             raise HTTPException(status_code=500, detail="Invalid SVG generated")
-
-        # Encode
-        base64_svg = base64.b64encode(svg_text.encode('utf-8')).decode('utf-8')
-        return {"image": f"data:image/svg+xml;base64,{base64_svg}"}
+        if response.generated_images:
+            img_bytes = response.generated_images[0].image.image_bytes
+            base64_img = base64.b64encode(img_bytes).decode('utf-8')
+            logging.info("Imagen 3 generation successful.")
+            return {"image": f"data:image/png;base64,{base64_img}"}
+        else:
+            raise HTTPException(status_code=500, detail="No image generated by Imagen 3")
 
     except Exception as e:
         logging.error(f"Smart Design Error: {e}")
