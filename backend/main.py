@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from routers import ai
+from modules.template_engine.router import router as template_engine_router
 import uvicorn
 import os
 from dotenv import load_dotenv
@@ -33,6 +34,7 @@ app.add_middleware(
 
 # Include Routers
 app.include_router(ai.router, prefix="/api/ai", tags=["AI"])
+app.include_router(template_engine_router, prefix="/api", tags=["Template Engine"])
 
 @app.get("/")
 def read_root():

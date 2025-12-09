@@ -1,0 +1,1732 @@
+{
+  "id": "e0c4b39c-618f-462f-a955-6f56c57f3945",
+  "name": "Matatiempo",
+  "createdAt": 1764989077334,
+  "config": {
+    "title": "Matatiempo: Pasatiempos Favoritos",
+    "headerLeft": "Sopa de Letras",
+    "headerRight": "Edici\u00f3n Especial",
+    "difficulty": "EASY",
+    "gridSize": 15,
+    "gridHeight": 15,
+    "words": [
+      "AJEDREZ",
+      "LECTURA",
+      "MUSICA",
+      "BAILE",
+      "CINE",
+      "JUEGOS",
+      "ARTE",
+      "DEPORTE",
+      "COCINA",
+      "VIAJES"
+    ],
+    "showSolution": false,
+    "styleMode": "color",
+    "backgroundImage": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=",
+    "themeData": {
+      "primaryColor": "#FF5733",
+      "secondaryColor": "#C70039",
+      "textColor": "#000000",
+      "backgroundColor": "#FFFFFF"
+    }
+  },
+  "puzzleData": {
+    "grid": [
+      [
+        {
+          "letter": "E",
+          "isWord": false,
+          "isValid": true,
+          "x": 0,
+          "y": 0
+        },
+        {
+          "letter": "W",
+          "isWord": false,
+          "isValid": true,
+          "x": 1,
+          "y": 0
+        },
+        {
+          "letter": "X",
+          "isWord": false,
+          "isValid": true,
+          "x": 2,
+          "y": 0
+        },
+        {
+          "letter": "Q",
+          "isWord": false,
+          "isValid": true,
+          "x": 3,
+          "y": 0
+        },
+        {
+          "letter": "Q",
+          "isWord": false,
+          "isValid": true,
+          "x": 4,
+          "y": 0
+        },
+        {
+          "letter": "C",
+          "isWord": false,
+          "isValid": true,
+          "x": 5,
+          "y": 0
+        },
+        {
+          "letter": "Y",
+          "isWord": false,
+          "isValid": true,
+          "x": 6,
+          "y": 0
+        },
+        {
+          "letter": "S",
+          "isWord": false,
+          "isValid": true,
+          "x": 7,
+          "y": 0
+        },
+        {
+          "letter": "X",
+          "isWord": false,
+          "isValid": true,
+          "x": 8,
+          "y": 0
+        },
+        {
+          "letter": "U",
+          "isWord": false,
+          "isValid": true,
+          "x": 9,
+          "y": 0
+        },
+        {
+          "letter": "Y",
+          "isWord": false,
+          "isValid": true,
+          "x": 10,
+          "y": 0
+        },
+        {
+          "letter": "O",
+          "isWord": false,
+          "isValid": true,
+          "x": 11,
+          "y": 0
+        },
+        {
+          "letter": "L",
+          "isWord": true,
+          "isValid": true,
+          "x": 12,
+          "y": 0
+        },
+        {
+          "letter": "E",
+          "isWord": false,
+          "isValid": true,
+          "x": 13,
+          "y": 0
+        },
+        {
+          "letter": "B",
+          "isWord": false,
+          "isValid": true,
+          "x": 14,
+          "y": 0
+        }
+      ],
+      [
+        {
+          "letter": "M",
+          "isWord": false,
+          "isValid": true,
+          "x": 0,
+          "y": 1
+        },
+        {
+          "letter": "I",
+          "isWord": false,
+          "isValid": true,
+          "x": 1,
+          "y": 1
+        },
+        {
+          "letter": "S",
+          "isWord": false,
+          "isValid": true,
+          "x": 2,
+          "y": 1
+        },
+        {
+          "letter": "Q",
+          "isWord": false,
+          "isValid": true,
+          "x": 3,
+          "y": 1
+        },
+        {
+          "letter": "F",
+          "isWord": false,
+          "isValid": true,
+          "x": 4,
+          "y": 1
+        },
+        {
+          "letter": "T",
+          "isWord": false,
+          "isValid": true,
+          "x": 5,
+          "y": 1
+        },
+        {
+          "letter": "W",
+          "isWord": false,
+          "isValid": true,
+          "x": 6,
+          "y": 1
+        },
+        {
+          "letter": "W",
+          "isWord": false,
+          "isValid": true,
+          "x": 7,
+          "y": 1
+        },
+        {
+          "letter": "J",
+          "isWord": false,
+          "isValid": true,
+          "x": 8,
+          "y": 1
+        },
+        {
+          "letter": "D",
+          "isWord": false,
+          "isValid": true,
+          "x": 9,
+          "y": 1
+        },
+        {
+          "letter": "Q",
+          "isWord": false,
+          "isValid": true,
+          "x": 10,
+          "y": 1
+        },
+        {
+          "letter": "I",
+          "isWord": false,
+          "isValid": true,
+          "x": 11,
+          "y": 1
+        },
+        {
+          "letter": "E",
+          "isWord": true,
+          "isValid": true,
+          "x": 12,
+          "y": 1
+        },
+        {
+          "letter": "M",
+          "isWord": true,
+          "isValid": true,
+          "x": 13,
+          "y": 1
+        },
+        {
+          "letter": "H",
+          "isWord": false,
+          "isValid": true,
+          "x": 14,
+          "y": 1
+        }
+      ],
+      [
+        {
+          "letter": "I",
+          "isWord": false,
+          "isValid": true,
+          "x": 0,
+          "y": 2
+        },
+        {
+          "letter": "O",
+          "isWord": false,
+          "isValid": true,
+          "x": 1,
+          "y": 2
+        },
+        {
+          "letter": "P",
+          "isWord": false,
+          "isValid": true,
+          "x": 2,
+          "y": 2
+        },
+        {
+          "letter": "I",
+          "isWord": false,
+          "isValid": true,
+          "x": 3,
+          "y": 2
+        },
+        {
+          "letter": "Z",
+          "isWord": false,
+          "isValid": true,
+          "x": 4,
+          "y": 2
+        },
+        {
+          "letter": "B",
+          "isWord": true,
+          "isValid": true,
+          "x": 5,
+          "y": 2
+        },
+        {
+          "letter": "A",
+          "isWord": true,
+          "isValid": true,
+          "x": 6,
+          "y": 2
+        },
+        {
+          "letter": "I",
+          "isWord": true,
+          "isValid": true,
+          "x": 7,
+          "y": 2
+        },
+        {
+          "letter": "L",
+          "isWord": true,
+          "isValid": true,
+          "x": 8,
+          "y": 2
+        },
+        {
+          "letter": "E",
+          "isWord": true,
+          "isValid": true,
+          "x": 9,
+          "y": 2
+        },
+        {
+          "letter": "D",
+          "isWord": false,
+          "isValid": true,
+          "x": 10,
+          "y": 2
+        },
+        {
+          "letter": "F",
+          "isWord": false,
+          "isValid": true,
+          "x": 11,
+          "y": 2
+        },
+        {
+          "letter": "C",
+          "isWord": true,
+          "isValid": true,
+          "x": 12,
+          "y": 2
+        },
+        {
+          "letter": "U",
+          "isWord": true,
+          "isValid": true,
+          "x": 13,
+          "y": 2
+        },
+        {
+          "letter": "R",
+          "isWord": false,
+          "isValid": true,
+          "x": 14,
+          "y": 2
+        }
+      ],
+      [
+        {
+          "letter": "G",
+          "isWord": false,
+          "isValid": true,
+          "x": 0,
+          "y": 3
+        },
+        {
+          "letter": "L",
+          "isWord": false,
+          "isValid": true,
+          "x": 1,
+          "y": 3
+        },
+        {
+          "letter": "W",
+          "isWord": false,
+          "isValid": true,
+          "x": 2,
+          "y": 3
+        },
+        {
+          "letter": "I",
+          "isWord": false,
+          "isValid": true,
+          "x": 3,
+          "y": 3
+        },
+        {
+          "letter": "V",
+          "isWord": false,
+          "isValid": true,
+          "x": 4,
+          "y": 3
+        },
+        {
+          "letter": "O",
+          "isWord": false,
+          "isValid": true,
+          "x": 5,
+          "y": 3
+        },
+        {
+          "letter": "W",
+          "isWord": false,
+          "isValid": true,
+          "x": 6,
+          "y": 3
+        },
+        {
+          "letter": "K",
+          "isWord": false,
+          "isValid": true,
+          "x": 7,
+          "y": 3
+        },
+        {
+          "letter": "P",
+          "isWord": false,
+          "isValid": true,
+          "x": 8,
+          "y": 3
+        },
+        {
+          "letter": "H",
+          "isWord": false,
+          "isValid": true,
+          "x": 9,
+          "y": 3
+        },
+        {
+          "letter": "T",
+          "isWord": false,
+          "isValid": true,
+          "x": 10,
+          "y": 3
+        },
+        {
+          "letter": "L",
+          "isWord": false,
+          "isValid": true,
+          "x": 11,
+          "y": 3
+        },
+        {
+          "letter": "T",
+          "isWord": true,
+          "isValid": true,
+          "x": 12,
+          "y": 3
+        },
+        {
+          "letter": "S",
+          "isWord": true,
+          "isValid": true,
+          "x": 13,
+          "y": 3
+        },
+        {
+          "letter": "O",
+          "isWord": false,
+          "isValid": true,
+          "x": 14,
+          "y": 3
+        }
+      ],
+      [
+        {
+          "letter": "S",
+          "isWord": false,
+          "isValid": true,
+          "x": 0,
+          "y": 4
+        },
+        {
+          "letter": "P",
+          "isWord": false,
+          "isValid": true,
+          "x": 1,
+          "y": 4
+        },
+        {
+          "letter": "S",
+          "isWord": false,
+          "isValid": true,
+          "x": 2,
+          "y": 4
+        },
+        {
+          "letter": "W",
+          "isWord": false,
+          "isValid": true,
+          "x": 3,
+          "y": 4
+        },
+        {
+          "letter": "E",
+          "isWord": false,
+          "isValid": true,
+          "x": 4,
+          "y": 4
+        },
+        {
+          "letter": "Z",
+          "isWord": false,
+          "isValid": true,
+          "x": 5,
+          "y": 4
+        },
+        {
+          "letter": "J",
+          "isWord": true,
+          "isValid": true,
+          "x": 6,
+          "y": 4
+        },
+        {
+          "letter": "U",
+          "isWord": true,
+          "isValid": true,
+          "x": 7,
+          "y": 4
+        },
+        {
+          "letter": "E",
+          "isWord": true,
+          "isValid": true,
+          "x": 8,
+          "y": 4
+        },
+        {
+          "letter": "G",
+          "isWord": true,
+          "isValid": true,
+          "x": 9,
+          "y": 4
+        },
+        {
+          "letter": "O",
+          "isWord": true,
+          "isValid": true,
+          "x": 10,
+          "y": 4
+        },
+        {
+          "letter": "S",
+          "isWord": true,
+          "isValid": true,
+          "x": 11,
+          "y": 4
+        },
+        {
+          "letter": "U",
+          "isWord": true,
+          "isValid": true,
+          "x": 12,
+          "y": 4
+        },
+        {
+          "letter": "I",
+          "isWord": true,
+          "isValid": true,
+          "x": 13,
+          "y": 4
+        },
+        {
+          "letter": "A",
+          "isWord": false,
+          "isValid": true,
+          "x": 14,
+          "y": 4
+        }
+      ],
+      [
+        {
+          "letter": "I",
+          "isWord": false,
+          "isValid": true,
+          "x": 0,
+          "y": 5
+        },
+        {
+          "letter": "B",
+          "isWord": false,
+          "isValid": true,
+          "x": 1,
+          "y": 5
+        },
+        {
+          "letter": "I",
+          "isWord": false,
+          "isValid": true,
+          "x": 2,
+          "y": 5
+        },
+        {
+          "letter": "C",
+          "isWord": true,
+          "isValid": true,
+          "x": 3,
+          "y": 5
+        },
+        {
+          "letter": "I",
+          "isWord": true,
+          "isValid": true,
+          "x": 4,
+          "y": 5
+        },
+        {
+          "letter": "N",
+          "isWord": true,
+          "isValid": true,
+          "x": 5,
+          "y": 5
+        },
+        {
+          "letter": "E",
+          "isWord": true,
+          "isValid": true,
+          "x": 6,
+          "y": 5
+        },
+        {
+          "letter": "T",
+          "isWord": false,
+          "isValid": true,
+          "x": 7,
+          "y": 5
+        },
+        {
+          "letter": "F",
+          "isWord": false,
+          "isValid": true,
+          "x": 8,
+          "y": 5
+        },
+        {
+          "letter": "C",
+          "isWord": false,
+          "isValid": true,
+          "x": 9,
+          "y": 5
+        },
+        {
+          "letter": "S",
+          "isWord": false,
+          "isValid": true,
+          "x": 10,
+          "y": 5
+        },
+        {
+          "letter": "V",
+          "isWord": false,
+          "isValid": true,
+          "x": 11,
+          "y": 5
+        },
+        {
+          "letter": "R",
+          "isWord": true,
+          "isValid": true,
+          "x": 12,
+          "y": 5
+        },
+        {
+          "letter": "C",
+          "isWord": true,
+          "isValid": true,
+          "x": 13,
+          "y": 5
+        },
+        {
+          "letter": "F",
+          "isWord": false,
+          "isValid": true,
+          "x": 14,
+          "y": 5
+        }
+      ],
+      [
+        {
+          "letter": "P",
+          "isWord": false,
+          "isValid": true,
+          "x": 0,
+          "y": 6
+        },
+        {
+          "letter": "P",
+          "isWord": false,
+          "isValid": true,
+          "x": 1,
+          "y": 6
+        },
+        {
+          "letter": "T",
+          "isWord": false,
+          "isValid": true,
+          "x": 2,
+          "y": 6
+        },
+        {
+          "letter": "I",
+          "isWord": false,
+          "isValid": true,
+          "x": 3,
+          "y": 6
+        },
+        {
+          "letter": "Y",
+          "isWord": false,
+          "isValid": true,
+          "x": 4,
+          "y": 6
+        },
+        {
+          "letter": "D",
+          "isWord": false,
+          "isValid": true,
+          "x": 5,
+          "y": 6
+        },
+        {
+          "letter": "H",
+          "isWord": false,
+          "isValid": true,
+          "x": 6,
+          "y": 6
+        },
+        {
+          "letter": "Q",
+          "isWord": false,
+          "isValid": true,
+          "x": 7,
+          "y": 6
+        },
+        {
+          "letter": "W",
+          "isWord": false,
+          "isValid": true,
+          "x": 8,
+          "y": 6
+        },
+        {
+          "letter": "W",
+          "isWord": false,
+          "isValid": true,
+          "x": 9,
+          "y": 6
+        },
+        {
+          "letter": "J",
+          "isWord": false,
+          "isValid": true,
+          "x": 10,
+          "y": 6
+        },
+        {
+          "letter": "K",
+          "isWord": false,
+          "isValid": true,
+          "x": 11,
+          "y": 6
+        },
+        {
+          "letter": "A",
+          "isWord": true,
+          "isValid": true,
+          "x": 12,
+          "y": 6
+        },
+        {
+          "letter": "A",
+          "isWord": true,
+          "isValid": true,
+          "x": 13,
+          "y": 6
+        },
+        {
+          "letter": "O",
+          "isWord": false,
+          "isValid": true,
+          "x": 14,
+          "y": 6
+        }
+      ],
+      [
+        {
+          "letter": "C",
+          "isWord": false,
+          "isValid": true,
+          "x": 0,
+          "y": 7
+        },
+        {
+          "letter": "Z",
+          "isWord": false,
+          "isValid": true,
+          "x": 1,
+          "y": 7
+        },
+        {
+          "letter": "Y",
+          "isWord": false,
+          "isValid": true,
+          "x": 2,
+          "y": 7
+        },
+        {
+          "letter": "E",
+          "isWord": false,
+          "isValid": true,
+          "x": 3,
+          "y": 7
+        },
+        {
+          "letter": "G",
+          "isWord": false,
+          "isValid": true,
+          "x": 4,
+          "y": 7
+        },
+        {
+          "letter": "Y",
+          "isWord": false,
+          "isValid": true,
+          "x": 5,
+          "y": 7
+        },
+        {
+          "letter": "V",
+          "isWord": false,
+          "isValid": true,
+          "x": 6,
+          "y": 7
+        },
+        {
+          "letter": "W",
+          "isWord": false,
+          "isValid": true,
+          "x": 7,
+          "y": 7
+        },
+        {
+          "letter": "N",
+          "isWord": false,
+          "isValid": true,
+          "x": 8,
+          "y": 7
+        },
+        {
+          "letter": "C",
+          "isWord": false,
+          "isValid": true,
+          "x": 9,
+          "y": 7
+        },
+        {
+          "letter": "E",
+          "isWord": false,
+          "isValid": true,
+          "x": 10,
+          "y": 7
+        },
+        {
+          "letter": "U",
+          "isWord": false,
+          "isValid": true,
+          "x": 11,
+          "y": 7
+        },
+        {
+          "letter": "P",
+          "isWord": false,
+          "isValid": true,
+          "x": 12,
+          "y": 7
+        },
+        {
+          "letter": "R",
+          "isWord": false,
+          "isValid": true,
+          "x": 13,
+          "y": 7
+        },
+        {
+          "letter": "W",
+          "isWord": false,
+          "isValid": true,
+          "x": 14,
+          "y": 7
+        }
+      ],
+      [
+        {
+          "letter": "Z",
+          "isWord": false,
+          "isValid": true,
+          "x": 0,
+          "y": 8
+        },
+        {
+          "letter": "K",
+          "isWord": false,
+          "isValid": true,
+          "x": 1,
+          "y": 8
+        },
+        {
+          "letter": "R",
+          "isWord": false,
+          "isValid": true,
+          "x": 2,
+          "y": 8
+        },
+        {
+          "letter": "C",
+          "isWord": false,
+          "isValid": true,
+          "x": 3,
+          "y": 8
+        },
+        {
+          "letter": "W",
+          "isWord": false,
+          "isValid": true,
+          "x": 4,
+          "y": 8
+        },
+        {
+          "letter": "E",
+          "isWord": false,
+          "isValid": true,
+          "x": 5,
+          "y": 8
+        },
+        {
+          "letter": "V",
+          "isWord": true,
+          "isValid": true,
+          "x": 6,
+          "y": 8
+        },
+        {
+          "letter": "K",
+          "isWord": false,
+          "isValid": true,
+          "x": 7,
+          "y": 8
+        },
+        {
+          "letter": "J",
+          "isWord": false,
+          "isValid": true,
+          "x": 8,
+          "y": 8
+        },
+        {
+          "letter": "A",
+          "isWord": true,
+          "isValid": true,
+          "x": 9,
+          "y": 8
+        },
+        {
+          "letter": "N",
+          "isWord": false,
+          "isValid": true,
+          "x": 10,
+          "y": 8
+        },
+        {
+          "letter": "E",
+          "isWord": false,
+          "isValid": true,
+          "x": 11,
+          "y": 8
+        },
+        {
+          "letter": "D",
+          "isWord": false,
+          "isValid": true,
+          "x": 12,
+          "y": 8
+        },
+        {
+          "letter": "D",
+          "isWord": true,
+          "isValid": true,
+          "x": 13,
+          "y": 8
+        },
+        {
+          "letter": "Y",
+          "isWord": false,
+          "isValid": true,
+          "x": 14,
+          "y": 8
+        }
+      ],
+      [
+        {
+          "letter": "V",
+          "isWord": false,
+          "isValid": true,
+          "x": 0,
+          "y": 9
+        },
+        {
+          "letter": "K",
+          "isWord": false,
+          "isValid": true,
+          "x": 1,
+          "y": 9
+        },
+        {
+          "letter": "K",
+          "isWord": false,
+          "isValid": true,
+          "x": 2,
+          "y": 9
+        },
+        {
+          "letter": "R",
+          "isWord": false,
+          "isValid": true,
+          "x": 3,
+          "y": 9
+        },
+        {
+          "letter": "P",
+          "isWord": false,
+          "isValid": true,
+          "x": 4,
+          "y": 9
+        },
+        {
+          "letter": "X",
+          "isWord": false,
+          "isValid": true,
+          "x": 5,
+          "y": 9
+        },
+        {
+          "letter": "I",
+          "isWord": true,
+          "isValid": true,
+          "x": 6,
+          "y": 9
+        },
+        {
+          "letter": "F",
+          "isWord": false,
+          "isValid": true,
+          "x": 7,
+          "y": 9
+        },
+        {
+          "letter": "Z",
+          "isWord": false,
+          "isValid": true,
+          "x": 8,
+          "y": 9
+        },
+        {
+          "letter": "J",
+          "isWord": true,
+          "isValid": true,
+          "x": 9,
+          "y": 9
+        },
+        {
+          "letter": "K",
+          "isWord": false,
+          "isValid": true,
+          "x": 10,
+          "y": 9
+        },
+        {
+          "letter": "C",
+          "isWord": true,
+          "isValid": true,
+          "x": 11,
+          "y": 9
+        },
+        {
+          "letter": "G",
+          "isWord": false,
+          "isValid": true,
+          "x": 12,
+          "y": 9
+        },
+        {
+          "letter": "E",
+          "isWord": true,
+          "isValid": true,
+          "x": 13,
+          "y": 9
+        },
+        {
+          "letter": "M",
+          "isWord": false,
+          "isValid": true,
+          "x": 14,
+          "y": 9
+        }
+      ],
+      [
+        {
+          "letter": "Z",
+          "isWord": false,
+          "isValid": true,
+          "x": 0,
+          "y": 10
+        },
+        {
+          "letter": "X",
+          "isWord": false,
+          "isValid": true,
+          "x": 1,
+          "y": 10
+        },
+        {
+          "letter": "W",
+          "isWord": false,
+          "isValid": true,
+          "x": 2,
+          "y": 10
+        },
+        {
+          "letter": "I",
+          "isWord": false,
+          "isValid": true,
+          "x": 3,
+          "y": 10
+        },
+        {
+          "letter": "A",
+          "isWord": false,
+          "isValid": true,
+          "x": 4,
+          "y": 10
+        },
+        {
+          "letter": "Z",
+          "isWord": false,
+          "isValid": true,
+          "x": 5,
+          "y": 10
+        },
+        {
+          "letter": "A",
+          "isWord": true,
+          "isValid": true,
+          "x": 6,
+          "y": 10
+        },
+        {
+          "letter": "N",
+          "isWord": false,
+          "isValid": true,
+          "x": 7,
+          "y": 10
+        },
+        {
+          "letter": "P",
+          "isWord": false,
+          "isValid": true,
+          "x": 8,
+          "y": 10
+        },
+        {
+          "letter": "E",
+          "isWord": true,
+          "isValid": true,
+          "x": 9,
+          "y": 10
+        },
+        {
+          "letter": "J",
+          "isWord": false,
+          "isValid": true,
+          "x": 10,
+          "y": 10
+        },
+        {
+          "letter": "O",
+          "isWord": true,
+          "isValid": true,
+          "x": 11,
+          "y": 10
+        },
+        {
+          "letter": "X",
+          "isWord": false,
+          "isValid": true,
+          "x": 12,
+          "y": 10
+        },
+        {
+          "letter": "P",
+          "isWord": true,
+          "isValid": true,
+          "x": 13,
+          "y": 10
+        },
+        {
+          "letter": "I",
+          "isWord": false,
+          "isValid": true,
+          "x": 14,
+          "y": 10
+        }
+      ],
+      [
+        {
+          "letter": "X",
+          "isWord": false,
+          "isValid": true,
+          "x": 0,
+          "y": 11
+        },
+        {
+          "letter": "B",
+          "isWord": false,
+          "isValid": true,
+          "x": 1,
+          "y": 11
+        },
+        {
+          "letter": "E",
+          "isWord": false,
+          "isValid": true,
+          "x": 2,
+          "y": 11
+        },
+        {
+          "letter": "L",
+          "isWord": false,
+          "isValid": true,
+          "x": 3,
+          "y": 11
+        },
+        {
+          "letter": "S",
+          "isWord": false,
+          "isValid": true,
+          "x": 4,
+          "y": 11
+        },
+        {
+          "letter": "P",
+          "isWord": false,
+          "isValid": true,
+          "x": 5,
+          "y": 11
+        },
+        {
+          "letter": "J",
+          "isWord": true,
+          "isValid": true,
+          "x": 6,
+          "y": 11
+        },
+        {
+          "letter": "U",
+          "isWord": false,
+          "isValid": true,
+          "x": 7,
+          "y": 11
+        },
+        {
+          "letter": "F",
+          "isWord": false,
+          "isValid": true,
+          "x": 8,
+          "y": 11
+        },
+        {
+          "letter": "D",
+          "isWord": true,
+          "isValid": true,
+          "x": 9,
+          "y": 11
+        },
+        {
+          "letter": "R",
+          "isWord": false,
+          "isValid": true,
+          "x": 10,
+          "y": 11
+        },
+        {
+          "letter": "C",
+          "isWord": true,
+          "isValid": true,
+          "x": 11,
+          "y": 11
+        },
+        {
+          "letter": "I",
+          "isWord": false,
+          "isValid": true,
+          "x": 12,
+          "y": 11
+        },
+        {
+          "letter": "O",
+          "isWord": true,
+          "isValid": true,
+          "x": 13,
+          "y": 11
+        },
+        {
+          "letter": "N",
+          "isWord": false,
+          "isValid": true,
+          "x": 14,
+          "y": 11
+        }
+      ],
+      [
+        {
+          "letter": "L",
+          "isWord": false,
+          "isValid": true,
+          "x": 0,
+          "y": 12
+        },
+        {
+          "letter": "W",
+          "isWord": false,
+          "isValid": true,
+          "x": 1,
+          "y": 12
+        },
+        {
+          "letter": "B",
+          "isWord": false,
+          "isValid": true,
+          "x": 2,
+          "y": 12
+        },
+        {
+          "letter": "Q",
+          "isWord": false,
+          "isValid": true,
+          "x": 3,
+          "y": 12
+        },
+        {
+          "letter": "Z",
+          "isWord": false,
+          "isValid": true,
+          "x": 4,
+          "y": 12
+        },
+        {
+          "letter": "S",
+          "isWord": false,
+          "isValid": true,
+          "x": 5,
+          "y": 12
+        },
+        {
+          "letter": "E",
+          "isWord": true,
+          "isValid": true,
+          "x": 6,
+          "y": 12
+        },
+        {
+          "letter": "Q",
+          "isWord": false,
+          "isValid": true,
+          "x": 7,
+          "y": 12
+        },
+        {
+          "letter": "O",
+          "isWord": false,
+          "isValid": true,
+          "x": 8,
+          "y": 12
+        },
+        {
+          "letter": "R",
+          "isWord": true,
+          "isValid": true,
+          "x": 9,
+          "y": 12
+        },
+        {
+          "letter": "C",
+          "isWord": false,
+          "isValid": true,
+          "x": 10,
+          "y": 12
+        },
+        {
+          "letter": "I",
+          "isWord": true,
+          "isValid": true,
+          "x": 11,
+          "y": 12
+        },
+        {
+          "letter": "F",
+          "isWord": false,
+          "isValid": true,
+          "x": 12,
+          "y": 12
+        },
+        {
+          "letter": "R",
+          "isWord": true,
+          "isValid": true,
+          "x": 13,
+          "y": 12
+        },
+        {
+          "letter": "D",
+          "isWord": false,
+          "isValid": true,
+          "x": 14,
+          "y": 12
+        }
+      ],
+      [
+        {
+          "letter": "A",
+          "isWord": false,
+          "isValid": true,
+          "x": 0,
+          "y": 13
+        },
+        {
+          "letter": "G",
+          "isWord": false,
+          "isValid": true,
+          "x": 1,
+          "y": 13
+        },
+        {
+          "letter": "S",
+          "isWord": false,
+          "isValid": true,
+          "x": 2,
+          "y": 13
+        },
+        {
+          "letter": "W",
+          "isWord": false,
+          "isValid": true,
+          "x": 3,
+          "y": 13
+        },
+        {
+          "letter": "A",
+          "isWord": false,
+          "isValid": true,
+          "x": 4,
+          "y": 13
+        },
+        {
+          "letter": "X",
+          "isWord": false,
+          "isValid": true,
+          "x": 5,
+          "y": 13
+        },
+        {
+          "letter": "S",
+          "isWord": true,
+          "isValid": true,
+          "x": 6,
+          "y": 13
+        },
+        {
+          "letter": "F",
+          "isWord": false,
+          "isValid": true,
+          "x": 7,
+          "y": 13
+        },
+        {
+          "letter": "F",
+          "isWord": false,
+          "isValid": true,
+          "x": 8,
+          "y": 13
+        },
+        {
+          "letter": "E",
+          "isWord": true,
+          "isValid": true,
+          "x": 9,
+          "y": 13
+        },
+        {
+          "letter": "G",
+          "isWord": false,
+          "isValid": true,
+          "x": 10,
+          "y": 13
+        },
+        {
+          "letter": "N",
+          "isWord": true,
+          "isValid": true,
+          "x": 11,
+          "y": 13
+        },
+        {
+          "letter": "X",
+          "isWord": false,
+          "isValid": true,
+          "x": 12,
+          "y": 13
+        },
+        {
+          "letter": "T",
+          "isWord": true,
+          "isValid": true,
+          "x": 13,
+          "y": 13
+        },
+        {
+          "letter": "N",
+          "isWord": false,
+          "isValid": true,
+          "x": 14,
+          "y": 13
+        }
+      ],
+      [
+        {
+          "letter": "A",
+          "isWord": true,
+          "isValid": true,
+          "x": 0,
+          "y": 14
+        },
+        {
+          "letter": "R",
+          "isWord": true,
+          "isValid": true,
+          "x": 1,
+          "y": 14
+        },
+        {
+          "letter": "T",
+          "isWord": true,
+          "isValid": true,
+          "x": 2,
+          "y": 14
+        },
+        {
+          "letter": "E",
+          "isWord": true,
+          "isValid": true,
+          "x": 3,
+          "y": 14
+        },
+        {
+          "letter": "U",
+          "isWord": false,
+          "isValid": true,
+          "x": 4,
+          "y": 14
+        },
+        {
+          "letter": "F",
+          "isWord": false,
+          "isValid": true,
+          "x": 5,
+          "y": 14
+        },
+        {
+          "letter": "Y",
+          "isWord": false,
+          "isValid": true,
+          "x": 6,
+          "y": 14
+        },
+        {
+          "letter": "X",
+          "isWord": false,
+          "isValid": true,
+          "x": 7,
+          "y": 14
+        },
+        {
+          "letter": "Y",
+          "isWord": false,
+          "isValid": true,
+          "x": 8,
+          "y": 14
+        },
+        {
+          "letter": "Z",
+          "isWord": true,
+          "isValid": true,
+          "x": 9,
+          "y": 14
+        },
+        {
+          "letter": "U",
+          "isWord": false,
+          "isValid": true,
+          "x": 10,
+          "y": 14
+        },
+        {
+          "letter": "A",
+          "isWord": true,
+          "isValid": true,
+          "x": 11,
+          "y": 14
+        },
+        {
+          "letter": "R",
+          "isWord": false,
+          "isValid": true,
+          "x": 12,
+          "y": 14
+        },
+        {
+          "letter": "E",
+          "isWord": true,
+          "isValid": true,
+          "x": 13,
+          "y": 14
+        },
+        {
+          "letter": "K",
+          "isWord": false,
+          "isValid": true,
+          "x": 14,
+          "y": 14
+        }
+      ]
+    ],
+    "placedWords": [
+      {
+        "id": "977d63b4-e275-4943-956a-7a9d30a91ea1",
+        "word": "AJEDREZ",
+        "startX": 9,
+        "startY": 8,
+        "endX": 9,
+        "endY": 14
+      },
+      {
+        "id": "b18f4183-b216-42dc-93f5-5894d75a1a7a",
+        "word": "LECTURA",
+        "startX": 12,
+        "startY": 0,
+        "endX": 12,
+        "endY": 6
+      },
+      {
+        "id": "1249b430-6e50-40b2-b268-322e7cb08636",
+        "word": "MUSICA",
+        "startX": 13,
+        "startY": 1,
+        "endX": 13,
+        "endY": 6
+      },
+      {
+        "id": "a746f7d1-7f72-4365-9b3c-94f258f7e6f2",
+        "word": "BAILE",
+        "startX": 5,
+        "startY": 2,
+        "endX": 9,
+        "endY": 2
+      },
+      {
+        "id": "2f0af54e-09df-4a02-a935-b984b08bdbd9",
+        "word": "CINE",
+        "startX": 3,
+        "startY": 5,
+        "endX": 6,
+        "endY": 5
+      },
+      {
+        "id": "df95fbdc-a63c-4234-a267-7a94b7c7da2c",
+        "word": "JUEGOS",
+        "startX": 6,
+        "startY": 4,
+        "endX": 11,
+        "endY": 4
+      },
+      {
+        "id": "36eea84d-6e7f-4824-ba85-2c98f1d026a5",
+        "word": "ARTE",
+        "startX": 0,
+        "startY": 14,
+        "endX": 3,
+        "endY": 14
+      },
+      {
+        "id": "67164cf8-a3cd-43e7-b659-b1c7f4de2002",
+        "word": "DEPORTE",
+        "startX": 13,
+        "startY": 8,
+        "endX": 13,
+        "endY": 14
+      },
+      {
+        "id": "79c5cde1-bf56-4e8f-b4d3-e0e6cb3e79e4",
+        "word": "COCINA",
+        "startX": 11,
+        "startY": 9,
+        "endX": 11,
+        "endY": 14
+      },
+      {
+        "id": "326f8c3c-31a3-41f1-9487-3fa8bf3b8214",
+        "word": "VIAJES",
+        "startX": 6,
+        "startY": 8,
+        "endX": 6,
+        "endY": 13
+      }
+    ],
+    "theme": {
+      "primaryColor": "#FF5733",
+      "secondaryColor": "#C70039",
+      "textColor": "#000000",
+      "backgroundColor": "#FFFFFF"
+    },
+    "seed": "matatiempo_seed_123"
+  }
+}

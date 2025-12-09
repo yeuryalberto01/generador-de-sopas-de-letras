@@ -1,0 +1,5 @@
+{
+  "name": "Art Studio - Sopa de Letras AI",
+  "description": "Transform standard word search puzzles into artistic masterpieces using Gemini 2.5 Flash Image.",
+  "requestFramePermissions": []
+}
