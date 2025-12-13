@@ -114,15 +114,19 @@ class ModernLauncherApp(ctk.CTk):
         
         self.tab_dashboard = self.tabview.add("📊 Dashboard")
         self.tab_terminal = self.tabview.add("📟 Terminal")
-        self.tab_monitoring = self.tabview.add("📈 Monitoreo Detallado")
+        self.tab_config = self.tabview.add("⚙️ Configuración")
+        self.tab_monitoring = self.tabview.add("📈 Monitoreo")
         
         # === TAB 1: DASHBOARD ===
         self.create_dashboard_tab()
         
         # === TAB 2: TERMINAL ===
         self.create_terminal_tab()
-        
-        # === TAB 3: MONITOREO ===
+
+        # === TAB 3: CONFIGURATION ===
+        self.create_config_tab()
+
+        # === TAB 4: MONITORING ===
         self.create_monitoring_tab()
 
     # --------------------------------------------------------------------------
@@ -330,6 +334,14 @@ class ModernLauncherApp(ctk.CTk):
         self.sys_ram_val = ctk.CTkLabel(row2, text="0%", width=40)
         self.sys_ram_val.pack(side="right")
 
+        # Neural Memory Status
+        row3 = ctk.CTkFrame(content, fg_color="transparent")
+        row3.pack(fill="x", pady=(10, 0))
+        ctk.CTkLabel(row3, text="Neural Brain:", width=80, anchor="w").pack(side="left")
+        
+        self.brain_status_label = ctk.CTkLabel(row3, text="🔍 Checking...", font=("Arial", 11, "bold"))
+        self.brain_status_label.pack(side="left", padx=5)
+
     # --------------------------------------------------------------------------
     # TERMINAL UI
     # --------------------------------------------------------------------------
@@ -364,6 +376,87 @@ class ModernLauncherApp(ctk.CTk):
             fg_color="#555", width=100,
             command=self.clear_logs
         ).pack(side="right", padx=10)
+
+    # --------------------------------------------------------------------------
+    # CONFIGURATION TAB
+    # --------------------------------------------------------------------------
+    def create_config_tab(self):
+        from launcher_core import SettingsManager
+        self.settings = SettingsManager()
+
+        self.tab_config.grid_columnconfigure(0, weight=1)
+        
+        # Container
+        container = ctk.CTkFrame(self.tab_config, fg_color="transparent")
+        container.pack(fill="both", expand=True, padx=20, pady=20)
+        
+        ctk.CTkLabel(container, text="Configuración del Sistema", font=("Arial", 20, "bold")).pack(anchor="w", pady=(0, 20))
+
+        # --- API Configuration ---
+        api_frame = ctk.CTkFrame(container, fg_color=COLORS["bg_card"], corner_radius=10)
+        api_frame.pack(fill="x", pady=10)
+        
+        ctk.CTkLabel(api_frame, text="🔑 Google Gemini API Key", font=("Arial", 14, "bold")).pack(anchor="w", padx=15, pady=(15, 5))
+        
+        self.api_key_entry = ctk.CTkEntry(api_frame, width=400, placeholder_text="AIzaSy...")
+        self.api_key_entry.pack(fill="x", padx=15, pady=5)
+        current_key = self.settings.get("GEMINI_API_KEY") or self.settings.get("VITE_GEMINI_API_KEY")
+        if current_key:
+            self.api_key_entry.insert(0, current_key)
+
+        ctk.CTkLabel(api_frame, text="Necesaria para diseño y lógica de IA", font=("Arial", 11), text_color="gray").pack(anchor="w", padx=15, pady=(0, 15))
+
+        # --- Brain Configuration ---
+        brain_frame = ctk.CTkFrame(container, fg_color=COLORS["bg_card"], corner_radius=10)
+        brain_frame.pack(fill="x", pady=10)
+        
+        ctk.CTkLabel(brain_frame, text="🧠 Neural Memory Path (Training Data)", font=("Arial", 14, "bold")).pack(anchor="w", padx=15, pady=(15, 5))
+        
+        path_row = ctk.CTkFrame(brain_frame, fg_color="transparent")
+        path_row.pack(fill="x", padx=15, pady=5)
+        
+        self.brain_path_entry = ctk.CTkEntry(path_row, placeholder_text="C:/Users/.../AI_Brain")
+        self.brain_path_entry.pack(side="left", fill="x", expand=True, padx=(0, 10))
+        current_path = self.settings.get("TRAINING_PATH", "")
+        if current_path:
+            self.brain_path_entry.insert(0, current_path)
+            
+        def browse_path():
+            try:
+                from tkinter import filedialog
+                path = filedialog.askdirectory()
+                if path:
+                    self.brain_path_entry.delete(0, "end")
+                    self.brain_path_entry.insert(0, path)
+            except:
+                pass
+
+        ctk.CTkButton(path_row, text="Browse", width=80, command=browse_path, fg_color=COLORS["secondary"]).pack(side="right")
+        
+        ctk.CTkLabel(brain_frame, text="Carpeta donde se guardará el aprendizaje de la IA (RAG)", font=("Arial", 11), text_color="gray").pack(anchor="w", padx=15, pady=(0, 15))
+
+        # --- Save Button ---
+        ctk.CTkButton(
+            container, 
+            text="💾 Guardar Cambios", 
+            fg_color=COLORS["primary"], 
+            font=("Arial", 14, "bold"),
+            height=40,
+            command=self.save_settings
+        ).pack(pady=20)
+
+    def save_settings(self):
+        new_key = self.api_key_entry.get().strip()
+        new_path = self.brain_path_entry.get().strip()
+        
+        if new_key:
+            self.settings.set("GEMINI_API_KEY", new_key)
+            self.settings.set("VITE_GEMINI_API_KEY", new_key) # Duplicate just in case
+        
+        if new_path:
+            self.settings.set("TRAINING_PATH", new_path)
+            
+        messagebox.showinfo("Configuración", "Ajustes guardados correctamente. \nReinicia los servicios para aplicar cambios.")
 
     # --------------------------------------------------------------------------
     # MONITORING TAB (Simplified)
@@ -452,6 +545,11 @@ class ModernLauncherApp(ctk.CTk):
         """Actualiza monitoreo global del sistema"""
         if self._shutdown: return
         
+        # Safety check: UI might not be ready
+        if not hasattr(self, 'brain_status_label') or not hasattr(self, 'sys_cpu_bar'):
+             self.after(2000, self.update_system_health)
+             return
+
         status = resource_manager.get_system_status()
         
         # Actualizar barras globales
@@ -470,6 +568,19 @@ class ModernLauncherApp(ctk.CTk):
         summary = resource_manager.get_health_summary()
         self.health_label.configure(text=summary, text_color=COLORS["warning"] if "⚠️" in summary else COLORS["success"])
         
+        # Check Brain Status using SettingsManager (lazy init if not present)
+        if not hasattr(self, 'settings'):
+            from launcher_core import SettingsManager
+            self.settings = SettingsManager()
+            
+        brain_path = self.settings.get("TRAINING_PATH")
+        if brain_path and os.path.exists(brain_path):
+             self.brain_status_label.configure(text="CONNECTED 🧠", text_color=COLORS["success"])
+        elif brain_path:
+             self.brain_status_label.configure(text="NOT FOUND ❌", text_color=COLORS["danger"])
+        else:
+             self.brain_status_label.configure(text="NOT CONFIGURED ⚠️", text_color=COLORS["warning"])
+
         self.after(2000, self.update_system_health)
 
     @profile

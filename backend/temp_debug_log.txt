@@ -1,0 +1,1557 @@
+2025-11-28 00:56:08,528 - INFO - Received SVG Request: prompt='A simple star' style='bw'
+2025-11-28 00:58:08,574 - INFO - Received Image Request: prompt='Space' style='bw' model='imagen-3.0-generate-001'
+2025-11-28 00:58:09,736 - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-001:predict "HTTP/1.1 404 Not Found"
+2025-11-28 00:58:09,748 - INFO - Received SVG Request: prompt='Space' style='bw'
+2025-11-28 00:59:13,278 - INFO - Received Image Request: prompt='Space' style='bw' model='imagen-3.0-generate-001'
+2025-11-28 00:59:14,358 - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-001:predict "HTTP/1.1 404 Not Found"
+2025-11-28 00:59:14,381 - INFO - Received SVG Request: prompt='Space' style='bw'
+2025-11-28 01:01:27,113 - INFO - Received Image Request: prompt='A cute cartoon dinosaur in space' style='color' model='imagen-3.0-generate-001'
+2025-11-28 01:01:27,821 - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-001:predict "HTTP/1.1 404 Not Found"
+2025-11-28 01:04:09,843 - INFO - Received Image Request: prompt='computadoras en caricaturas' style='bw' model='imagen-3.0-generate-001'
+2025-11-28 01:04:10,651 - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-001:predict "HTTP/1.1 404 Not Found"
+2025-11-28 01:04:10,657 - INFO - Received SVG Request: prompt='computadoras en caricaturas' style='bw'
+2025-11-28 01:05:08,355 - INFO - Received Image Request: prompt='computadoras en caricaturas' style='color' model='imagen-3.0-generate-001'
+2025-11-28 01:05:09,060 - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-001:predict "HTTP/1.1 404 Not Found"
+2025-11-28 01:05:09,064 - INFO - Received SVG Request: prompt='computadoras en caricaturas' style='color'
+2025-11-28 01:08:51,299 - INFO - Received Image Request: prompt='A futuristic city skyline at sunset' style='color' model='imagen-3.0-fast-generate-001'
+2025-11-28 01:08:52,004 - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-fast-generate-001:predict "HTTP/1.1 404 Not Found"
+2025-11-28 01:11:33,026 - INFO - Received Image Request: prompt='A futuristic city skyline at sunset' style='color' model='imagen-4.0-fast-generate-001'
+2025-11-28 01:11:33,756 - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/imagen-4.0-fast-generate-001:predict "HTTP/1.1 400 Bad Request"
+2025-11-28 01:13:02,369 - INFO - Received Image Request: prompt='A futuristic city skyline at sunset' style='color' model='imagen-4.0-fast-generate-001'
+2025-11-28 01:13:03,276 - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/imagen-4.0-fast-generate-001:predict "HTTP/1.1 400 Bad Request"
+2025-11-28 01:15:29,550 - INFO - Received Image Request: prompt='A futuristic city skyline at sunset' style='color' model='imagen-4.0-fast-generate-001'
+2025-11-28 01:15:30,251 - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/imagen-4.0-fast-generate-001:predict "HTTP/1.1 400 Bad Request"
+2025-11-28 01:15:30,251 - ERROR - Imagen Generation Error: 400 INVALID_ARGUMENT. {'error': {'code': 400, 'message': 'Only block_low_and_above is supported for safetySetting.', 'status': 'INVALID_ARGUMENT'}}
+2025-11-28 01:16:45,203 - INFO - Received Image Request: prompt='A futuristic city skyline at sunset' style='color' model='imagen-4.0-fast-generate-001'
+2025-11-28 01:16:46,036 - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/imagen-4.0-fast-generate-001:predict "HTTP/1.1 400 Bad Request"
+2025-11-28 01:16:46,036 - ERROR - Imagen Generation Error: 400 INVALID_ARGUMENT. {'error': {'code': 400, 'message': 'Only block_low_and_above is supported for safetySetting.', 'status': 'INVALID_ARGUMENT'}}
+2025-11-28 01:17:33,585 - INFO - Received Image Request: prompt='A futuristic city skyline at sunset' style='color' model='imagen-4.0-fast-generate-001'
+2025-11-28 01:17:38,079 - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/imagen-4.0-fast-generate-001:predict "HTTP/1.1 200 OK"
+2025-11-28 01:18:30,348 - INFO - Received Image Request: prompt='Space' style='bw' model='imagen-3.0-generate-001'
+2025-11-28 01:18:31,698 - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-001:predict "HTTP/1.1 404 Not Found"
+2025-11-28 01:18:31,699 - ERROR - Imagen Generation Error: 404 NOT_FOUND. {'error': {'code': 404, 'message': 'models/imagen-3.0-generate-001 is not found for API version v1beta, or is not supported for predict. Call ListModels to see the list of available models and their supported methods.', 'status': 'NOT_FOUND'}}
+2025-11-28 01:18:31,723 - INFO - Received SVG Request: prompt='Space' style='bw'
+2025-11-28 01:21:15,943 - INFO - Received Image Request: prompt='Space' style='color' model='imagen-3.0-generate-001'
+2025-11-28 01:21:16,758 - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-001:predict "HTTP/1.1 404 Not Found"
+2025-11-28 01:21:16,759 - ERROR - Imagen Generation Error: 404 NOT_FOUND. {'error': {'code': 404, 'message': 'models/imagen-3.0-generate-001 is not found for API version v1beta, or is not supported for predict. Call ListModels to see the list of available models and their supported methods.', 'status': 'NOT_FOUND'}}
+2025-11-28 01:21:16,764 - INFO - Received SVG Request: prompt='Space' style='color'
+2025-11-28 17:40:50,895 - INFO - Received Image Request: prompt='crea dibujos de computadoras y tecnologia para no;os' style='color' model='imagen-3.0-generate-001'
+2025-11-28 17:40:51,836 - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-001:predict "HTTP/1.1 404 Not Found"
+2025-11-28 17:40:51,838 - ERROR - Imagen Generation Error: 404 NOT_FOUND. {'error': {'code': 404, 'message': 'models/imagen-3.0-generate-001 is not found for API version v1beta, or is not supported for predict. Call ListModels to see the list of available models and their supported methods.', 'status': 'NOT_FOUND'}}
+2025-11-28 17:40:51,842 - INFO - Received SVG Request: prompt='crea dibujos de computadoras y tecnologia para no;os' style='color'
+2025-11-28 20:34:06,826 - INFO - Received Image Request: prompt='crea dibujjos de computadoras, y cosas tecnologicas que sean como caricaturas' style='bw' model='imagen-3.0-generate-001'
+2025-11-28 20:34:07,606 - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-001:predict "HTTP/1.1 404 Not Found"
+2025-11-28 20:34:07,607 - ERROR - Imagen Generation Error: 404 NOT_FOUND. {'error': {'code': 404, 'message': 'models/imagen-3.0-generate-001 is not found for API version v1beta, or is not supported for predict. Call ListModels to see the list of available models and their supported methods.', 'status': 'NOT_FOUND'}}
+2025-11-28 20:34:07,613 - INFO - Received SVG Request: prompt='crea dibujjos de computadoras, y cosas tecnologicas que sean como caricaturas' style='bw'
+2025-11-28 21:00:45,234 - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=sk-8eab5332135b49d39cb33ae502c8b59f "HTTP/1.1 400 Bad Request"
+2025-11-28 21:09:48,698 - INFO - Using API Key from Header
+2025-11-28 21:09:49,173 - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=sk-8eab5332135b49d39cb33ae502c8b59f "HTTP/1.1 400 Bad Request"
+2025-11-28 21:09:55,330 - INFO - Using API Key from Header
+2025-11-28 21:09:55,690 - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=sk-8eab5332135b49d39cb33ae502c8b59f "HTTP/1.1 400 Bad Request"
+2025-11-28 21:10:29,626 - INFO - HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2025-11-28 21:10:37,463 - INFO - HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2025-11-28 21:11:52,751 - INFO - HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2025-11-28 21:12:25,934 - INFO - HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2025-11-28 21:12:39,027 - INFO - HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2025-11-28 21:13:51,026 - INFO - Received Image Request: prompt='Lugares de la republica dominicana ' style='bw' model='imagen-3.0-generate-001'
+2025-11-28 21:13:51,711 - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-001:predict "HTTP/1.1 404 Not Found"
+2025-11-28 21:13:51,713 - ERROR - Imagen Generation Error: 404 NOT_FOUND. {'error': {'code': 404, 'message': 'models/imagen-3.0-generate-001 is not found for API version v1beta, or is not supported for predict. Call ListModels to see the list of available models and their supported methods.', 'status': 'NOT_FOUND'}}
+2025-11-28 21:13:51,718 - INFO - Received SVG Request: prompt='Lugares de la republica dominicana ' style='bw'
+2025-11-28 21:38:27,671 - INFO - Received Image Request: prompt='A cute cat playing with a ball of yarnA cute cat playing with a ball of yarn' style='color' model='imagen-3.0-generate-001'
+2025-11-28 21:38:29,194 - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-001:predict "HTTP/1.1 404 Not Found"
+2025-11-28 21:38:29,195 - ERROR - Imagen Generation Error: 404 NOT_FOUND. {'error': {'code': 404, 'message': 'models/imagen-3.0-generate-001 is not found for API version v1beta, or is not supported for predict. Call ListModels to see the list of available models and their supported methods.', 'status': 'NOT_FOUND'}}
+2025-11-28 21:38:29,217 - INFO - Received SVG Request: prompt='A cute cat playing with a ball of yarnA cute cat playing with a ball of yarn' style='color'
+2025-11-28 21:39:23,724 - INFO - Received Image Request: prompt='A cute cat playing with a ball of yarnA cute cat playing with a ball of yarnA cute cat playing with a ball of yarn' style='color' model='imagen-3.0-generate-001'
+2025-11-28 21:39:24,959 - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-001:predict "HTTP/1.1 404 Not Found"
+2025-11-28 21:39:24,961 - ERROR - Imagen Generation Error: 404 NOT_FOUND. {'error': {'code': 404, 'message': 'models/imagen-3.0-generate-001 is not found for API version v1beta, or is not supported for predict. Call ListModels to see the list of available models and their supported methods.', 'status': 'NOT_FOUND'}}
+2025-11-28 21:39:24,982 - INFO - Received SVG Request: prompt='A cute cat playing with a ball of yarnA cute cat playing with a ball of yarnA cute cat playing with a ball of yarn' style='color'
+2025-11-28 21:40:09,537 - INFO - Received Image Request: prompt='A cute cat playing with a ball of yarnA cute cat playing with a ball of yarnA cute cat playing with a ball of yarnA cute cat playing with a ball of yarn' style='color' model='imagen-3.0-generate-001'
+2025-11-28 21:40:10,776 - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-001:predict "HTTP/1.1 404 Not Found"
+2025-11-28 21:40:10,779 - ERROR - Imagen Generation Error: 404 NOT_FOUND. {'error': {'code': 404, 'message': 'models/imagen-3.0-generate-001 is not found for API version v1beta, or is not supported for predict. Call ListModels to see the list of available models and their supported methods.', 'status': 'NOT_FOUND'}}
+2025-11-28 21:40:10,794 - INFO - Received SVG Request: prompt='A cute cat playing with a ball of yarnA cute cat playing with a ball of yarnA cute cat playing with a ball of yarnA cute cat playing with a ball of yarn' style='color'
+2025-11-28 22:24:09,351 - INFO - Using API Key from Environment
+2025-11-28 22:24:09,643 - INFO - Using API Key from Environment
+2025-11-28 22:24:10,419 - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=AIzaSyDRnzXWN3zCmVnzQHoQE4IG_e78NHIpe9w "HTTP/1.1 200 OK"
+2025-11-28 22:24:10,492 - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=AIzaSyDRnzXWN3zCmVnzQHoQE4IG_e78NHIpe9w "HTTP/1.1 200 OK"
+2025-11-28 22:24:18,179 - INFO - Using API Key from Environment
+2025-11-28 22:24:18,480 - INFO - Using API Key from Environment
+2025-11-28 22:24:21,510 - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=AIzaSyDRnzXWN3zCmVnzQHoQE4IG_e78NHIpe9w "HTTP/1.1 200 OK"
+2025-11-28 22:24:21,530 - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=AIzaSyDRnzXWN3zCmVnzQHoQE4IG_e78NHIpe9w "HTTP/1.1 200 OK"
+2025-11-28 22:25:46,854 - INFO - Received Image Request: prompt='marco hecho con computadoras y cosas tecnologicas ' style='color' model='imagen-3.0-generate-001'
+2025-11-28 22:25:47,561 - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-001:predict "HTTP/1.1 404 Not Found"
+2025-11-28 22:25:47,562 - ERROR - Imagen Generation Error: 404 NOT_FOUND. {'error': {'code': 404, 'message': 'models/imagen-3.0-generate-001 is not found for API version v1beta, or is not supported for predict. Call ListModels to see the list of available models and their supported methods.', 'status': 'NOT_FOUND'}}
+2025-11-28 22:25:47,569 - INFO - Received SVG Request: prompt='marco hecho con computadoras y cosas tecnologicas ' style='color'
+2025-11-28 22:28:15,800 - INFO - Received Image Request: prompt='computadoras y tecnologia futurista y señales inalambricas ' style='watercolor' model='imagen-3.0-generate-001'
+2025-11-28 22:28:16,486 - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-001:predict "HTTP/1.1 404 Not Found"
+2025-11-28 22:28:16,487 - ERROR - Imagen Generation Error: 404 NOT_FOUND. {'error': {'code': 404, 'message': 'models/imagen-3.0-generate-001 is not found for API version v1beta, or is not supported for predict. Call ListModels to see the list of available models and their supported methods.', 'status': 'NOT_FOUND'}}
+2025-11-28 22:28:16,495 - INFO - Received SVG Request: prompt='computadoras y tecnologia futurista y señales inalambricas ' style='watercolor'
+2025-11-28 23:04:52,429 - INFO - Received Image Request: prompt='COMPUTADORAS Y TECNOLOGIA  HAZME UN DISEÑO INTERESANTE ' style='color' model='imagen-3.0-generate-001'
+2025-11-28 23:04:53,201 - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-001:predict "HTTP/1.1 404 Not Found"
+2025-11-28 23:04:53,202 - ERROR - Imagen Generation Error: 404 NOT_FOUND. {'error': {'code': 404, 'message': 'models/imagen-3.0-generate-001 is not found for API version v1beta, or is not supported for predict. Call ListModels to see the list of available models and their supported methods.', 'status': 'NOT_FOUND'}}
+2025-11-28 23:04:53,208 - INFO - Received SVG Request: prompt='COMPUTADORAS Y TECNOLOGIA  HAZME UN DISEÑO INTERESANTE ' style='color'
+2025-11-28 23:45:04,873 - INFO - Received Smart Design Request
+2025-11-29 17:45:00,099 - INFO - HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2025-11-29 17:45:25,114 - INFO - HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2025-11-29 17:47:41,496 - INFO - Received Smart Design Request
+2025-11-29 17:48:10,422 - INFO - Received Smart Design Request
+2025-11-29 17:49:24,396 - INFO - Received Smart Design Request
+2025-11-29 21:18:25,107 - INFO - Received Smart Design Request
+2025-11-29 21:40:53,152 - INFO - Using API Key from Header
+2025-11-29 21:41:03,034 - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=AIzaSyDRnzXWN3zCmVnzQHoQE4IG_e78NHIpe9w "HTTP/1.1 200 OK"
+2025-11-29 21:41:03,992 - INFO - Received Smart Design Request
+2025-11-29 22:38:26,910 - INFO - Received Smart Design Request
+2025-11-29 22:39:27,397 - INFO - Using API Key from Environment
+2025-11-29 22:39:31,995 - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=AIzaSyDRnzXWN3zCmVnzQHoQE4IG_e78NHIpe9w "HTTP/1.1 200 OK"
+2025-11-29 22:39:33,462 - INFO - Received Smart Design Request
+2025-11-29 22:42:24,214 - INFO - Using API Key from Environment
+2025-11-29 22:42:29,911 - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=AIzaSyDRnzXWN3zCmVnzQHoQE4IG_e78NHIpe9w "HTTP/1.1 200 OK"
+2025-11-29 22:42:42,875 - INFO - Received Smart Design Request
+2025-11-29 22:42:42,876 - INFO - Prompt length: 598
+2025-11-29 22:42:42,876 - INFO - Mask length: 76959
+2025-11-29 22:42:42,876 - INFO - Style: bw
+2025-11-29 22:42:42,876 - INFO - Decoding base64 mask...
+2025-11-29 22:42:42,877 - INFO - Mask decoded. Bytes: 57702
+2025-11-29 22:42:42,877 - INFO - Calling Gemini 2.0 Flash...
+2025-11-29 22:42:51,211 - INFO - Gemini response received.
+2025-11-29 22:45:07,126 - INFO - Using API Key from Environment
+2025-11-29 22:45:15,583 - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=AIzaSyDRnzXWN3zCmVnzQHoQE4IG_e78NHIpe9w "HTTP/1.1 200 OK"
+2025-11-29 22:45:16,884 - INFO - Received Smart Design Request
+2025-11-29 22:45:16,885 - INFO - Prompt length: 990
+2025-11-29 22:45:16,885 - INFO - Mask length: 77731
+2025-11-29 22:45:16,885 - INFO - Style: bw
+2025-11-29 22:45:16,885 - INFO - Decoding base64 mask...
+2025-11-29 22:45:16,886 - INFO - Mask decoded. Bytes: 58279
+2025-11-29 22:45:16,886 - INFO - Calling Gemini 2.0 Flash...
+2025-11-29 22:45:26,376 - INFO - Gemini response received.
+2025-11-29 22:51:20,158 - INFO - Using API Key from Environment
+2025-11-29 22:51:25,185 - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=AIzaSyDRnzXWN3zCmVnzQHoQE4IG_e78NHIpe9w "HTTP/1.1 200 OK"
+2025-11-29 22:51:26,587 - INFO - Received Smart Design Request
+2025-11-29 22:51:26,587 - INFO - Prompt length: 763
+2025-11-29 22:51:26,587 - INFO - Mask length: 77359
+2025-11-29 22:51:26,587 - INFO - Style: bw
+2025-11-29 22:51:26,588 - INFO - Decoding base64 mask...
+2025-11-29 22:51:26,589 - INFO - Mask decoded. Bytes: 58001
+2025-11-29 22:51:26,589 - INFO - Calling Gemini 2.0 Flash...
+2025-11-29 22:51:35,675 - INFO - Gemini response received.
+2025-11-29 22:52:42,789 - INFO - Using API Key from Environment
+2025-11-29 22:52:49,998 - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=AIzaSyDRnzXWN3zCmVnzQHoQE4IG_e78NHIpe9w "HTTP/1.1 200 OK"
+2025-11-29 22:52:51,442 - INFO - Received Smart Design Request
+2025-11-29 22:52:51,442 - INFO - Prompt length: 676
+2025-11-29 22:52:51,443 - INFO - Mask length: 77947
+2025-11-29 22:52:51,443 - INFO - Style: bw
+2025-11-29 22:52:51,443 - INFO - Decoding base64 mask...
+2025-11-29 22:52:51,443 - INFO - Mask decoded. Bytes: 58441
+2025-11-29 22:52:51,443 - INFO - Calling Gemini 2.0 Flash...
+2025-11-29 22:52:57,445 - INFO - Gemini response received.
+2025-11-29 22:55:42,459 - INFO - Using API Key from Environment
+2025-11-29 22:55:49,167 - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=AIzaSyDRnzXWN3zCmVnzQHoQE4IG_e78NHIpe9w "HTTP/1.1 200 OK"
+2025-11-29 22:55:49,181 - INFO - Received Smart Design Request
+2025-11-29 22:55:49,181 - INFO - Prompt length: 702
+2025-11-29 22:55:49,181 - INFO - Mask length: 867
+2025-11-29 22:55:49,182 - INFO - Style: bw
+2025-11-29 22:55:49,182 - INFO - Decoding base64 mask...
+2025-11-29 22:55:49,182 - INFO - Mask decoded. Bytes: 631
+2025-11-29 22:55:49,182 - INFO - Calling Gemini 2.0 Flash...
+2025-11-29 22:55:55,888 - INFO - Gemini response received.
+2025-11-29 22:59:28,387 - INFO - Using API Key from Environment
+2025-11-29 22:59:34,252 - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=AIzaSyDRnzXWN3zCmVnzQHoQE4IG_e78NHIpe9w "HTTP/1.1 200 OK"
+2025-11-29 22:59:35,470 - INFO - Received Smart Design Request
+2025-11-29 22:59:35,470 - INFO - Prompt length: 819
+2025-11-29 22:59:35,470 - INFO - Mask length: 79999
+2025-11-29 22:59:35,471 - INFO - Style: bw
+2025-11-29 22:59:35,471 - INFO - Decoding base64 mask...
+2025-11-29 22:59:35,471 - INFO - Mask decoded. Bytes: 59981
+2025-11-29 22:59:35,472 - INFO - Calling Gemini 2.0 Flash...
+2025-11-29 22:59:45,355 - INFO - Gemini response received.
+2025-11-29 23:02:50,974 - INFO - Using API Key from Environment
+2025-11-29 23:02:57,871 - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=AIzaSyDRnzXWN3zCmVnzQHoQE4IG_e78NHIpe9w "HTTP/1.1 200 OK"
+2025-11-29 23:02:59,397 - INFO - Received Smart Design Request
+2025-11-29 23:02:59,397 - INFO - Prompt length: 905
+2025-11-29 23:02:59,397 - INFO - Mask length: 81915
+2025-11-29 23:02:59,397 - INFO - Style: bw
+2025-11-29 23:02:59,398 - INFO - Decoding base64 mask...
+2025-11-29 23:02:59,398 - INFO - Mask decoded. Bytes: 61418
+2025-11-29 23:02:59,398 - INFO - Calling Gemini 2.0 Flash...
+2025-11-29 23:03:08,578 - INFO - Gemini response received.
+2025-11-29 23:05:30,314 - INFO - Using API Key from Environment
+2025-11-29 23:05:37,940 - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=AIzaSyDRnzXWN3zCmVnzQHoQE4IG_e78NHIpe9w "HTTP/1.1 200 OK"
+2025-11-29 23:05:39,310 - INFO - Received Smart Design Request
+2025-11-29 23:05:39,310 - INFO - Prompt length: 832
+2025-11-29 23:05:39,310 - INFO - Mask length: 80999
+2025-11-29 23:05:39,310 - INFO - Style: bw
+2025-11-29 23:05:39,311 - INFO - Decoding base64 mask...
+2025-11-29 23:05:39,311 - INFO - Mask decoded. Bytes: 60730
+2025-11-29 23:05:39,311 - INFO - Calling Gemini 2.0 Flash...
+2025-11-29 23:06:20,571 - INFO - Gemini response received.
+2025-11-29 23:06:51,308 - INFO - Using API Key from Environment
+2025-11-29 23:06:59,892 - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=AIzaSyDRnzXWN3zCmVnzQHoQE4IG_e78NHIpe9w "HTTP/1.1 200 OK"
+2025-11-29 23:07:01,190 - INFO - Received Smart Design Request
+2025-11-29 23:07:01,191 - INFO - Prompt length: 832
+2025-11-29 23:07:01,191 - INFO - Mask length: 80999
+2025-11-29 23:07:01,191 - INFO - Style: bw
+2025-11-29 23:07:01,191 - INFO - Decoding base64 mask...
+2025-11-29 23:07:01,192 - INFO - Mask decoded. Bytes: 60730
+2025-11-29 23:07:01,192 - INFO - Calling Gemini 2.0 Flash...
+2025-11-29 23:07:10,034 - INFO - Gemini response received.
+2025-11-29 23:07:57,949 - INFO - Using API Key from Environment
+2025-11-29 23:08:08,367 - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=AIzaSyDRnzXWN3zCmVnzQHoQE4IG_e78NHIpe9w "HTTP/1.1 200 OK"
+2025-11-29 23:08:09,358 - INFO - Received Smart Design Request
+2025-11-29 23:08:09,358 - INFO - Prompt length: 1225
+2025-11-29 23:08:09,358 - INFO - Mask length: 80999
+2025-11-29 23:08:09,358 - INFO - Style: bw
+2025-11-29 23:08:09,359 - INFO - Decoding base64 mask...
+2025-11-29 23:08:09,359 - INFO - Mask decoded. Bytes: 60730
+2025-11-29 23:08:09,360 - INFO - Calling Gemini 2.0 Flash...
+2025-11-29 23:08:18,535 - INFO - Gemini response received.
+2025-11-29 23:09:06,476 - INFO - Using API Key from Environment
+2025-11-29 23:09:18,888 - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=AIzaSyDRnzXWN3zCmVnzQHoQE4IG_e78NHIpe9w "HTTP/1.1 200 OK"
+2025-11-29 23:09:20,043 - INFO - Received Smart Design Request
+2025-11-29 23:09:20,043 - INFO - Prompt length: 617
+2025-11-29 23:09:20,043 - INFO - Mask length: 80999
+2025-11-29 23:09:20,043 - INFO - Style: bw
+2025-11-29 23:09:20,044 - INFO - Decoding base64 mask...
+2025-11-29 23:09:20,044 - INFO - Mask decoded. Bytes: 60730
+2025-11-29 23:09:20,045 - INFO - Calling Gemini 2.0 Flash...
+2025-11-29 23:09:53,133 - INFO - Gemini response received.
+2025-11-29 23:11:05,200 - INFO - Using API Key from Environment
+2025-11-29 23:11:13,467 - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=AIzaSyDRnzXWN3zCmVnzQHoQE4IG_e78NHIpe9w "HTTP/1.1 200 OK"
+2025-11-29 23:11:14,607 - INFO - Received Smart Design Request
+2025-11-29 23:11:14,607 - INFO - Prompt length: 587
+2025-11-29 23:11:14,607 - INFO - Mask length: 80895
+2025-11-29 23:11:14,607 - INFO - Style: bw
+2025-11-29 23:11:14,608 - INFO - Decoding base64 mask...
+2025-11-29 23:11:14,608 - INFO - Mask decoded. Bytes: 60654
+2025-11-29 23:11:14,608 - INFO - Calling Gemini 2.0 Flash...
+2025-11-29 23:11:20,961 - INFO - Gemini response received.
+2025-11-29 23:11:59,942 - INFO - Using API Key from Environment
+2025-11-29 23:12:06,735 - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=AIzaSyDRnzXWN3zCmVnzQHoQE4IG_e78NHIpe9w "HTTP/1.1 200 OK"
+2025-11-29 23:12:08,237 - INFO - Received Smart Design Request
+2025-11-29 23:12:08,237 - INFO - Prompt length: 935
+2025-11-29 23:12:08,237 - INFO - Mask length: 80895
+2025-11-29 23:12:08,237 - INFO - Style: bw
+2025-11-29 23:12:08,238 - INFO - Decoding base64 mask...
+2025-11-29 23:12:08,238 - INFO - Mask decoded. Bytes: 60654
+2025-11-29 23:12:08,238 - INFO - Calling Gemini 2.0 Flash...
+2025-11-29 23:12:15,757 - INFO - Gemini response received.
+2025-11-30 19:51:09,344 - INFO - HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2025-11-30 19:58:54,900 - INFO - HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2025-11-30 19:58:54,900 - INFO - HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2025-11-30 19:58:58,050 - INFO - HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2025-11-30 19:58:58,061 - INFO - HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2025-11-30 20:00:56,019 - INFO - HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2025-11-30 20:00:56,085 - INFO - HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2025-11-30 22:24:42,423 - INFO - Using API Key from Environment
+2025-11-30 22:24:42,777 - INFO - Using API Key from Environment
+2025-11-30 22:24:43,721 - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=AIzaSyDRnzXWN3zCmVnzQHoQE4IG_e78NHIpe9w "HTTP/1.1 200 OK"
+2025-11-30 22:24:43,843 - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=AIzaSyDRnzXWN3zCmVnzQHoQE4IG_e78NHIpe9w "HTTP/1.1 200 OK"
+2025-11-30 23:07:16,998 - INFO - Using API Key from Environment
+2025-11-30 23:07:17,329 - INFO - Using API Key from Environment
+2025-11-30 23:07:18,212 - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=AIzaSyDRnzXWN3zCmVnzQHoQE4IG_e78NHIpe9w "HTTP/1.1 200 OK"
+2025-11-30 23:07:18,235 - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=AIzaSyDRnzXWN3zCmVnzQHoQE4IG_e78NHIpe9w "HTTP/1.1 200 OK"
+2025-12-01 12:06:47,914 - INFO - Using API Key from Environment
+2025-12-01 12:06:56,731 - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=AIzaSyDRnzXWN3zCmVnzQHoQE4IG_e78NHIpe9w "HTTP/1.1 200 OK"
+2025-12-01 12:06:57,447 - INFO - Received Smart Design Request
+2025-12-01 12:06:57,447 - INFO - Prompt length: 2129
+2025-12-01 12:06:57,447 - INFO - Mask length: 89479
+2025-12-01 12:06:57,447 - INFO - Style: bw
+2025-12-01 12:06:57,447 - INFO - Decoding base64 mask...
+2025-12-01 12:06:57,448 - INFO - Mask decoded. Bytes: 67092
+2025-12-01 12:06:57,448 - INFO - Calling Gemini 2.0 Flash...
+2025-12-01 12:07:11,042 - INFO - Gemini response received.
+2025-12-01 12:55:48,255 - INFO - Using API Key from Environment
+2025-12-01 12:55:57,974 - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=AIzaSyDRnzXWN3zCmVnzQHoQE4IG_e78NHIpe9w "HTTP/1.1 200 OK"
+2025-12-01 12:56:44,724 - INFO - Using API Key from Environment
+2025-12-01 12:57:00,151 - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=AIzaSyDRnzXWN3zCmVnzQHoQE4IG_e78NHIpe9w "HTTP/1.1 200 OK"
+2025-12-01 12:57:00,158 - INFO - Received Smart Design Request
+2025-12-01 12:57:00,159 - INFO - Prompt length: 2371
+2025-12-01 12:57:00,159 - INFO - Mask length: 867
+2025-12-01 12:57:00,159 - INFO - Style: bw
+2025-12-01 12:57:00,159 - INFO - Decoding base64 mask...
+2025-12-01 12:57:00,159 - INFO - Mask decoded. Bytes: 631
+2025-12-01 12:57:00,159 - INFO - Calling Gemini 2.0 Flash...
+2025-12-01 12:57:08,982 - INFO - Gemini response received.
+2025-12-01 13:41:29,836 - INFO - Received Smart Design Request
+2025-12-01 13:41:29,836 - INFO - Prompt length: 369
+2025-12-01 13:41:29,836 - INFO - Mask length: 867
+2025-12-01 13:41:29,836 - INFO - Style: engraving
+2025-12-01 13:41:29,836 - INFO - Decoding base64 mask...
+2025-12-01 13:41:29,836 - INFO - Mask decoded. Bytes: 631
+2025-12-01 13:41:29,836 - INFO - Calling Gemini 2.0 Flash...
+2025-12-01 13:41:37,322 - INFO - Gemini response received.
+2025-12-01 13:44:05,753 - INFO - Received Smart Design Request
+2025-12-01 13:44:05,754 - INFO - Prompt length: 390
+2025-12-01 13:44:05,754 - INFO - Mask length: 867
+2025-12-01 13:44:05,754 - INFO - Style: engraving
+2025-12-01 13:44:05,755 - INFO - Decoding base64 mask...
+2025-12-01 13:44:05,755 - INFO - Mask decoded. Bytes: 631
+2025-12-01 13:44:05,755 - INFO - Calling Gemini 2.0 Flash...
+2025-12-01 13:44:14,726 - INFO - Gemini response received.
+2025-12-01 13:45:11,783 - INFO - Received Smart Design Request
+2025-12-01 13:45:11,783 - INFO - Prompt length: 390
+2025-12-01 13:45:11,783 - INFO - Mask length: 867
+2025-12-01 13:45:11,783 - INFO - Style: engraving
+2025-12-01 13:45:11,784 - INFO - Decoding base64 mask...
+2025-12-01 13:45:11,784 - INFO - Mask decoded. Bytes: 631
+2025-12-01 13:45:11,784 - INFO - Calling Gemini 2.0 Flash...
+2025-12-01 13:45:33,371 - INFO - Gemini response received.
+2025-12-01 13:46:46,696 - INFO - Received Smart Design Request
+2025-12-01 13:46:46,697 - INFO - Prompt length: 396
+2025-12-01 13:46:46,697 - INFO - Mask length: 867
+2025-12-01 13:46:46,697 - INFO - Style: engraving
+2025-12-01 13:46:46,698 - INFO - Decoding base64 mask...
+2025-12-01 13:46:46,698 - INFO - Mask decoded. Bytes: 631
+2025-12-01 13:46:46,698 - INFO - Calling Gemini 2.0 Flash...
+2025-12-01 13:46:59,289 - INFO - Gemini response received.
+2025-12-01 13:50:33,794 - INFO - Received Smart Design Request
+2025-12-01 13:50:33,794 - INFO - Prompt length: 395
+2025-12-01 13:50:33,794 - INFO - Mask length: 867
+2025-12-01 13:50:33,794 - INFO - Style: engraving
+2025-12-01 13:50:33,795 - INFO - Decoding base64 mask...
+2025-12-01 13:50:33,795 - INFO - Mask decoded. Bytes: 631
+2025-12-01 13:50:33,795 - INFO - Calling Gemini 2.0 Flash...
+2025-12-01 13:50:46,917 - INFO - Gemini response received.
+2025-12-01 13:53:46,789 - INFO - Received Smart Design Request
+2025-12-01 13:53:46,790 - INFO - Prompt length: 395
+2025-12-01 13:53:46,790 - INFO - Mask length: 867
+2025-12-01 13:53:46,790 - INFO - Style: engraving
+2025-12-01 13:53:46,792 - INFO - Decoding base64 mask...
+2025-12-01 13:53:46,792 - INFO - Mask decoded. Bytes: 631
+2025-12-01 13:53:46,792 - INFO - Calling Gemini 2.0 Flash...
+2025-12-01 13:53:56,577 - INFO - Gemini response received.
+2025-12-01 13:55:41,232 - INFO - Received Smart Design Request
+2025-12-01 13:55:41,232 - INFO - Prompt length: 398
+2025-12-01 13:55:41,232 - INFO - Mask length: 867
+2025-12-01 13:55:41,232 - INFO - Style: engraving
+2025-12-01 13:55:41,233 - INFO - Decoding base64 mask...
+2025-12-01 13:55:41,233 - INFO - Mask decoded. Bytes: 631
+2025-12-01 13:55:41,233 - INFO - Calling Gemini 2.0 Flash...
+2025-12-01 13:55:52,543 - INFO - Gemini response received.
+2025-12-01 13:59:17,718 - INFO - Received Smart Design Request
+2025-12-01 13:59:17,718 - INFO - Prompt length: 396
+2025-12-01 13:59:17,720 - INFO - Mask length: 867
+2025-12-01 13:59:17,720 - INFO - Style: engraving
+2025-12-01 13:59:17,721 - INFO - Decoding base64 mask...
+2025-12-01 13:59:17,721 - INFO - Mask decoded. Bytes: 631
+2025-12-01 13:59:17,721 - INFO - Calling Gemini 2.0 Flash...
+2025-12-01 14:00:00,737 - INFO - Gemini response received.
+2025-12-01 14:03:40,910 - INFO - Received Smart Design Request
+2025-12-01 14:03:40,911 - INFO - Prompt length: 398
+2025-12-01 14:03:40,911 - INFO - Mask length: 867
+2025-12-01 14:03:40,911 - INFO - Style: engraving
+2025-12-01 14:03:40,912 - INFO - Decoding base64 mask...
+2025-12-01 14:03:40,912 - INFO - Mask decoded. Bytes: 631
+2025-12-01 14:03:40,912 - INFO - Calling Gemini 2.0 Flash...
+2025-12-01 14:03:48,484 - INFO - Gemini response received.
+2025-12-02 12:59:04,138 - INFO - Received Smart Design Request
+2025-12-02 12:59:04,139 - INFO - Prompt length: 544
+2025-12-02 12:59:04,139 - INFO - Mask length: 28298
+2025-12-02 12:59:04,139 - INFO - Style: color
+2025-12-02 12:59:04,139 - INFO - Decoding base64 mask...
+2025-12-02 12:59:04,139 - INFO - Mask decoded. Bytes: 21206
+2025-12-02 12:59:04,139 - INFO - Calling Gemini 2.0 Flash...
+2025-12-02 12:59:19,468 - INFO - Gemini response received.
+2025-12-02 13:20:28,028 - INFO - Received Smart Design Request
+2025-12-02 13:20:28,028 - INFO - Prompt length: 546
+2025-12-02 13:20:28,028 - INFO - Mask length: 28298
+2025-12-02 13:20:28,028 - INFO - Style: color
+2025-12-02 13:20:28,028 - INFO - Decoding base64 mask...
+2025-12-02 13:20:28,028 - INFO - Mask decoded. Bytes: 21206
+2025-12-02 13:20:28,029 - INFO - Calling Gemini 2.0 Flash...
+2025-12-02 13:20:42,682 - INFO - Gemini response received.
+2025-12-02 13:21:37,712 - INFO - Received Smart Design Request
+2025-12-02 13:21:37,712 - INFO - Prompt length: 516
+2025-12-02 13:21:37,712 - INFO - Mask length: 28298
+2025-12-02 13:21:37,712 - INFO - Style: color
+2025-12-02 13:21:37,712 - INFO - Decoding base64 mask...
+2025-12-02 13:21:37,712 - INFO - Mask decoded. Bytes: 21206
+2025-12-02 13:21:37,712 - INFO - Calling Gemini 2.0 Flash...
+2025-12-02 13:21:55,009 - INFO - Gemini response received.
+2025-12-02 13:26:50,987 - INFO - Received Smart Design Request
+2025-12-02 13:26:50,987 - INFO - Prompt length: 807
+2025-12-02 13:26:50,987 - INFO - Mask length: 28298
+2025-12-02 13:26:50,987 - INFO - Style: color
+2025-12-02 13:26:50,987 - INFO - Decoding base64 mask...
+2025-12-02 13:26:50,987 - INFO - Mask decoded. Bytes: 21206
+2025-12-02 13:26:50,988 - INFO - Calling Gemini 2.0 Flash...
+2025-12-02 13:27:00,130 - INFO - Gemini response received.
+2025-12-02 13:35:16,715 - INFO - Received Smart Design Request
+2025-12-02 13:35:16,715 - INFO - Prompt length: 886
+2025-12-02 13:35:16,715 - INFO - Mask length: 28298
+2025-12-02 13:35:16,715 - INFO - Style: color
+2025-12-02 13:35:16,716 - INFO - Decoding base64 mask...
+2025-12-02 13:35:16,716 - INFO - Mask decoded. Bytes: 21206
+2025-12-02 13:35:16,716 - INFO - Calling Gemini 2.0 Flash...
+2025-12-02 13:36:00,751 - INFO - Gemini response received.
+2025-12-02 13:36:29,157 - INFO - Received Smart Design Request
+2025-12-02 13:36:29,158 - INFO - Prompt length: 886
+2025-12-02 13:36:29,158 - INFO - Mask length: 28298
+2025-12-02 13:36:29,158 - INFO - Style: color
+2025-12-02 13:36:29,158 - INFO - Decoding base64 mask...
+2025-12-02 13:36:29,158 - INFO - Mask decoded. Bytes: 21206
+2025-12-02 13:36:29,158 - INFO - Calling Gemini 2.0 Flash...
+2025-12-02 13:36:41,012 - INFO - Gemini response received.
+2025-12-02 13:39:51,773 - INFO - Using API Key from Environment
+2025-12-02 13:39:55,898 - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=AIzaSyDRnzXWN3zCmVnzQHoQE4IG_e78NHIpe9w "HTTP/1.1 200 OK"
+2025-12-02 13:40:02,142 - INFO - Received Smart Design Request
+2025-12-02 13:40:02,142 - INFO - Prompt length: 948
+2025-12-02 13:40:02,142 - INFO - Mask length: 28298
+2025-12-02 13:40:02,142 - INFO - Style: color
+2025-12-02 13:40:02,143 - INFO - Decoding base64 mask...
+2025-12-02 13:40:02,143 - INFO - Mask decoded. Bytes: 21206
+2025-12-02 13:40:02,143 - INFO - Calling Gemini 2.0 Flash...
+2025-12-02 13:40:13,315 - INFO - Gemini response received.
+2025-12-05 13:11:45,129 - INFO - Received Smart Design Request (Imagen 3 Mode)
+2025-12-05 13:11:45,130 - INFO - Prompt: 
+    
+    Recibes una imagen de una sopa de letras YA TERMINADA.
+    Solo debes decorar el fondo y los bordes.
+    No debes modificar las letras ni la estructura del puzzle.
+  
+    A professional, vibrant illustration of Dominican Republic culture. Elements include palm trees, the Dominican flag colors (red, white, blue), tropical fruits, and carnival masks. The style is festive and colorful, suitable for a cultural event poster.
+    
+    Detalles adicionales pedidos por el usuario: animalels de republica dominicana
+colores vibrantes, azules, verdes, alegoricos a la naturaleza dominicana.
+    Paleta de color recomendada: Red, White, Blue, Tropical Green, Bright Yellow.
+  
+2025-12-05 13:11:45,130 - INFO - Calling Imagen 3...
+2025-12-05 13:11:46,010 - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-002:predict "HTTP/1.1 404 Not Found"
+2025-12-05 13:11:46,011 - ERROR - Smart Design Error: 404 NOT_FOUND. {'error': {'code': 404, 'message': 'models/imagen-3.0-generate-002 is not found for API version v1beta, or is not supported for predict. Call ListModels to see the list of available models and their supported methods.', 'status': 'NOT_FOUND'}}
+2025-12-05 13:13:42,919 - INFO - Using API Key from Environment
+2025-12-05 13:13:43,222 - INFO - Using API Key from Environment
+2025-12-05 13:13:44,185 - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=AIzaSyDRnzXWN3zCmVnzQHoQE4IG_e78NHIpe9w "HTTP/1.1 200 OK"
+2025-12-05 13:13:44,186 - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=AIzaSyDRnzXWN3zCmVnzQHoQE4IG_e78NHIpe9w "HTTP/1.1 200 OK"
+2025-12-05 13:14:20,569 - INFO - Received Smart Design Request (Imagen 3 Mode)
+2025-12-05 13:14:20,569 - INFO - Prompt: 
+    
+    Recibes una imagen de una sopa de letras YA TERMINADA.
+    Solo debes decorar el fondo y los bordes.
+    No debes modificar las letras ni la estructura del puzzle.
+  
+    A professional, vibrant illustration of Dominican Republic culture. Elements include palm trees, the Dominican flag colors (red, white, blue), tropical fruits, and carnival masks. The style is festive and colorful, suitable for a cultural event poster.
+    
+    Detalles adicionales pedidos por el usuario: aminales dominicanos, caolors vivrantes, y naturaleza dominicana
+.
+    Paleta de color recomendada: Red, White, Blue, Tropical Green, Bright Yellow.
+  
+2025-12-05 13:14:20,569 - INFO - Calling Imagen 3...
+2025-12-05 13:14:21,471 - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-002:predict "HTTP/1.1 404 Not Found"
+2025-12-05 13:14:21,472 - ERROR - Smart Design Error: 404 NOT_FOUND. {'error': {'code': 404, 'message': 'models/imagen-3.0-generate-002 is not found for API version v1beta, or is not supported for predict. Call ListModels to see the list of available models and their supported methods.', 'status': 'NOT_FOUND'}}
+2025-12-05 14:55:55,111 - INFO - Received Smart Design Request (Imagen 3 Mode)
+2025-12-05 14:55:55,112 - INFO - Prompt: Esta es una página de sopa de letras para un libro impreso. Genera una ilustración de fondo y decoraciones alrededor del contenido.
+
+REGLAS IMPORTANTES DE MÁSCARA Y CONTENIDO:
+1. No cambies ni cubras el título, el texto de instrucciones, la cuadrícula de letras, la caja de palabras ni el pie de página. Estos elementos deben permanecer exactamente en su lugar y ser perfectamente legibles.
+2. Decora únicamente el fondo de la página, la franja alrededor del encabezado, los márgenes laterales junto a la cuadrícula, el área que rodea la caja de palabras y elementos sutiles en el pie de página.
+
+CONTEXTO DEL PUZZLE:
+- Tema: Sopa de Letras
+- Nivel: Estándar / Medio
+- Número de Puzzle: 1
+- Palabras clave (tema): API, DATABASE, DEEPSEEK, GEMINI, GROQ, REACT, TAILWIND, TYPESCRIPT
+
+ESTILO VISUAL DESEADO:
+- Estilo: como una página de libro antiguo ilustrado, con textura de papel y trazos suaves.
+- Intensidad: decoración equilibrada sin saturar la vista.
+
+El usuario describe así lo que quiere (texto original): "Space adventure style".
+
+La imagen final debe ser una obra de arte cohesiva que integre el contenido del puzzle (partes protegidas en negro en la máscara) con un fondo artístico hermoso y legible.
+2025-12-05 14:55:55,112 - INFO - Calling Imagen 3...
+2025-12-05 14:55:56,595 - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-001:predict "HTTP/1.1 404 Not Found"
+2025-12-05 14:55:56,598 - ERROR - Smart Design Error: 404 NOT_FOUND. {'error': {'code': 404, 'message': 'models/imagen-3.0-generate-001 is not found for API version v1beta, or is not supported for predict. Call ListModels to see the list of available models and their supported methods.', 'status': 'NOT_FOUND'}}
+2025-12-05 15:09:36,180 - INFO - Received Smart Design Request (Imagen 3 Mode)
+2025-12-05 15:09:36,180 - INFO - Prompt: Esta es una página de sopa de letras para un libro impreso. Genera una ilustración de fondo y decoraciones alrededor del contenido.
+
+REGLAS IMPORTANTES DE MÁSCARA Y CONTENIDO:
+1. No cambies ni cubras el título, el texto de instrucciones, la cuadrícula de letras, la caja de palabras ni el pie de página. Estos elementos deben permanecer exactamente en su lugar y ser perfectamente legibles.
+2. Decora únicamente el fondo de la página, la franja alrededor del encabezado, los márgenes laterales junto a la cuadrícula, el área que rodea la caja de palabras y elementos sutiles en el pie de página.
+
+CONTEXTO DEL PUZZLE:
+- Tema: Sopa de Letras
+- Nivel: Estándar / Medio
+- Número de Puzzle: 1
+- Palabras clave (tema): API, DATABASE, DEEPSEEK, GEMINI, GROQ, REACT, TAILWIND, TYPESCRIPT
+
+ESTILO VISUAL DESEADO:
+- Estilo: estilo vibrante v gamer, con neones sutiles y fondo tecnológico oscuro.
+- Intensidad: decoración equilibrada sin saturar la vista.
+
+El usuario describe así lo que quiere (texto original): "videos juegos colores vibrantes, carros y mtoos".
+
+La imagen final debe ser una obra de arte cohesiva que integre el contenido del puzzle (partes protegidas en negro en la máscara) con un fondo artístico hermoso y legible.
+2025-12-05 15:09:36,180 - INFO - Calling Imagen 3...
+2025-12-05 15:09:37,053 - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-001:predict "HTTP/1.1 404 Not Found"
+2025-12-05 15:09:37,053 - ERROR - Smart Design Error: 404 NOT_FOUND. {'error': {'code': 404, 'message': 'models/imagen-3.0-generate-001 is not found for API version v1beta, or is not supported for predict. Call ListModels to see the list of available models and their supported methods.', 'status': 'NOT_FOUND'}}
+2025-12-05 16:45:28,887 - INFO - Using API Key from Environment
+2025-12-05 16:45:31,284 - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=AIzaSyDRnzXWN3zCmVnzQHoQE4IG_e78NHIpe9w "HTTP/1.1 200 OK"
+2025-12-05 17:00:14,782 - INFO - Using API Key from Environment
+2025-12-05 17:00:20,575 - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=AIzaSyDRnzXWN3zCmVnzQHoQE4IG_e78NHIpe9w "HTTP/1.1 200 OK"
+2025-12-05 17:03:23,597 - INFO - Received Smart Design Request (Imagen 3 Mode)
+2025-12-05 17:03:23,598 - INFO - Prompt: Esta es una página de sopa de letras para un libro impreso. Genera una ilustración de fondo y decoraciones alrededor del contenido.
+
+REGLAS IMPORTANTES DE MÁSCARA Y CONTENIDO:
+1. No cambies ni cubras el título, el texto de instrucciones, la cuadrícula de letras, la caja de palabras ni el pie de página. Estos elementos deben permanecer exactamente en su lugar y ser perfectamente legibles.
+2. Decora únicamente el fondo de la página, la franja alrededor del encabezado, los márgenes laterales junto a la cuadrícula, el área que rodea la caja de palabras y elementos sutiles en el pie de página.
+
+CONTEXTO DEL PUZZLE:
+- Tema: Sopa de Letras
+- Nivel: Estándar / Medio
+- Número de Puzzle: 1
+- Palabras clave (tema): BUHO, CARPINTERO, CERNICALO, CIGUA, COLIBRI, COTORRA, CUERVO, FLAMENCO, GARZA, GAVILAN, GAVIOTA, LECHUZA
+
+ESTILO VISUAL DESEADO:
+- Estilo: estilo moderno y limpio, con formas simples y colores planos suaves.
+- Intensidad: muy decorado, rico en detalles pero manteniendo la legibilidad central.
+
+El usuario describe así lo que quiere (texto original): "AVES DOMINICANAS 
+COLORES VIBRANTES Y EL CIELO  HERMOSO".
+
+La imagen final debe ser una obra de arte cohesiva que integre el contenido del puzzle (partes protegidas en negro en la máscara) con un fondo artístico hermoso y legible.
+2025-12-05 17:03:23,598 - INFO - Calling Imagen 3...
+2025-12-05 17:03:24,541 - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-001:predict "HTTP/1.1 404 Not Found"
+2025-12-05 17:03:24,650 - ERROR - Smart Design Error: 404 NOT_FOUND. {'error': {'code': 404, 'message': 'models/imagen-3.0-generate-001 is not found for API version v1beta, or is not supported for predict. Call ListModels to see the list of available models and their supported methods.', 'status': 'NOT_FOUND'}}
+2025-12-05 17:03:24,650 - ERROR - Traceback: Traceback (most recent call last):
+  File "C:\Users\yeury\Desktop\Proyecto Cenecompuc\SOPA DE LETRAS IA\backend\routers\ai.py", line 411, in generate_smart_design
+    response = client.models.generate_images(
+        model=model,
+    ...<6 lines>...
+        )
+    )
+  File "C:\Users\yeury\Desktop\Proyecto Cenecompuc\SOPA DE LETRAS IA\.venv\Lib\site-packages\google\genai\models.py", line 5488, in generate_images
+    api_response = self._generate_images(
+        model=model,
+        prompt=prompt,
+        config=config,
+    )
+  File "C:\Users\yeury\Desktop\Proyecto Cenecompuc\SOPA DE LETRAS IA\.venv\Lib\site-packages\google\genai\models.py", line 4254, in _generate_images
+    response = self._api_client.request(
+        'post', path, request_dict, http_options
+    )
+  File "C:\Users\yeury\Desktop\Proyecto Cenecompuc\SOPA DE LETRAS IA\.venv\Lib\site-packages\google\genai\_api_client.py", line 1388, in request
+    response = self._request(http_request, http_options, stream=False)
+  File "C:\Users\yeury\Desktop\Proyecto Cenecompuc\SOPA DE LETRAS IA\.venv\Lib\site-packages\google\genai\_api_client.py", line 1224, in _request
+    return self._retry(self._request_once, http_request, stream)  # type: ignore[no-any-return]
+           ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\yeury\Desktop\Proyecto Cenecompuc\SOPA DE LETRAS IA\.venv\Lib\site-packages\tenacity\__init__.py", line 477, in __call__
+    do = self.iter(retry_state=retry_state)
+  File "C:\Users\yeury\Desktop\Proyecto Cenecompuc\SOPA DE LETRAS IA\.venv\Lib\site-packages\tenacity\__init__.py", line 378, in iter
+    result = action(retry_state)
+  File "C:\Users\yeury\Desktop\Proyecto Cenecompuc\SOPA DE LETRAS IA\.venv\Lib\site-packages\tenacity\__init__.py", line 420, in exc_check
+    raise retry_exc.reraise()
+          ~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\yeury\Desktop\Proyecto Cenecompuc\SOPA DE LETRAS IA\.venv\Lib\site-packages\tenacity\__init__.py", line 187, in reraise
+    raise self.last_attempt.result()
+          ~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\yeury\AppData\Local\Programs\Python\Python313\Lib\concurrent\futures\_base.py", line 449, in result
+    return self.__get_result()
+           ~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\yeury\AppData\Local\Programs\Python\Python313\Lib\concurrent\futures\_base.py", line 401, in __get_result
+    raise self._exception
+  File "C:\Users\yeury\Desktop\Proyecto Cenecompuc\SOPA DE LETRAS IA\.venv\Lib\site-packages\tenacity\__init__.py", line 480, in __call__
+    result = fn(*args, **kwargs)
+  File "C:\Users\yeury\Desktop\Proyecto Cenecompuc\SOPA DE LETRAS IA\.venv\Lib\site-packages\google\genai\_api_client.py", line 1201, in _request_once
+    errors.APIError.raise_for_response(response)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^
+  File "C:\Users\yeury\Desktop\Proyecto Cenecompuc\SOPA DE LETRAS IA\.venv\Lib\site-packages\google\genai\errors.py", line 106, in raise_for_response
+    cls.raise_error(response.status_code, response_json, response)
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\yeury\Desktop\Proyecto Cenecompuc\SOPA DE LETRAS IA\.venv\Lib\site-packages\google\genai\errors.py", line 131, in raise_error
+    raise ClientError(status_code, response_json, response)
+google.genai.errors.ClientError: 404 NOT_FOUND. {'error': {'code': 404, 'message': 'models/imagen-3.0-generate-001 is not found for API version v1beta, or is not supported for predict. Call ListModels to see the list of available models and their supported methods.', 'status': 'NOT_FOUND'}}
+
+2025-12-05 17:11:57,217 - INFO - Using API Key from Environment
+2025-12-05 17:11:57,494 - INFO - Using API Key from Environment
+2025-12-05 17:12:02,086 - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=AIzaSyDRnzXWN3zCmVnzQHoQE4IG_e78NHIpe9w "HTTP/1.1 200 OK"
+2025-12-05 17:12:03,207 - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=AIzaSyDRnzXWN3zCmVnzQHoQE4IG_e78NHIpe9w "HTTP/1.1 200 OK"
+2025-12-05 17:18:10,944 - INFO - Received Smart Design Request (Imagen 3 Mode)
+2025-12-05 17:18:10,944 - INFO - Prompt: Esta es una página de sopa de letras para un libro impreso. Genera una ilustración de fondo y decoraciones alrededor del contenido.
+
+REGLAS IMPORTANTES DE MÁSCARA Y CONTENIDO:
+1. No cambies ni cubras el título, el texto de instrucciones, la cuadrícula de letras, la caja de palabras ni el pie de página. Estos elementos deben permanecer exactamente en su lugar y ser perfectamente legibles.
+2. Decora únicamente el fondo de la página, la franja alrededor del encabezado, los márgenes laterales junto a la cuadrícula, el área que rodea la caja de palabras y elementos sutiles en el pie de página.
+
+CONTEXTO DEL PUZZLE:
+- Tema: Sopa de Letras
+- Nivel: Estándar / Medio
+- Número de Puzzle: 1
+- Palabras clave (tema): API, DATABASE, DEEPSEEK, GEMINI, GROQ, REACT, TAILWIND, TYPESCRIPT
+
+ESTILO VISUAL DESEADO:
+- Estilo: estilo moderno y limpio, con formas simples y colores planos suaves.
+- Intensidad: muy decorado, rico en detalles pero manteniendo la legibilidad central.
+
+El usuario describe así lo que quiere (texto original): "AVES DE LA REPUBLICA DOMINICANA".
+
+La imagen final debe ser una obra de arte cohesiva que integre el contenido del puzzle (partes protegidas en negro en la máscara) con un fondo artístico hermoso y legible.
+2025-12-05 17:18:10,944 - INFO - Calling Imagen 3...
+2025-12-05 17:18:11,620 - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-001:predict "HTTP/1.1 404 Not Found"
+2025-12-05 17:18:11,623 - ERROR - Smart Design Error: 404 NOT_FOUND. {'error': {'code': 404, 'message': 'models/imagen-3.0-generate-001 is not found for API version v1beta, or is not supported for predict. Call ListModels to see the list of available models and their supported methods.', 'status': 'NOT_FOUND'}}
+2025-12-05 17:18:11,623 - ERROR - Traceback: Traceback (most recent call last):
+  File "C:\Users\yeury\Desktop\Proyecto Cenecompuc\SOPA DE LETRAS IA\backend\routers\ai.py", line 411, in generate_smart_design
+    
+    
+    ...<8 lines>...
+        3. Do not place any objects, heavy textures, or lines in the center. It must be clean white.
+        ^^^^^
+  File "C:\Users\yeury\Desktop\Proyecto Cenecompuc\SOPA DE LETRAS IA\.venv\Lib\site-packages\google\genai\models.py", line 5488, in generate_images
+    api_response = self._generate_images(
+        model=model,
+        prompt=prompt,
+        config=config,
+    )
+  File "C:\Users\yeury\Desktop\Proyecto Cenecompuc\SOPA DE LETRAS IA\.venv\Lib\site-packages\google\genai\models.py", line 4254, in _generate_images
+    response = self._api_client.request(
+        'post', path, request_dict, http_options
+    )
+  File "C:\Users\yeury\Desktop\Proyecto Cenecompuc\SOPA DE LETRAS IA\.venv\Lib\site-packages\google\genai\_api_client.py", line 1388, in request
+    response = self._request(http_request, http_options, stream=False)
+  File "C:\Users\yeury\Desktop\Proyecto Cenecompuc\SOPA DE LETRAS IA\.venv\Lib\site-packages\google\genai\_api_client.py", line 1224, in _request
+    return self._retry(self._request_once, http_request, stream)  # type: ignore[no-any-return]
+           ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\yeury\Desktop\Proyecto Cenecompuc\SOPA DE LETRAS IA\.venv\Lib\site-packages\tenacity\__init__.py", line 477, in __call__
+    do = self.iter(retry_state=retry_state)
+  File "C:\Users\yeury\Desktop\Proyecto Cenecompuc\SOPA DE LETRAS IA\.venv\Lib\site-packages\tenacity\__init__.py", line 378, in iter
+    result = action(retry_state)
+  File "C:\Users\yeury\Desktop\Proyecto Cenecompuc\SOPA DE LETRAS IA\.venv\Lib\site-packages\tenacity\__init__.py", line 420, in exc_check
+    raise retry_exc.reraise()
+          ~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\yeury\Desktop\Proyecto Cenecompuc\SOPA DE LETRAS IA\.venv\Lib\site-packages\tenacity\__init__.py", line 187, in reraise
+    raise self.last_attempt.result()
+          ~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\yeury\AppData\Local\Programs\Python\Python313\Lib\concurrent\futures\_base.py", line 449, in result
+    return self.__get_result()
+           ~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\yeury\AppData\Local\Programs\Python\Python313\Lib\concurrent\futures\_base.py", line 401, in __get_result
+    raise self._exception
+  File "C:\Users\yeury\Desktop\Proyecto Cenecompuc\SOPA DE LETRAS IA\.venv\Lib\site-packages\tenacity\__init__.py", line 480, in __call__
+    result = fn(*args, **kwargs)
+  File "C:\Users\yeury\Desktop\Proyecto Cenecompuc\SOPA DE LETRAS IA\.venv\Lib\site-packages\google\genai\_api_client.py", line 1201, in _request_once
+    errors.APIError.raise_for_response(response)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^
+  File "C:\Users\yeury\Desktop\Proyecto Cenecompuc\SOPA DE LETRAS IA\.venv\Lib\site-packages\google\genai\errors.py", line 106, in raise_for_response
+    cls.raise_error(response.status_code, response_json, response)
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\yeury\Desktop\Proyecto Cenecompuc\SOPA DE LETRAS IA\.venv\Lib\site-packages\google\genai\errors.py", line 131, in raise_error
+    raise ClientError(status_code, response_json, response)
+google.genai.errors.ClientError: 404 NOT_FOUND. {'error': {'code': 404, 'message': 'models/imagen-3.0-generate-001 is not found for API version v1beta, or is not supported for predict. Call ListModels to see the list of available models and their supported methods.', 'status': 'NOT_FOUND'}}
+
+2025-12-05 17:20:24,489 - INFO - Received Smart Design Request (Imagen 3 Mode)
+2025-12-05 17:20:24,489 - INFO - Prompt: Esta es una página de sopa de letras para un libro impreso. Genera una ilustración de fondo y decoraciones alrededor del contenido.
+
+REGLAS IMPORTANTES DE MÁSCARA Y CONTENIDO:
+1. No cambies ni cubras el título, el texto de instrucciones, la cuadrícula de letras, la caja de palabras ni el pie de página. Estos elementos deben permanecer exactamente en su lugar y ser perfectamente legibles.
+2. Decora únicamente el fondo de la página, la franja alrededor del encabezado, los márgenes laterales junto a la cuadrícula, el área que rodea la caja de palabras y elementos sutiles en el pie de página.
+
+CONTEXTO DEL PUZZLE:
+- Tema: Sopa de Letras
+- Nivel: Estándar / Medio
+- Número de Puzzle: 1
+- Palabras clave (tema): API, DATABASE, DEEPSEEK, GEMINI, GROQ, REACT, TAILWIND, TYPESCRIPT
+
+ESTILO VISUAL DESEADO:
+- Estilo: como una página de libro antiguo ilustrado, con textura de papel y trazos suaves.
+- Intensidad: decoración equilibrada sin saturar la vista.
+
+El usuario describe así lo que quiere (texto original): "AVES DE LA REPUBLICA DOMINICANA".
+
+La imagen final debe ser una obra de arte cohesiva que integre el contenido del puzzle (partes protegidas en negro en la máscara) con un fondo artístico hermoso y legible.
+2025-12-05 17:20:24,489 - INFO - Calling Imagen 3...
+2025-12-05 17:20:25,203 - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-001:predict "HTTP/1.1 404 Not Found"
+2025-12-05 17:20:25,205 - ERROR - Smart Design Error: 404 NOT_FOUND. {'error': {'code': 404, 'message': 'models/imagen-3.0-generate-001 is not found for API version v1beta, or is not supported for predict. Call ListModels to see the list of available models and their supported methods.', 'status': 'NOT_FOUND'}}
+2025-12-05 17:20:25,206 - ERROR - Traceback: Traceback (most recent call last):
+  File "C:\Users\yeury\Desktop\Proyecto Cenecompuc\SOPA DE LETRAS IA\backend\routers\ai.py", line 411, in generate_smart_design
+    
+    
+    ...<8 lines>...
+        3. Do not place any objects, heavy textures, or lines in the center. It must be clean white.
+        ^^^^^
+  File "C:\Users\yeury\Desktop\Proyecto Cenecompuc\SOPA DE LETRAS IA\.venv\Lib\site-packages\google\genai\models.py", line 5488, in generate_images
+    api_response = self._generate_images(
+        model=model,
+        prompt=prompt,
+        config=config,
+    )
+  File "C:\Users\yeury\Desktop\Proyecto Cenecompuc\SOPA DE LETRAS IA\.venv\Lib\site-packages\google\genai\models.py", line 4254, in _generate_images
+    response = self._api_client.request(
+        'post', path, request_dict, http_options
+    )
+  File "C:\Users\yeury\Desktop\Proyecto Cenecompuc\SOPA DE LETRAS IA\.venv\Lib\site-packages\google\genai\_api_client.py", line 1388, in request
+    response = self._request(http_request, http_options, stream=False)
+  File "C:\Users\yeury\Desktop\Proyecto Cenecompuc\SOPA DE LETRAS IA\.venv\Lib\site-packages\google\genai\_api_client.py", line 1224, in _request
+    return self._retry(self._request_once, http_request, stream)  # type: ignore[no-any-return]
+           ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\yeury\Desktop\Proyecto Cenecompuc\SOPA DE LETRAS IA\.venv\Lib\site-packages\tenacity\__init__.py", line 477, in __call__
+    do = self.iter(retry_state=retry_state)
+  File "C:\Users\yeury\Desktop\Proyecto Cenecompuc\SOPA DE LETRAS IA\.venv\Lib\site-packages\tenacity\__init__.py", line 378, in iter
+    result = action(retry_state)
+  File "C:\Users\yeury\Desktop\Proyecto Cenecompuc\SOPA DE LETRAS IA\.venv\Lib\site-packages\tenacity\__init__.py", line 420, in exc_check
+    raise retry_exc.reraise()
+          ~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\yeury\Desktop\Proyecto Cenecompuc\SOPA DE LETRAS IA\.venv\Lib\site-packages\tenacity\__init__.py", line 187, in reraise
+    raise self.last_attempt.result()
+          ~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\yeury\AppData\Local\Programs\Python\Python313\Lib\concurrent\futures\_base.py", line 449, in result
+    return self.__get_result()
+           ~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\yeury\AppData\Local\Programs\Python\Python313\Lib\concurrent\futures\_base.py", line 401, in __get_result
+    raise self._exception
+  File "C:\Users\yeury\Desktop\Proyecto Cenecompuc\SOPA DE LETRAS IA\.venv\Lib\site-packages\tenacity\__init__.py", line 480, in __call__
+    result = fn(*args, **kwargs)
+  File "C:\Users\yeury\Desktop\Proyecto Cenecompuc\SOPA DE LETRAS IA\.venv\Lib\site-packages\google\genai\_api_client.py", line 1201, in _request_once
+    errors.APIError.raise_for_response(response)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^
+  File "C:\Users\yeury\Desktop\Proyecto Cenecompuc\SOPA DE LETRAS IA\.venv\Lib\site-packages\google\genai\errors.py", line 106, in raise_for_response
+    cls.raise_error(response.status_code, response_json, response)
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\yeury\Desktop\Proyecto Cenecompuc\SOPA DE LETRAS IA\.venv\Lib\site-packages\google\genai\errors.py", line 131, in raise_error
+    raise ClientError(status_code, response_json, response)
+google.genai.errors.ClientError: 404 NOT_FOUND. {'error': {'code': 404, 'message': 'models/imagen-3.0-generate-001 is not found for API version v1beta, or is not supported for predict. Call ListModels to see the list of available models and their supported methods.', 'status': 'NOT_FOUND'}}
+
+2025-12-05 17:29:31,931 - INFO - Received Smart Design Request (Imagen 3 Mode)
+2025-12-05 17:29:31,931 - INFO - Prompt: Test
+2025-12-05 17:29:31,931 - INFO - Calling Imagen 3...
+2025-12-05 17:29:32,701 - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-001:predict "HTTP/1.1 404 Not Found"
+2025-12-05 17:29:32,701 - WARNING - Imagen 3 not available (404). Attempting fallback...
+2025-12-05 17:29:32,706 - ERROR - Smart Design Error: 404 NOT_FOUND. {'error': {'code': 404, 'message': 'models/imagen-3.0-generate-001 is not found for API version v1beta, or is not supported for predict. Call ListModels to see the list of available models and their supported methods.', 'status': 'NOT_FOUND'}}
+2025-12-05 17:29:32,706 - ERROR - Traceback: Traceback (most recent call last):
+  File "C:\Users\yeury\Desktop\Proyecto Cenecompuc\SOPA DE LETRAS IA\backend\routers\ai.py", line 434, in generate_smart_design
+    response = client.models.generate_images(
+        model=model,
+    ...<6 lines>...
+        )
+    )
+  File "C:\Users\yeury\Desktop\Proyecto Cenecompuc\SOPA DE LETRAS IA\.venv\Lib\site-packages\google\genai\models.py", line 5488, in generate_images
+    api_response = self._generate_images(
+        model=model,
+        prompt=prompt,
+        config=config,
+    )
+  File "C:\Users\yeury\Desktop\Proyecto Cenecompuc\SOPA DE LETRAS IA\.venv\Lib\site-packages\google\genai\models.py", line 4254, in _generate_images
+    response = self._api_client.request(
+        'post', path, request_dict, http_options
+    )
+  File "C:\Users\yeury\Desktop\Proyecto Cenecompuc\SOPA DE LETRAS IA\.venv\Lib\site-packages\google\genai\_api_client.py", line 1388, in request
+    response = self._request(http_request, http_options, stream=False)
+  File "C:\Users\yeury\Desktop\Proyecto Cenecompuc\SOPA DE LETRAS IA\.venv\Lib\site-packages\google\genai\_api_client.py", line 1224, in _request
+    return self._retry(self._request_once, http_request, stream)  # type: ignore[no-any-return]
+           ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\yeury\Desktop\Proyecto Cenecompuc\SOPA DE LETRAS IA\.venv\Lib\site-packages\tenacity\__init__.py", line 477, in __call__
+    do = self.iter(retry_state=retry_state)
+  File "C:\Users\yeury\Desktop\Proyecto Cenecompuc\SOPA DE LETRAS IA\.venv\Lib\site-packages\tenacity\__init__.py", line 378, in iter
+    result = action(retry_state)
+  File "C:\Users\yeury\Desktop\Proyecto Cenecompuc\SOPA DE LETRAS IA\.venv\Lib\site-packages\tenacity\__init__.py", line 420, in exc_check
+    raise retry_exc.reraise()
+          ~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\yeury\Desktop\Proyecto Cenecompuc\SOPA DE LETRAS IA\.venv\Lib\site-packages\tenacity\__init__.py", line 187, in reraise
+    raise self.last_attempt.result()
+          ~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\yeury\AppData\Local\Programs\Python\Python313\Lib\concurrent\futures\_base.py", line 449, in result
+    return self.__get_result()
+           ~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\yeury\AppData\Local\Programs\Python\Python313\Lib\concurrent\futures\_base.py", line 401, in __get_result
+    raise self._exception
+  File "C:\Users\yeury\Desktop\Proyecto Cenecompuc\SOPA DE LETRAS IA\.venv\Lib\site-packages\tenacity\__init__.py", line 480, in __call__
+    result = fn(*args, **kwargs)
+  File "C:\Users\yeury\Desktop\Proyecto Cenecompuc\SOPA DE LETRAS IA\.venv\Lib\site-packages\google\genai\_api_client.py", line 1201, in _request_once
+    errors.APIError.raise_for_response(response)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^
+  File "C:\Users\yeury\Desktop\Proyecto Cenecompuc\SOPA DE LETRAS IA\.venv\Lib\site-packages\google\genai\errors.py", line 106, in raise_for_response
+    cls.raise_error(response.status_code, response_json, response)
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\yeury\Desktop\Proyecto Cenecompuc\SOPA DE LETRAS IA\.venv\Lib\site-packages\google\genai\errors.py", line 131, in raise_error
+    raise ClientError(status_code, response_json, response)
+google.genai.errors.ClientError: 404 NOT_FOUND. {'error': {'code': 404, 'message': 'models/imagen-3.0-generate-001 is not found for API version v1beta, or is not supported for predict. Call ListModels to see the list of available models and their supported methods.', 'status': 'NOT_FOUND'}}
+
+2025-12-05 17:31:00,742 - INFO - Received Smart Design Request (Imagen 3 Mode)
+2025-12-05 17:31:00,742 - INFO - Prompt: Esta es una página de sopa de letras para un libro impreso. Genera una ilustración de fondo y decoraciones alrededor del contenido.
+
+REGLAS IMPORTANTES DE MÁSCARA Y CONTENIDO:
+1. No cambies ni cubras el título, el texto de instrucciones, la cuadrícula de letras, la caja de palabras ni el pie de página. Estos elementos deben permanecer exactamente en su lugar y ser perfectamente legibles.
+2. Decora únicamente el fondo de la página, la franja alrededor del encabezado, los márgenes laterales junto a la cuadrícula, el área que rodea la caja de palabras y elementos sutiles en el pie de página.
+
+CONTEXTO DEL PUZZLE:
+- Tema: Sopa de Letras
+- Nivel: Estándar / Medio
+- Número de Puzzle: 1
+- Palabras clave (tema): API, DATABASE, DEEPSEEK, GEMINI, GROQ, REACT, TAILWIND, TYPESCRIPT
+
+ESTILO VISUAL DESEADO:
+- Estilo: como una página de libro antiguo ilustrado, con textura de papel y trazos suaves.
+- Intensidad: decoración equilibrada sin saturar la vista.
+
+El usuario describe así lo que quiere (texto original): "Ancient map of a fantasy world with dragons".
+
+La imagen final debe ser una obra de arte cohesiva que integre el contenido del puzzle (partes protegidas en negro en la máscara) con un fondo artístico hermoso y legible.
+2025-12-05 17:31:00,743 - INFO - Calling Imagen 3...
+2025-12-05 17:31:02,134 - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-001:predict "HTTP/1.1 404 Not Found"
+2025-12-05 17:31:02,135 - WARNING - Imagen 3 not available (404). Attempting fallback...
+2025-12-05 17:31:02,140 - ERROR - Smart Design Error: 404 NOT_FOUND. {'error': {'code': 404, 'message': 'models/imagen-3.0-generate-001 is not found for API version v1beta, or is not supported for predict. Call ListModels to see the list of available models and their supported methods.', 'status': 'NOT_FOUND'}}
+2025-12-05 17:31:02,141 - ERROR - Traceback: Traceback (most recent call last):
+  File "C:\Users\yeury\Desktop\Proyecto Cenecompuc\SOPA DE LETRAS IA\backend\routers\ai.py", line 434, in generate_smart_design
+    response = client.models.generate_images(
+        model=model,
+    ...<6 lines>...
+        )
+    )
+  File "C:\Users\yeury\Desktop\Proyecto Cenecompuc\SOPA DE LETRAS IA\.venv\Lib\site-packages\google\genai\models.py", line 5488, in generate_images
+    api_response = self._generate_images(
+        model=model,
+        prompt=prompt,
+        config=config,
+    )
+  File "C:\Users\yeury\Desktop\Proyecto Cenecompuc\SOPA DE LETRAS IA\.venv\Lib\site-packages\google\genai\models.py", line 4254, in _generate_images
+    response = self._api_client.request(
+        'post', path, request_dict, http_options
+    )
+  File "C:\Users\yeury\Desktop\Proyecto Cenecompuc\SOPA DE LETRAS IA\.venv\Lib\site-packages\google\genai\_api_client.py", line 1388, in request
+    response = self._request(http_request, http_options, stream=False)
+  File "C:\Users\yeury\Desktop\Proyecto Cenecompuc\SOPA DE LETRAS IA\.venv\Lib\site-packages\google\genai\_api_client.py", line 1224, in _request
+    return self._retry(self._request_once, http_request, stream)  # type: ignore[no-any-return]
+           ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\yeury\Desktop\Proyecto Cenecompuc\SOPA DE LETRAS IA\.venv\Lib\site-packages\tenacity\__init__.py", line 477, in __call__
+    do = self.iter(retry_state=retry_state)
+  File "C:\Users\yeury\Desktop\Proyecto Cenecompuc\SOPA DE LETRAS IA\.venv\Lib\site-packages\tenacity\__init__.py", line 378, in iter
+    result = action(retry_state)
+  File "C:\Users\yeury\Desktop\Proyecto Cenecompuc\SOPA DE LETRAS IA\.venv\Lib\site-packages\tenacity\__init__.py", line 420, in exc_check
+    raise retry_exc.reraise()
+          ~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\yeury\Desktop\Proyecto Cenecompuc\SOPA DE LETRAS IA\.venv\Lib\site-packages\tenacity\__init__.py", line 187, in reraise
+    raise self.last_attempt.result()
+          ~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\yeury\AppData\Local\Programs\Python\Python313\Lib\concurrent\futures\_base.py", line 449, in result
+    return self.__get_result()
+           ~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\yeury\AppData\Local\Programs\Python\Python313\Lib\concurrent\futures\_base.py", line 401, in __get_result
+    raise self._exception
+  File "C:\Users\yeury\Desktop\Proyecto Cenecompuc\SOPA DE LETRAS IA\.venv\Lib\site-packages\tenacity\__init__.py", line 480, in __call__
+    result = fn(*args, **kwargs)
+  File "C:\Users\yeury\Desktop\Proyecto Cenecompuc\SOPA DE LETRAS IA\.venv\Lib\site-packages\google\genai\_api_client.py", line 1201, in _request_once
+    errors.APIError.raise_for_response(response)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^
+  File "C:\Users\yeury\Desktop\Proyecto Cenecompuc\SOPA DE LETRAS IA\.venv\Lib\site-packages\google\genai\errors.py", line 106, in raise_for_response
+    cls.raise_error(response.status_code, response_json, response)
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\yeury\Desktop\Proyecto Cenecompuc\SOPA DE LETRAS IA\.venv\Lib\site-packages\google\genai\errors.py", line 131, in raise_error
+    raise ClientError(status_code, response_json, response)
+google.genai.errors.ClientError: 404 NOT_FOUND. {'error': {'code': 404, 'message': 'models/imagen-3.0-generate-001 is not found for API version v1beta, or is not supported for predict. Call ListModels to see the list of available models and their supported methods.', 'status': 'NOT_FOUND'}}
+
+2025-12-05 17:52:14,134 - INFO - Received Smart Design Request (Imagen 3 Mode)
+2025-12-05 17:52:14,134 - INFO - Prompt: Esta es una página de sopa de letras para un libro impreso. Genera una ilustración de fondo y decoraciones alrededor del contenido.
+
+REGLAS IMPORTANTES DE MÁSCARA Y CONTENIDO:
+1. No cambies ni cubras el título, el texto de instrucciones, la cuadrícula de letras, la caja de palabras ni el pie de página. Estos elementos deben permanecer exactamente en su lugar y ser perfectamente legibles.
+2. Decora únicamente el fondo de la página, la franja alrededor del encabezado, los márgenes laterales junto a la cuadrícula, el área que rodea la caja de palabras y elementos sutiles en el pie de página.
+
+CONTEXTO DEL PUZZLE:
+- Tema: Sopa de Letras
+- Nivel: Estándar / Medio
+- Número de Puzzle: 1
+- Palabras clave (tema): API, DATABASE, DEEPSEEK, GEMINI, GROQ, REACT, TAILWIND, TYPESCRIPT
+
+ESTILO VISUAL DESEADO:
+- Estilo: como una página de libro antiguo ilustrado, con textura de papel y trazos suaves.
+- Intensidad: decoración equilibrada sin saturar la vista.
+
+El usuario describe así lo que quiere (texto original): "COMPUTACION Y LECNOLOGIA".
+
+La imagen final debe ser una obra de arte cohesiva que integre el contenido del puzzle (partes protegidas en negro en la máscara) con un fondo artístico hermoso y legible.
+2025-12-05 17:52:14,134 - INFO - Calling Imagen 3...
+2025-12-05 17:52:15,113 - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-001:predict "HTTP/1.1 404 Not Found"
+2025-12-05 17:52:15,113 - WARNING - Imagen 3 not available (404). Attempting fallback...
+2025-12-05 17:52:15,119 - ERROR - Smart Design Error: 404 NOT_FOUND. {'error': {'code': 404, 'message': 'models/imagen-3.0-generate-001 is not found for API version v1beta, or is not supported for predict. Call ListModels to see the list of available models and their supported methods.', 'status': 'NOT_FOUND'}}
+2025-12-05 17:52:15,119 - ERROR - Traceback: Traceback (most recent call last):
+  File "C:\Users\yeury\Desktop\Proyecto Cenecompuc\SOPA DE LETRAS IA\backend\routers\ai.py", line 434, in generate_smart_design
+    response = client.models.generate_images(
+        model=model,
+    ...<6 lines>...
+        )
+    )
+  File "C:\Users\yeury\Desktop\Proyecto Cenecompuc\SOPA DE LETRAS IA\.venv\Lib\site-packages\google\genai\models.py", line 5488, in generate_images
+    api_response = self._generate_images(
+        model=model,
+        prompt=prompt,
+        config=config,
+    )
+  File "C:\Users\yeury\Desktop\Proyecto Cenecompuc\SOPA DE LETRAS IA\.venv\Lib\site-packages\google\genai\models.py", line 4254, in _generate_images
+    response = self._api_client.request(
+        'post', path, request_dict, http_options
+    )
+  File "C:\Users\yeury\Desktop\Proyecto Cenecompuc\SOPA DE LETRAS IA\.venv\Lib\site-packages\google\genai\_api_client.py", line 1388, in request
+    response = self._request(http_request, http_options, stream=False)
+  File "C:\Users\yeury\Desktop\Proyecto Cenecompuc\SOPA DE LETRAS IA\.venv\Lib\site-packages\google\genai\_api_client.py", line 1224, in _request
+    return self._retry(self._request_once, http_request, stream)  # type: ignore[no-any-return]
+           ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\yeury\Desktop\Proyecto Cenecompuc\SOPA DE LETRAS IA\.venv\Lib\site-packages\tenacity\__init__.py", line 477, in __call__
+    do = self.iter(retry_state=retry_state)
+  File "C:\Users\yeury\Desktop\Proyecto Cenecompuc\SOPA DE LETRAS IA\.venv\Lib\site-packages\tenacity\__init__.py", line 378, in iter
+    result = action(retry_state)
+  File "C:\Users\yeury\Desktop\Proyecto Cenecompuc\SOPA DE LETRAS IA\.venv\Lib\site-packages\tenacity\__init__.py", line 420, in exc_check
+    raise retry_exc.reraise()
+          ~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\yeury\Desktop\Proyecto Cenecompuc\SOPA DE LETRAS IA\.venv\Lib\site-packages\tenacity\__init__.py", line 187, in reraise
+    raise self.last_attempt.result()
+          ~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\yeury\AppData\Local\Programs\Python\Python313\Lib\concurrent\futures\_base.py", line 449, in result
+    return self.__get_result()
+           ~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\yeury\AppData\Local\Programs\Python\Python313\Lib\concurrent\futures\_base.py", line 401, in __get_result
+    raise self._exception
+  File "C:\Users\yeury\Desktop\Proyecto Cenecompuc\SOPA DE LETRAS IA\.venv\Lib\site-packages\tenacity\__init__.py", line 480, in __call__
+    result = fn(*args, **kwargs)
+  File "C:\Users\yeury\Desktop\Proyecto Cenecompuc\SOPA DE LETRAS IA\.venv\Lib\site-packages\google\genai\_api_client.py", line 1201, in _request_once
+    errors.APIError.raise_for_response(response)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^
+  File "C:\Users\yeury\Desktop\Proyecto Cenecompuc\SOPA DE LETRAS IA\.venv\Lib\site-packages\google\genai\errors.py", line 106, in raise_for_response
+    cls.raise_error(response.status_code, response_json, response)
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\yeury\Desktop\Proyecto Cenecompuc\SOPA DE LETRAS IA\.venv\Lib\site-packages\google\genai\errors.py", line 131, in raise_error
+    raise ClientError(status_code, response_json, response)
+google.genai.errors.ClientError: 404 NOT_FOUND. {'error': {'code': 404, 'message': 'models/imagen-3.0-generate-001 is not found for API version v1beta, or is not supported for predict. Call ListModels to see the list of available models and their supported methods.', 'status': 'NOT_FOUND'}}
+
+2025-12-05 18:19:12,116 - INFO - Received Smart Design Request (Imagen 3 Mode)
+2025-12-05 18:19:12,116 - INFO - Prompt: Esta es una página de sopa de letras para un libro impreso. Genera una ilustración de fondo y decoraciones alrededor del contenido.
+
+REGLAS IMPORTANTES DE MÁSCARA Y CONTENIDO:
+1. No cambies ni cubras el título, el texto de instrucciones, la cuadrícula de letras, la caja de palabras ni el pie de página. Estos elementos deben permanecer exactamente en su lugar y ser perfectamente legibles.
+2. Decora únicamente el fondo de la página, la franja alrededor del encabezado, los márgenes laterales junto a la cuadrícula, el área que rodea la caja de palabras y elementos sutiles en el pie de página.
+
+CONTEXTO DEL PUZZLE:
+- Tema: Sopa de Letras
+- Nivel: Estándar / Medio
+- Número de Puzzle: 1
+- Palabras clave (tema): API, DATABASE, DEEPSEEK, GEMINI, GROQ, REACT, TAILWIND, TYPESCRIPT
+
+ESTILO VISUAL DESEADO:
+- Estilo: como una página de libro antiguo ilustrado, con textura de papel y trazos suaves.
+- Intensidad: decoración equilibrada sin saturar la vista.
+
+El usuario describe así lo que quiere (texto original): "Naturaleza tropical con palmeras y flores".
+
+La imagen final debe ser una obra de arte cohesiva que integre el contenido del puzzle (partes protegidas en negro en la máscara) con un fondo artístico hermoso y legible.
+2025-12-05 18:19:12,116 - INFO - Calling Imagen 3...
+2025-12-05 18:19:13,304 - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-001:predict "HTTP/1.1 404 Not Found"
+2025-12-05 18:19:13,306 - WARNING - Imagen 3 not available (404). Attempting fallback...
+2025-12-05 18:19:13,313 - ERROR - Smart Design Error: 404 NOT_FOUND. {'error': {'code': 404, 'message': 'models/imagen-3.0-generate-001 is not found for API version v1beta, or is not supported for predict. Call ListModels to see the list of available models and their supported methods.', 'status': 'NOT_FOUND'}}
+2025-12-05 18:19:13,313 - ERROR - Traceback: Traceback (most recent call last):
+  File "C:\Users\yeury\Desktop\Proyecto Cenecompuc\SOPA DE LETRAS IA\backend\routers\ai.py", line 434, in generate_smart_design
+    
+    
+    ...<8 lines>...
+            aspect_ratio="3:4",
+            ^
+  File "C:\Users\yeury\Desktop\Proyecto Cenecompuc\SOPA DE LETRAS IA\.venv\Lib\site-packages\google\genai\models.py", line 5488, in generate_images
+    api_response = self._generate_images(
+        model=model,
+        prompt=prompt,
+        config=config,
+    )
+  File "C:\Users\yeury\Desktop\Proyecto Cenecompuc\SOPA DE LETRAS IA\.venv\Lib\site-packages\google\genai\models.py", line 4254, in _generate_images
+    response = self._api_client.request(
+        'post', path, request_dict, http_options
+    )
+  File "C:\Users\yeury\Desktop\Proyecto Cenecompuc\SOPA DE LETRAS IA\.venv\Lib\site-packages\google\genai\_api_client.py", line 1388, in request
+    response = self._request(http_request, http_options, stream=False)
+  File "C:\Users\yeury\Desktop\Proyecto Cenecompuc\SOPA DE LETRAS IA\.venv\Lib\site-packages\google\genai\_api_client.py", line 1224, in _request
+    return self._retry(self._request_once, http_request, stream)  # type: ignore[no-any-return]
+           ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\yeury\Desktop\Proyecto Cenecompuc\SOPA DE LETRAS IA\.venv\Lib\site-packages\tenacity\__init__.py", line 477, in __call__
+    do = self.iter(retry_state=retry_state)
+  File "C:\Users\yeury\Desktop\Proyecto Cenecompuc\SOPA DE LETRAS IA\.venv\Lib\site-packages\tenacity\__init__.py", line 378, in iter
+    result = action(retry_state)
+  File "C:\Users\yeury\Desktop\Proyecto Cenecompuc\SOPA DE LETRAS IA\.venv\Lib\site-packages\tenacity\__init__.py", line 420, in exc_check
+    raise retry_exc.reraise()
+          ~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\yeury\Desktop\Proyecto Cenecompuc\SOPA DE LETRAS IA\.venv\Lib\site-packages\tenacity\__init__.py", line 187, in reraise
+    raise self.last_attempt.result()
+          ~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\yeury\AppData\Local\Programs\Python\Python313\Lib\concurrent\futures\_base.py", line 449, in result
+    return self.__get_result()
+           ~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\yeury\AppData\Local\Programs\Python\Python313\Lib\concurrent\futures\_base.py", line 401, in __get_result
+    raise self._exception
+  File "C:\Users\yeury\Desktop\Proyecto Cenecompuc\SOPA DE LETRAS IA\.venv\Lib\site-packages\tenacity\__init__.py", line 480, in __call__
+    result = fn(*args, **kwargs)
+  File "C:\Users\yeury\Desktop\Proyecto Cenecompuc\SOPA DE LETRAS IA\.venv\Lib\site-packages\google\genai\_api_client.py", line 1201, in _request_once
+    errors.APIError.raise_for_response(response)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^
+  File "C:\Users\yeury\Desktop\Proyecto Cenecompuc\SOPA DE LETRAS IA\.venv\Lib\site-packages\google\genai\errors.py", line 106, in raise_for_response
+    cls.raise_error(response.status_code, response_json, response)
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\yeury\Desktop\Proyecto Cenecompuc\SOPA DE LETRAS IA\.venv\Lib\site-packages\google\genai\errors.py", line 131, in raise_error
+    raise ClientError(status_code, response_json, response)
+google.genai.errors.ClientError: 404 NOT_FOUND. {'error': {'code': 404, 'message': 'models/imagen-3.0-generate-001 is not found for API version v1beta, or is not supported for predict. Call ListModels to see the list of available models and their supported methods.', 'status': 'NOT_FOUND'}}
+
+2025-12-05 18:23:41,212 - INFO - Received Smart Design Request (Imagen 3 Mode)
+2025-12-05 18:23:41,212 - INFO - Prompt: Esta es una página de sopa de letras para un libro impreso. Genera una ilustración de fondo y decoraciones alrededor del contenido.
+
+REGLAS IMPORTANTES DE MÁSCARA Y CONTENIDO:
+1. No cambies ni cubras el título, el texto de instrucciones, la cuadrícula de letras, la caja de palabras ni el pie de página. Estos elementos deben permanecer exactamente en su lugar y ser perfectamente legibles.
+2. Decora únicamente el fondo de la página, la franja alrededor del encabezado, los márgenes laterales junto a la cuadrícula, el área que rodea la caja de palabras y elementos sutiles en el pie de página.
+
+CONTEXTO DEL PUZZLE:
+- Tema: Sopa de Letras
+- Nivel: Estándar / Medio
+- Número de Puzzle: 1
+- Palabras clave (tema): API, DATABASE, DEEPSEEK, GEMINI, GROQ, REACT, TAILWIND, TYPESCRIPT
+
+ESTILO VISUAL DESEADO:
+- Estilo: como una página de libro antiguo ilustrado, con textura de papel y trazos suaves.
+- Intensidad: decoración equilibrada sin saturar la vista.
+
+El usuario describe así lo que quiere (texto original): "Flores tropicales y mariposas".
+
+La imagen final debe ser una obra de arte cohesiva que integre el contenido del puzzle (partes protegidas en negro en la máscara) con un fondo artístico hermoso y legible.
+2025-12-05 18:23:41,213 - INFO - Calling Imagen 3...
+2025-12-05 18:23:42,691 - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-001:predict "HTTP/1.1 404 Not Found"
+2025-12-05 18:23:42,693 - WARNING - Imagen 3 not available (404). Attempting fallback...
+2025-12-05 18:23:42,699 - ERROR - Smart Design Error: 404 NOT_FOUND. {'error': {'code': 404, 'message': 'models/imagen-3.0-generate-001 is not found for API version v1beta, or is not supported for predict. Call ListModels to see the list of available models and their supported methods.', 'status': 'NOT_FOUND'}}
+2025-12-05 18:23:42,700 - ERROR - Traceback: Traceback (most recent call last):
+  File "C:\Users\yeury\Desktop\Proyecto Cenecompuc\SOPA DE LETRAS IA\backend\routers\ai.py", line 434, in generate_smart_design
+    
+    
+    ...<8 lines>...
+            aspect_ratio="3:4",
+            ^
+  File "C:\Users\yeury\Desktop\Proyecto Cenecompuc\SOPA DE LETRAS IA\.venv\Lib\site-packages\google\genai\models.py", line 5488, in generate_images
+    api_response = self._generate_images(
+        model=model,
+        prompt=prompt,
+        config=config,
+    )
+  File "C:\Users\yeury\Desktop\Proyecto Cenecompuc\SOPA DE LETRAS IA\.venv\Lib\site-packages\google\genai\models.py", line 4254, in _generate_images
+    response = self._api_client.request(
+        'post', path, request_dict, http_options
+    )
+  File "C:\Users\yeury\Desktop\Proyecto Cenecompuc\SOPA DE LETRAS IA\.venv\Lib\site-packages\google\genai\_api_client.py", line 1388, in request
+    response = self._request(http_request, http_options, stream=False)
+  File "C:\Users\yeury\Desktop\Proyecto Cenecompuc\SOPA DE LETRAS IA\.venv\Lib\site-packages\google\genai\_api_client.py", line 1224, in _request
+    return self._retry(self._request_once, http_request, stream)  # type: ignore[no-any-return]
+           ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\yeury\Desktop\Proyecto Cenecompuc\SOPA DE LETRAS IA\.venv\Lib\site-packages\tenacity\__init__.py", line 477, in __call__
+    do = self.iter(retry_state=retry_state)
+  File "C:\Users\yeury\Desktop\Proyecto Cenecompuc\SOPA DE LETRAS IA\.venv\Lib\site-packages\tenacity\__init__.py", line 378, in iter
+    result = action(retry_state)
+  File "C:\Users\yeury\Desktop\Proyecto Cenecompuc\SOPA DE LETRAS IA\.venv\Lib\site-packages\tenacity\__init__.py", line 420, in exc_check
+    raise retry_exc.reraise()
+          ~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\yeury\Desktop\Proyecto Cenecompuc\SOPA DE LETRAS IA\.venv\Lib\site-packages\tenacity\__init__.py", line 187, in reraise
+    raise self.last_attempt.result()
+          ~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\yeury\AppData\Local\Programs\Python\Python313\Lib\concurrent\futures\_base.py", line 449, in result
+    return self.__get_result()
+           ~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\yeury\AppData\Local\Programs\Python\Python313\Lib\concurrent\futures\_base.py", line 401, in __get_result
+    raise self._exception
+  File "C:\Users\yeury\Desktop\Proyecto Cenecompuc\SOPA DE LETRAS IA\.venv\Lib\site-packages\tenacity\__init__.py", line 480, in __call__
+    result = fn(*args, **kwargs)
+  File "C:\Users\yeury\Desktop\Proyecto Cenecompuc\SOPA DE LETRAS IA\.venv\Lib\site-packages\google\genai\_api_client.py", line 1201, in _request_once
+    errors.APIError.raise_for_response(response)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^
+  File "C:\Users\yeury\Desktop\Proyecto Cenecompuc\SOPA DE LETRAS IA\.venv\Lib\site-packages\google\genai\errors.py", line 106, in raise_for_response
+    cls.raise_error(response.status_code, response_json, response)
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\yeury\Desktop\Proyecto Cenecompuc\SOPA DE LETRAS IA\.venv\Lib\site-packages\google\genai\errors.py", line 131, in raise_error
+    raise ClientError(status_code, response_json, response)
+google.genai.errors.ClientError: 404 NOT_FOUND. {'error': {'code': 404, 'message': 'models/imagen-3.0-generate-001 is not found for API version v1beta, or is not supported for predict. Call ListModels to see the list of available models and their supported methods.', 'status': 'NOT_FOUND'}}
+
+2025-12-05 18:31:41,943 - INFO - Received Smart Design Request (Imagen 3 Mode)
+2025-12-05 18:31:41,943 - INFO - Prompt: Esta es una página de sopa de letras para un libro impreso. Genera una ilustración de fondo y decoraciones alrededor del contenido.
+
+REGLAS IMPORTANTES DE MÁSCARA Y CONTENIDO:
+1. No cambies ni cubras el título, el texto de instrucciones, la cuadrícula de letras, la caja de palabras ni el pie de página. Estos elementos deben permanecer exactamente en su lugar y ser perfectamente legibles.
+2. Decora únicamente el fondo de la página, la franja alrededor del encabezado, los márgenes laterales junto a la cuadrícula, el área que rodea la caja de palabras y elementos sutiles en el pie de página.
+
+CONTEXTO DEL PUZZLE:
+- Tema: Sopa de Letras
+- Nivel: Estándar / Medio
+- Número de Puzzle: 1
+- Palabras clave (tema): API, DATABASE, DEEPSEEK, GEMINI, GROQ, REACT, TAILWIND, TYPESCRIPT
+
+ESTILO VISUAL DESEADO:
+- Estilo: como una página de libro antiguo ilustrado, con textura de papel y trazos suaves.
+- Intensidad: decoración equilibrada sin saturar la vista.
+
+El usuario describe así lo que quiere (texto original): "Estrellas y galaxias espaciales".
+
+La imagen final debe ser una obra de arte cohesiva que integre el contenido del puzzle (partes protegidas en negro en la máscara) con un fondo artístico hermoso y legible.
+2025-12-05 18:31:41,943 - INFO - Calling Imagen 3...
+2025-12-05 18:31:43,244 - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-001:predict "HTTP/1.1 404 Not Found"
+2025-12-05 18:31:43,247 - WARNING - Imagen 3 not available (404). Attempting fallback...
+2025-12-05 18:31:43,253 - ERROR - Smart Design Error: 404 NOT_FOUND. {'error': {'code': 404, 'message': 'models/imagen-3.0-generate-001 is not found for API version v1beta, or is not supported for predict. Call ListModels to see the list of available models and their supported methods.', 'status': 'NOT_FOUND'}}
+2025-12-05 18:31:43,253 - ERROR - Traceback: Traceback (most recent call last):
+  File "C:\Users\yeury\Desktop\Proyecto Cenecompuc\SOPA DE LETRAS IA\backend\routers\ai.py", line 434, in generate_smart_design
+    
+    
+    ...<8 lines>...
+            aspect_ratio="3:4",
+            ^
+  File "C:\Users\yeury\Desktop\Proyecto Cenecompuc\SOPA DE LETRAS IA\.venv\Lib\site-packages\google\genai\models.py", line 5488, in generate_images
+    api_response = self._generate_images(
+        model=model,
+        prompt=prompt,
+        config=config,
+    )
+  File "C:\Users\yeury\Desktop\Proyecto Cenecompuc\SOPA DE LETRAS IA\.venv\Lib\site-packages\google\genai\models.py", line 4254, in _generate_images
+    response = self._api_client.request(
+        'post', path, request_dict, http_options
+    )
+  File "C:\Users\yeury\Desktop\Proyecto Cenecompuc\SOPA DE LETRAS IA\.venv\Lib\site-packages\google\genai\_api_client.py", line 1388, in request
+    response = self._request(http_request, http_options, stream=False)
+  File "C:\Users\yeury\Desktop\Proyecto Cenecompuc\SOPA DE LETRAS IA\.venv\Lib\site-packages\google\genai\_api_client.py", line 1224, in _request
+    return self._retry(self._request_once, http_request, stream)  # type: ignore[no-any-return]
+           ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\yeury\Desktop\Proyecto Cenecompuc\SOPA DE LETRAS IA\.venv\Lib\site-packages\tenacity\__init__.py", line 477, in __call__
+    do = self.iter(retry_state=retry_state)
+  File "C:\Users\yeury\Desktop\Proyecto Cenecompuc\SOPA DE LETRAS IA\.venv\Lib\site-packages\tenacity\__init__.py", line 378, in iter
+    result = action(retry_state)
+  File "C:\Users\yeury\Desktop\Proyecto Cenecompuc\SOPA DE LETRAS IA\.venv\Lib\site-packages\tenacity\__init__.py", line 420, in exc_check
+    raise retry_exc.reraise()
+          ~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\yeury\Desktop\Proyecto Cenecompuc\SOPA DE LETRAS IA\.venv\Lib\site-packages\tenacity\__init__.py", line 187, in reraise
+    raise self.last_attempt.result()
+          ~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\yeury\AppData\Local\Programs\Python\Python313\Lib\concurrent\futures\_base.py", line 449, in result
+    return self.__get_result()
+           ~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\yeury\AppData\Local\Programs\Python\Python313\Lib\concurrent\futures\_base.py", line 401, in __get_result
+    raise self._exception
+  File "C:\Users\yeury\Desktop\Proyecto Cenecompuc\SOPA DE LETRAS IA\.venv\Lib\site-packages\tenacity\__init__.py", line 480, in __call__
+    result = fn(*args, **kwargs)
+  File "C:\Users\yeury\Desktop\Proyecto Cenecompuc\SOPA DE LETRAS IA\.venv\Lib\site-packages\google\genai\_api_client.py", line 1201, in _request_once
+    errors.APIError.raise_for_response(response)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^
+  File "C:\Users\yeury\Desktop\Proyecto Cenecompuc\SOPA DE LETRAS IA\.venv\Lib\site-packages\google\genai\errors.py", line 106, in raise_for_response
+    cls.raise_error(response.status_code, response_json, response)
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\yeury\Desktop\Proyecto Cenecompuc\SOPA DE LETRAS IA\.venv\Lib\site-packages\google\genai\errors.py", line 131, in raise_error
+    raise ClientError(status_code, response_json, response)
+google.genai.errors.ClientError: 404 NOT_FOUND. {'error': {'code': 404, 'message': 'models/imagen-3.0-generate-001 is not found for API version v1beta, or is not supported for predict. Call ListModels to see the list of available models and their supported methods.', 'status': 'NOT_FOUND'}}
+
+2025-12-05 18:33:02,321 - INFO - Received Smart Design Request (Imagen 3 Mode)
+2025-12-05 18:33:02,322 - INFO - Prompt: Esta es una página de sopa de letras para un libro impreso. Genera una ilustración de fondo y decoraciones alrededor del contenido.
+
+REGLAS IMPORTANTES DE MÁSCARA Y CONTENIDO:
+1. No cambies ni cubras el título, el texto de instrucciones, la cuadrícula de letras, la caja de palabras ni el pie de página. Estos elementos deben permanecer exactamente en su lugar y ser perfectamente legibles.
+2. Decora únicamente el fondo de la página, la franja alrededor del encabezado, los márgenes laterales junto a la cuadrícula, el área que rodea la caja de palabras y elementos sutiles en el pie de página.
+
+CONTEXTO DEL PUZZLE:
+- Tema: Sopa de Letras
+- Nivel: Estándar / Medio
+- Número de Puzzle: 1
+- Palabras clave (tema): API, DATABASE, DEEPSEEK, GEMINI, GROQ, REACT, TAILWIND, TYPESCRIPT
+
+ESTILO VISUAL DESEADO:
+- Estilo: como una página de libro antiguo ilustrado, con textura de papel y trazos suaves.
+- Intensidad: decoración equilibrada sin saturar la vista.
+
+El usuario describe así lo que quiere (texto original): "Flores y mariposas".
+
+La imagen final debe ser una obra de arte cohesiva que integre el contenido del puzzle (partes protegidas en negro en la máscara) con un fondo artístico hermoso y legible.
+2025-12-05 18:33:02,322 - INFO - Calling Imagen 3...
+2025-12-05 18:33:03,601 - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-001:predict "HTTP/1.1 404 Not Found"
+2025-12-05 18:33:03,601 - WARNING - Imagen 3 not available (404). Attempting fallback...
+2025-12-05 18:33:03,604 - ERROR - Smart Design Error: 404 NOT_FOUND. {'error': {'code': 404, 'message': 'models/imagen-3.0-generate-001 is not found for API version v1beta, or is not supported for predict. Call ListModels to see the list of available models and their supported methods.', 'status': 'NOT_FOUND'}}
+2025-12-05 18:33:03,605 - ERROR - Traceback: Traceback (most recent call last):
+  File "C:\Users\yeury\Desktop\Proyecto Cenecompuc\SOPA DE LETRAS IA\backend\routers\ai.py", line 434, in generate_smart_design
+    
+    
+    ...<8 lines>...
+            aspect_ratio="3:4",
+            ^
+  File "C:\Users\yeury\Desktop\Proyecto Cenecompuc\SOPA DE LETRAS IA\.venv\Lib\site-packages\google\genai\models.py", line 5488, in generate_images
+    api_response = self._generate_images(
+        model=model,
+        prompt=prompt,
+        config=config,
+    )
+  File "C:\Users\yeury\Desktop\Proyecto Cenecompuc\SOPA DE LETRAS IA\.venv\Lib\site-packages\google\genai\models.py", line 4254, in _generate_images
+    response = self._api_client.request(
+        'post', path, request_dict, http_options
+    )
+  File "C:\Users\yeury\Desktop\Proyecto Cenecompuc\SOPA DE LETRAS IA\.venv\Lib\site-packages\google\genai\_api_client.py", line 1388, in request
+    response = self._request(http_request, http_options, stream=False)
+  File "C:\Users\yeury\Desktop\Proyecto Cenecompuc\SOPA DE LETRAS IA\.venv\Lib\site-packages\google\genai\_api_client.py", line 1224, in _request
+    return self._retry(self._request_once, http_request, stream)  # type: ignore[no-any-return]
+           ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\yeury\Desktop\Proyecto Cenecompuc\SOPA DE LETRAS IA\.venv\Lib\site-packages\tenacity\__init__.py", line 477, in __call__
+    do = self.iter(retry_state=retry_state)
+  File "C:\Users\yeury\Desktop\Proyecto Cenecompuc\SOPA DE LETRAS IA\.venv\Lib\site-packages\tenacity\__init__.py", line 378, in iter
+    result = action(retry_state)
+  File "C:\Users\yeury\Desktop\Proyecto Cenecompuc\SOPA DE LETRAS IA\.venv\Lib\site-packages\tenacity\__init__.py", line 420, in exc_check
+    raise retry_exc.reraise()
+          ~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\yeury\Desktop\Proyecto Cenecompuc\SOPA DE LETRAS IA\.venv\Lib\site-packages\tenacity\__init__.py", line 187, in reraise
+    raise self.last_attempt.result()
+          ~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\yeury\AppData\Local\Programs\Python\Python313\Lib\concurrent\futures\_base.py", line 449, in result
+    return self.__get_result()
+           ~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\yeury\AppData\Local\Programs\Python\Python313\Lib\concurrent\futures\_base.py", line 401, in __get_result
+    raise self._exception
+  File "C:\Users\yeury\Desktop\Proyecto Cenecompuc\SOPA DE LETRAS IA\.venv\Lib\site-packages\tenacity\__init__.py", line 480, in __call__
+    result = fn(*args, **kwargs)
+  File "C:\Users\yeury\Desktop\Proyecto Cenecompuc\SOPA DE LETRAS IA\.venv\Lib\site-packages\google\genai\_api_client.py", line 1201, in _request_once
+    errors.APIError.raise_for_response(response)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^
+  File "C:\Users\yeury\Desktop\Proyecto Cenecompuc\SOPA DE LETRAS IA\.venv\Lib\site-packages\google\genai\errors.py", line 106, in raise_for_response
+    cls.raise_error(response.status_code, response_json, response)
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\yeury\Desktop\Proyecto Cenecompuc\SOPA DE LETRAS IA\.venv\Lib\site-packages\google\genai\errors.py", line 131, in raise_error
+    raise ClientError(status_code, response_json, response)
+google.genai.errors.ClientError: 404 NOT_FOUND. {'error': {'code': 404, 'message': 'models/imagen-3.0-generate-001 is not found for API version v1beta, or is not supported for predict. Call ListModels to see the list of available models and their supported methods.', 'status': 'NOT_FOUND'}}
+
+2025-12-05 18:38:45,260 - INFO - Received Smart Design Request (Imagen 3 Mode)
+2025-12-05 18:38:45,260 - INFO - Prompt: Esta es una página de sopa de letras para un libro impreso. Genera una ilustración de fondo y decoraciones alrededor del contenido.
+
+REGLAS IMPORTANTES DE MÁSCARA Y CONTENIDO:
+1. No cambies ni cubras el título, el texto de instrucciones, la cuadrícula de letras, la caja de palabras ni el pie de página. Estos elementos deben permanecer exactamente en su lugar y ser perfectamente legibles.
+2. Decora únicamente el fondo de la página, la franja alrededor del encabezado, los márgenes laterales junto a la cuadrícula, el área que rodea la caja de palabras y elementos sutiles en el pie de página.
+
+CONTEXTO DEL PUZZLE:
+- Tema: Sopa de Letras
+- Nivel: Estándar / Medio
+- Número de Puzzle: 1
+- Palabras clave (tema): API, DATABASE, DEEPSEEK, GEMINI, GROQ, REACT, TAILWIND, TYPESCRIPT
+
+ESTILO VISUAL DESEADO:
+- Estilo: como una página de libro antiguo ilustrado, con textura de papel y trazos suaves.
+- Intensidad: decoración equilibrada sin saturar la vista.
+
+El usuario describe así lo que quiere (texto original): "Paisaje de montaña".
+
+La imagen final debe ser una obra de arte cohesiva que integre el contenido del puzzle (partes protegidas en negro en la máscara) con un fondo artístico hermoso y legible.
+2025-12-05 18:38:45,260 - INFO - Calling Imagen 3...
+2025-12-05 18:38:46,450 - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-001:predict "HTTP/1.1 404 Not Found"
+2025-12-05 18:38:46,452 - WARNING - Imagen 3 not available (404). Attempting fallback...
+2025-12-05 18:38:46,458 - ERROR - Smart Design Error: 404 NOT_FOUND. {'error': {'code': 404, 'message': 'models/imagen-3.0-generate-001 is not found for API version v1beta, or is not supported for predict. Call ListModels to see the list of available models and their supported methods.', 'status': 'NOT_FOUND'}}
+2025-12-05 18:38:46,458 - ERROR - Traceback: Traceback (most recent call last):
+  File "C:\Users\yeury\Desktop\Proyecto Cenecompuc\SOPA DE LETRAS IA\backend\routers\ai.py", line 434, in generate_smart_design
+    
+    
+    ...<8 lines>...
+            aspect_ratio="3:4",
+            ^
+  File "C:\Users\yeury\Desktop\Proyecto Cenecompuc\SOPA DE LETRAS IA\.venv\Lib\site-packages\google\genai\models.py", line 5488, in generate_images
+    api_response = self._generate_images(
+        model=model,
+        prompt=prompt,
+        config=config,
+    )
+  File "C:\Users\yeury\Desktop\Proyecto Cenecompuc\SOPA DE LETRAS IA\.venv\Lib\site-packages\google\genai\models.py", line 4254, in _generate_images
+    response = self._api_client.request(
+        'post', path, request_dict, http_options
+    )
+  File "C:\Users\yeury\Desktop\Proyecto Cenecompuc\SOPA DE LETRAS IA\.venv\Lib\site-packages\google\genai\_api_client.py", line 1388, in request
+    response = self._request(http_request, http_options, stream=False)
+  File "C:\Users\yeury\Desktop\Proyecto Cenecompuc\SOPA DE LETRAS IA\.venv\Lib\site-packages\google\genai\_api_client.py", line 1224, in _request
+    return self._retry(self._request_once, http_request, stream)  # type: ignore[no-any-return]
+           ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\yeury\Desktop\Proyecto Cenecompuc\SOPA DE LETRAS IA\.venv\Lib\site-packages\tenacity\__init__.py", line 477, in __call__
+    do = self.iter(retry_state=retry_state)
+  File "C:\Users\yeury\Desktop\Proyecto Cenecompuc\SOPA DE LETRAS IA\.venv\Lib\site-packages\tenacity\__init__.py", line 378, in iter
+    result = action(retry_state)
+  File "C:\Users\yeury\Desktop\Proyecto Cenecompuc\SOPA DE LETRAS IA\.venv\Lib\site-packages\tenacity\__init__.py", line 420, in exc_check
+    raise retry_exc.reraise()
+          ~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\yeury\Desktop\Proyecto Cenecompuc\SOPA DE LETRAS IA\.venv\Lib\site-packages\tenacity\__init__.py", line 187, in reraise
+    raise self.last_attempt.result()
+          ~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\yeury\AppData\Local\Programs\Python\Python313\Lib\concurrent\futures\_base.py", line 449, in result
+    return self.__get_result()
+           ~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\yeury\AppData\Local\Programs\Python\Python313\Lib\concurrent\futures\_base.py", line 401, in __get_result
+    raise self._exception
+  File "C:\Users\yeury\Desktop\Proyecto Cenecompuc\SOPA DE LETRAS IA\.venv\Lib\site-packages\tenacity\__init__.py", line 480, in __call__
+    result = fn(*args, **kwargs)
+  File "C:\Users\yeury\Desktop\Proyecto Cenecompuc\SOPA DE LETRAS IA\.venv\Lib\site-packages\google\genai\_api_client.py", line 1201, in _request_once
+    errors.APIError.raise_for_response(response)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^
+  File "C:\Users\yeury\Desktop\Proyecto Cenecompuc\SOPA DE LETRAS IA\.venv\Lib\site-packages\google\genai\errors.py", line 106, in raise_for_response
+    cls.raise_error(response.status_code, response_json, response)
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\yeury\Desktop\Proyecto Cenecompuc\SOPA DE LETRAS IA\.venv\Lib\site-packages\google\genai\errors.py", line 131, in raise_error
+    raise ClientError(status_code, response_json, response)
+google.genai.errors.ClientError: 404 NOT_FOUND. {'error': {'code': 404, 'message': 'models/imagen-3.0-generate-001 is not found for API version v1beta, or is not supported for predict. Call ListModels to see the list of available models and their supported methods.', 'status': 'NOT_FOUND'}}
+
+2025-12-05 18:54:31,366 - INFO - Received Smart Design Request (Imagen 3 Mode)
+2025-12-05 18:54:31,366 - INFO - Prompt: Mountains
+2025-12-05 18:54:31,366 - INFO - Calling Imagen 3...
+2025-12-05 18:54:32,149 - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-001:predict "HTTP/1.1 404 Not Found"
+2025-12-05 18:54:32,150 - WARNING - Imagen 3 ClientError: 404 NOT_FOUND. {'error': {'code': 404, 'message': 'models/imagen-3.0-generate-001 is not found for API version v1beta, or is not supported for predict. Call ListModels to see the list of available models and their supported methods.', 'status': 'NOT_FOUND'}}
+2025-12-05 18:54:32,150 - INFO - Falling back to SVG generation via Gemini
+2025-12-05 18:59:11,119 - INFO - Received Smart Design Request (Imagen 3 Mode)
+2025-12-05 18:59:11,120 - INFO - Prompt: Esta es una página de sopa de letras para un libro impreso. Genera una ilustración de fondo y decoraciones alrededor del contenido.
+
+REGLAS IMPORTANTES DE MÁSCARA Y CONTENIDO:
+1. No cambies ni cubras el título, el texto de instrucciones, la cuadrícula de letras, la caja de palabras ni el pie de página. Estos elementos deben permanecer exactamente en su lugar y ser perfectamente legibles.
+2. Decora únicamente el fondo de la página, la franja alrededor del encabezado, los márgenes laterales junto a la cuadrícula, el área que rodea la caja de palabras y elementos sutiles en el pie de página.
+
+CONTEXTO DEL PUZZLE:
+- Tema: Sopa de Letras
+- Nivel: Estándar / Medio
+- Número de Puzzle: 1
+- Palabras clave (tema): API, DATABASE, DEEPSEEK, GEMINI, GROQ, REACT, TAILWIND, TYPESCRIPT
+
+ESTILO VISUAL DESEADO:
+- Estilo: como una página de libro antiguo ilustrado, con textura de papel y trazos suaves.
+- Intensidad: decoración equilibrada sin saturar la vista.
+
+El usuario describe así lo que quiere (texto original): "Montañas".
+
+La imagen final debe ser una obra de arte cohesiva que integre el contenido del puzzle (partes protegidas en negro en la máscara) con un fondo artístico hermoso y legible.
+2025-12-05 18:59:11,120 - INFO - Calling Imagen 3...
+2025-12-05 18:59:12,383 - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-001:predict "HTTP/1.1 404 Not Found"
+2025-12-05 18:59:12,385 - WARNING - Imagen 3 ClientError: 404 NOT_FOUND. {'error': {'code': 404, 'message': 'models/imagen-3.0-generate-001 is not found for API version v1beta, or is not supported for predict. Call ListModels to see the list of available models and their supported methods.', 'status': 'NOT_FOUND'}}
+2025-12-05 18:59:12,385 - INFO - Falling back to SVG generation via Gemini
+2025-12-05 19:02:28,468 - INFO - Received Smart Design Request (Imagen 3 Mode)
+2025-12-05 19:02:28,468 - INFO - Prompt: Esta es una página de sopa de letras para un libro impreso. Genera una ilustración de fondo y decoraciones alrededor del contenido.
+
+REGLAS IMPORTANTES DE MÁSCARA Y CONTENIDO:
+1. No cambies ni cubras el título, el texto de instrucciones, la cuadrícula de letras, la caja de palabras ni el pie de página. Estos elementos deben permanecer exactamente en su lugar y ser perfectamente legibles.
+2. Decora únicamente el fondo de la página, la franja alrededor del encabezado, los márgenes laterales junto a la cuadrícula, el área que rodea la caja de palabras y elementos sutiles en el pie de página.
+
+CONTEXTO DEL PUZZLE:
+- Tema: Sopa de Letras
+- Nivel: Estándar / Medio
+- Número de Puzzle: 1
+- Palabras clave (tema): API, DATABASE, DEEPSEEK, GEMINI, GROQ, REACT, TAILWIND, TYPESCRIPT
+
+ESTILO VISUAL DESEADO:
+- Estilo: como una página de libro antiguo ilustrado, con textura de papel y trazos suaves.
+- Intensidad: muy decorado, rico en detalles pero manteniendo la legibilidad central.
+
+El usuario describe así lo que quiere (texto original): "Montañas".
+
+La imagen final debe ser una obra de arte cohesiva que integre el contenido del puzzle (partes protegidas en negro en la máscara) con un fondo artístico hermoso y legible.
+2025-12-05 19:02:28,468 - INFO - Calling Imagen 3...
+2025-12-05 19:02:29,224 - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-001:predict "HTTP/1.1 404 Not Found"
+2025-12-05 19:02:29,225 - WARNING - Imagen 3 ClientError: 404 NOT_FOUND. {'error': {'code': 404, 'message': 'models/imagen-3.0-generate-001 is not found for API version v1beta, or is not supported for predict. Call ListModels to see the list of available models and their supported methods.', 'status': 'NOT_FOUND'}}
+2025-12-05 19:02:29,226 - INFO - Falling back to SVG generation via Gemini
+2025-12-05 19:04:54,735 - INFO - Received Smart Design Request (Imagen 3 Mode)
+2025-12-05 19:04:54,735 - INFO - Prompt: Esta es una página de sopa de letras para un libro impreso. Genera una ilustración de fondo y decoraciones alrededor del contenido.
+
+REGLAS IMPORTANTES DE MÁSCARA Y CONTENIDO:
+1. No cambies ni cubras el título, el texto de instrucciones, la cuadrícula de letras, la caja de palabras ni el pie de página. Estos elementos deben permanecer exactamente en su lugar y ser perfectamente legibles.
+2. Decora únicamente el fondo de la página, la franja alrededor del encabezado, los márgenes laterales junto a la cuadrícula, el área que rodea la caja de palabras y elementos sutiles en el pie de página.
+
+CONTEXTO DEL PUZZLE:
+- Tema: Sopa de Letras
+- Nivel: Estándar / Medio
+- Número de Puzzle: 1
+- Palabras clave (tema): API, DATABASE, DEEPSEEK, GEMINI, GROQ, REACT, TAILWIND, TYPESCRIPT
+
+ESTILO VISUAL DESEADO:
+- Estilo: como una página de libro antiguo ilustrado, con textura de papel y trazos suaves.
+- Intensidad: decoración equilibrada sin saturar la vista.
+
+El usuario describe así lo que quiere (texto original): "Montañas".
+
+La imagen final debe ser una obra de arte cohesiva que integre el contenido del puzzle (partes protegidas en negro en la máscara) con un fondo artístico hermoso y legible.
+2025-12-05 19:04:54,735 - INFO - Calling Imagen 3...
+2025-12-05 19:04:55,895 - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-001:predict "HTTP/1.1 404 Not Found"
+2025-12-05 19:04:55,896 - WARNING - Imagen 3 ClientError: 404 NOT_FOUND. {'error': {'code': 404, 'message': 'models/imagen-3.0-generate-001 is not found for API version v1beta, or is not supported for predict. Call ListModels to see the list of available models and their supported methods.', 'status': 'NOT_FOUND'}}
+2025-12-05 19:04:55,897 - INFO - Falling back to SVG generation via Gemini
+2025-12-05 19:55:47,751 - INFO - Received Smart Design Request (Imagen 3 Mode)
+2025-12-05 19:55:47,752 - INFO - Prompt: Mountains
+2025-12-05 19:55:47,752 - INFO - Calling Imagen 3...
+2025-12-05 19:55:48,596 - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-001:predict "HTTP/1.1 404 Not Found"
+2025-12-05 19:55:48,597 - WARNING - Imagen 3 ClientError: 404 NOT_FOUND. {'error': {'code': 404, 'message': 'models/imagen-3.0-generate-001 is not found for API version v1beta, or is not supported for predict. Call ListModels to see the list of available models and their supported methods.', 'status': 'NOT_FOUND'}}
+2025-12-05 19:55:48,598 - INFO - Falling back to SVG generation via Gemini
+2025-12-05 19:55:48,747 - ERROR - SVG fallback failed: 404 models/gemini-1.5-flash is not found for API version v1beta, or is not supported for generateContent. Call ListModels to see the list of available models and their supported methods.
+2025-12-05 20:02:16,810 - INFO - Received Smart Design Request (Imagen 3 Mode)
+2025-12-05 20:02:16,810 - INFO - Prompt: Mountains
+2025-12-05 20:02:16,810 - INFO - Calling Imagen 3...
+2025-12-05 20:02:17,601 - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-001:predict "HTTP/1.1 404 Not Found"
+2025-12-05 20:02:17,603 - WARNING - Imagen 3 ClientError: 404 NOT_FOUND. {'error': {'code': 404, 'message': 'models/imagen-3.0-generate-001 is not found for API version v1beta, or is not supported for predict. Call ListModels to see the list of available models and their supported methods.', 'status': 'NOT_FOUND'}}
+2025-12-05 20:02:17,604 - INFO - Falling back to SVG generation via Gemini
+2025-12-05 20:02:17,729 - ERROR - SVG fallback failed: 404 models/gemini-1.5-flash is not found for API version v1beta, or is not supported for generateContent. Call ListModels to see the list of available models and their supported methods.
+2025-12-05 20:06:12,017 - INFO - Received Smart Design Request (Imagen 3 Mode)
+2025-12-05 20:06:12,017 - INFO - Prompt: Esta es una página de sopa de letras para un libro impreso. Genera una ilustración de fondo y decoraciones alrededor del contenido.
+
+REGLAS IMPORTANTES DE MÁSCARA Y CONTENIDO:
+1. No cambies ni cubras el título, el texto de instrucciones, la cuadrícula de letras, la caja de palabras ni el pie de página. Estos elementos deben permanecer exactamente en su lugar y ser perfectamente legibles.
+2. Decora únicamente el fondo de la página, la franja alrededor del encabezado, los márgenes laterales junto a la cuadrícula, el área que rodea la caja de palabras y elementos sutiles en el pie de página.
+
+CONTEXTO DEL PUZZLE:
+- Tema: Sopa de Letras
+- Nivel: Estándar / Medio
+- Número de Puzzle: 1
+- Palabras clave (tema): API, DATABASE, DEEPSEEK, GEMINI, GROQ, REACT, TAILWIND, TYPESCRIPT
+
+ESTILO VISUAL DESEADO:
+- Estilo: estilo moderno y limpio, con formas simples y colores planos suaves.
+- Intensidad: decoración equilibrada sin saturar la vista.
+
+El usuario describe así lo que quiere (texto original): "MONTAÑAS".
+
+La imagen final debe ser una obra de arte cohesiva que integre el contenido del puzzle (partes protegidas en negro en la máscara) con un fondo artístico hermoso y legible.
+2025-12-05 20:06:12,017 - INFO - Calling Imagen 3...
+2025-12-05 20:06:12,960 - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-001:predict "HTTP/1.1 404 Not Found"
+2025-12-05 20:06:12,962 - WARNING - Imagen 3 ClientError: 404 NOT_FOUND. {'error': {'code': 404, 'message': 'models/imagen-3.0-generate-001 is not found for API version v1beta, or is not supported for predict. Call ListModels to see the list of available models and their supported methods.', 'status': 'NOT_FOUND'}}
+2025-12-05 20:06:12,962 - INFO - Falling back to SVG generation via Gemini (New SDK)
+2025-12-05 20:06:13,698 - INFO - AFC is enabled with max remote calls: 10.
+2025-12-05 20:06:13,847 - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent "HTTP/1.1 404 Not Found"
+2025-12-05 20:06:13,848 - ERROR - SVG fallback failed: 404 NOT_FOUND. {'error': {'code': 404, 'message': 'models/gemini-1.5-flash is not found for API version v1beta, or is not supported for generateContent. Call ListModels to see the list of available models and their supported methods.', 'status': 'NOT_FOUND'}}
+2025-12-05 20:06:52,081 - INFO - Received Smart Design Request (Imagen 3 Mode)
+2025-12-05 20:06:52,081 - INFO - Prompt: Esta es una página de sopa de letras para un libro impreso. Genera una ilustración de fondo y decoraciones alrededor del contenido.
+
+REGLAS IMPORTANTES DE MÁSCARA Y CONTENIDO:
+1. No cambies ni cubras el título, el texto de instrucciones, la cuadrícula de letras, la caja de palabras ni el pie de página. Estos elementos deben permanecer exactamente en su lugar y ser perfectamente legibles.
+2. Decora únicamente el fondo de la página, la franja alrededor del encabezado, los márgenes laterales junto a la cuadrícula, el área que rodea la caja de palabras y elementos sutiles en el pie de página.
+
+CONTEXTO DEL PUZZLE:
+- Tema: Sopa de Letras
+- Nivel: Estándar / Medio
+- Número de Puzzle: 1
+- Palabras clave (tema): API, DATABASE, DEEPSEEK, GEMINI, GROQ, REACT, TAILWIND, TYPESCRIPT
+
+ESTILO VISUAL DESEADO:
+- Estilo: estilo moderno y limpio, con formas simples y colores planos suaves.
+- Intensidad: decoración equilibrada sin saturar la vista.
+
+El usuario describe así lo que quiere (texto original): "MONTAÑAS".
+
+La imagen final debe ser una obra de arte cohesiva que integre el contenido del puzzle (partes protegidas en negro en la máscara) con un fondo artístico hermoso y legible.
+2025-12-05 20:06:52,081 - INFO - Calling Imagen 3...
+2025-12-05 20:06:52,952 - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-001:predict "HTTP/1.1 404 Not Found"
+2025-12-05 20:06:52,953 - WARNING - Imagen 3 ClientError: 404 NOT_FOUND. {'error': {'code': 404, 'message': 'models/imagen-3.0-generate-001 is not found for API version v1beta, or is not supported for predict. Call ListModels to see the list of available models and their supported methods.', 'status': 'NOT_FOUND'}}
+2025-12-05 20:06:52,953 - INFO - Falling back to SVG generation via Gemini (New SDK)
+2025-12-05 20:06:53,707 - INFO - AFC is enabled with max remote calls: 10.
+2025-12-05 20:06:53,864 - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent "HTTP/1.1 404 Not Found"
+2025-12-05 20:06:53,865 - ERROR - SVG fallback failed: 404 NOT_FOUND. {'error': {'code': 404, 'message': 'models/gemini-1.5-flash is not found for API version v1beta, or is not supported for generateContent. Call ListModels to see the list of available models and their supported methods.', 'status': 'NOT_FOUND'}}
+2025-12-05 20:10:41,751 - INFO - Received Smart Design Request (Imagen 3 Mode)
+2025-12-05 20:10:41,751 - INFO - Prompt: Esta es una página de sopa de letras para un libro impreso. Genera una ilustración de fondo y decoraciones alrededor del contenido.
+
+REGLAS IMPORTANTES DE MÁSCARA Y CONTENIDO:
+1. No cambies ni cubras el título, el texto de instrucciones, la cuadrícula de letras, la caja de palabras ni el pie de página. Estos elementos deben permanecer exactamente en su lugar y ser perfectamente legibles.
+2. Decora únicamente el fondo de la página, la franja alrededor del encabezado, los márgenes laterales junto a la cuadrícula, el área que rodea la caja de palabras y elementos sutiles en el pie de página.
+
+CONTEXTO DEL PUZZLE:
+- Tema: Sopa de Letras
+- Nivel: Estándar / Medio
+- Número de Puzzle: 1
+- Palabras clave (tema): API, DATABASE, DEEPSEEK, GEMINI, GROQ, REACT, TAILWIND, TYPESCRIPT
+
+ESTILO VISUAL DESEADO:
+- Estilo: estilo moderno y limpio, con formas simples y colores planos suaves.
+- Intensidad: muy decorado, rico en detalles pero manteniendo la legibilidad central.
+
+El usuario describe así lo que quiere (texto original): "MONTAÑAS".
+
+La imagen final debe ser una obra de arte cohesiva que integre el contenido del puzzle (partes protegidas en negro en la máscara) con un fondo artístico hermoso y legible.
+2025-12-05 20:10:41,751 - INFO - Calling Imagen 3...
+2025-12-05 20:10:42,609 - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-001:predict "HTTP/1.1 404 Not Found"
+2025-12-05 20:10:42,611 - WARNING - Imagen 3 ClientError: 404 NOT_FOUND. {'error': {'code': 404, 'message': 'models/imagen-3.0-generate-001 is not found for API version v1beta, or is not supported for predict. Call ListModels to see the list of available models and their supported methods.', 'status': 'NOT_FOUND'}}
+2025-12-05 20:10:42,611 - INFO - Falling back to SVG generation via Gemini (Standard SDK)
+2025-12-05 20:10:42,751 - ERROR - SVG fallback failed: 404 models/gemini-pro is not found for API version v1beta, or is not supported for generateContent. Call ListModels to see the list of available models and their supported methods.
+2025-12-05 20:11:41,072 - INFO - Received Smart Design Request (Imagen 3 Mode)
+2025-12-05 20:11:41,072 - INFO - Prompt: Esta es una página de sopa de letras para un libro impreso. Genera una ilustración de fondo y decoraciones alrededor del contenido.
+
+REGLAS IMPORTANTES DE MÁSCARA Y CONTENIDO:
+1. No cambies ni cubras el título, el texto de instrucciones, la cuadrícula de letras, la caja de palabras ni el pie de página. Estos elementos deben permanecer exactamente en su lugar y ser perfectamente legibles.
+2. Decora únicamente el fondo de la página, la franja alrededor del encabezado, los márgenes laterales junto a la cuadrícula, el área que rodea la caja de palabras y elementos sutiles en el pie de página.
+
+CONTEXTO DEL PUZZLE:
+- Tema: Sopa de Letras
+- Nivel: Estándar / Medio
+- Número de Puzzle: 1
+- Palabras clave (tema): API, DATABASE, DEEPSEEK, GEMINI, GROQ, REACT, TAILWIND, TYPESCRIPT
+
+ESTILO VISUAL DESEADO:
+- Estilo: estilo moderno y limpio, con formas simples y colores planos suaves.
+- Intensidad: muy decorado, rico en detalles pero manteniendo la legibilidad central.
+
+El usuario describe así lo que quiere (texto original): "MONTAÑAS".
+
+La imagen final debe ser una obra de arte cohesiva que integre el contenido del puzzle (partes protegidas en negro en la máscara) con un fondo artístico hermoso y legible.
+2025-12-05 20:11:41,072 - INFO - Calling Imagen 3...
+2025-12-05 20:11:41,858 - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-001:predict "HTTP/1.1 404 Not Found"
+2025-12-05 20:11:41,858 - WARNING - Imagen 3 ClientError: 404 NOT_FOUND. {'error': {'code': 404, 'message': 'models/imagen-3.0-generate-001 is not found for API version v1beta, or is not supported for predict. Call ListModels to see the list of available models and their supported methods.', 'status': 'NOT_FOUND'}}
+2025-12-05 20:11:41,859 - INFO - Falling back to SVG generation via Gemini (Standard SDK)
+2025-12-05 20:11:42,034 - ERROR - SVG fallback failed: 404 models/gemini-pro is not found for API version v1beta, or is not supported for generateContent. Call ListModels to see the list of available models and their supported methods.
+2025-12-08 00:39:10,114 - INFO - Using API Key from Environment
+2025-12-08 00:39:10,820 - INFO - Using API Key from Environment
+2025-12-08 00:39:13,320 - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=AIzaSyDRnzXWN3zCmVnzQHoQE4IG_e78NHIpe9w "HTTP/1.1 200 OK"
+2025-12-08 00:39:17,801 - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=AIzaSyDRnzXWN3zCmVnzQHoQE4IG_e78NHIpe9w "HTTP/1.1 200 OK"
+2025-12-08 00:45:01,380 - INFO - Using API Key from Environment
+2025-12-08 00:45:02,338 - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=AIzaSyDRnzXWN3zCmVnzQHoQE4IG_e78NHIpe9w "HTTP/1.1 200 OK"
+2025-12-08 11:38:33,784 - INFO - Received Smart Design Request (Imagen 3 Mode)
+2025-12-08 11:38:33,784 - INFO - Prompt: Test prompt
+2025-12-08 11:38:33,784 - INFO - Calling Imagen 3...
+2025-12-08 11:38:34,543 - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-image:predict "HTTP/1.1 404 Not Found"
+2025-12-08 11:38:34,544 - WARNING - Imagen 3 ClientError: 404 NOT_FOUND. {'error': {'code': 404, 'message': 'models/gemini-2.5-flash-image is not found for API version v1beta, or is not supported for predict. Call ListModels to see the list of available models and their supported methods.', 'status': 'NOT_FOUND'}}
+2025-12-08 11:38:34,545 - INFO - Falling back to SVG generation via Gemini (Standard SDK)
+2025-12-08 11:49:31,350 - INFO - Received Smart Design Request (Imagen 3 Mode)
+2025-12-08 11:49:31,351 - INFO - Prompt: A simple, clean puzzle page background, white paper texture.
+2025-12-08 11:49:31,351 - INFO - Calling Imagen 3...
+2025-12-08 11:49:32,337 - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-image:predict "HTTP/1.1 404 Not Found"
+2025-12-08 11:49:32,338 - WARNING - Imagen 3 ClientError: 404 NOT_FOUND. {'error': {'code': 404, 'message': 'models/gemini-2.5-flash-image is not found for API version v1beta, or is not supported for predict. Call ListModels to see the list of available models and their supported methods.', 'status': 'NOT_FOUND'}}
+2025-12-08 11:49:32,338 - INFO - Falling back to SVG generation via Gemini (Standard SDK)
+2025-12-08 11:49:53,483 - INFO - Received Smart Design Request (Imagen 3 Mode)
+2025-12-08 11:49:53,484 - INFO - Prompt: A simple, clean puzzle page background, white paper texture.
+2025-12-08 11:49:53,484 - INFO - Calling Imagen 3...
+2025-12-08 11:49:54,252 - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-image:predict "HTTP/1.1 404 Not Found"
+2025-12-08 11:49:54,253 - WARNING - Imagen 3 ClientError: 404 NOT_FOUND. {'error': {'code': 404, 'message': 'models/gemini-2.5-flash-image is not found for API version v1beta, or is not supported for predict. Call ListModels to see the list of available models and their supported methods.', 'status': 'NOT_FOUND'}}
+2025-12-08 11:49:54,254 - INFO - Falling back to SVG generation via Gemini (Standard SDK)
+2025-12-08 12:18:05,944 - WARNING - PyTorch no instalado. Instalar con: pip install torch torchvision
+2025-12-08 15:00:00,820 - INFO - CUDA disponible: NVIDIA GeForce RTX 3060 Laptop GPU
+2025-12-08 15:20:44,998 - INFO - Received Smart Design Request (Imagen 3 Mode)
+2025-12-08 15:20:44,999 - INFO - Prompt: A simple, clean puzzle page background, white paper texture.
+2025-12-08 15:20:44,999 - INFO - Calling Imagen 3...
+2025-12-08 15:20:45,929 - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-image:predict "HTTP/1.1 404 Not Found"
+2025-12-08 15:20:45,930 - WARNING - Imagen 3 ClientError: 404 NOT_FOUND. {'error': {'code': 404, 'message': 'models/gemini-2.5-flash-image is not found for API version v1beta, or is not supported for predict. Call ListModels to see the list of available models and their supported methods.', 'status': 'NOT_FOUND'}}
+2025-12-08 15:20:45,931 - INFO - Falling back to SVG generation via Gemini (Standard SDK)
+2025-12-08 16:37:57,592 - INFO - CUDA disponible: NVIDIA GeForce RTX 3060 Laptop GPU
+2025-12-08 16:53:56,649 - INFO - Cache GPU liberado
+2025-12-08 22:52:09,207 - WARNING - PyTorch no instalado. Instalar con: pip install torch torchvision
+2025-12-08 23:32:57,011 - WARNING - PyTorch no instalado. Instalar con: pip install torch torchvision
+2025-12-08 23:54:33,192 - WARNING - PyTorch no instalado. Instalar con: pip install torch torchvision
+2025-12-08 23:57:52,088 - INFO - Received Image Request: prompt='A simple, clean puzzle page background, white paper texture.' style='editorial_pro' model='gemini-2.5-flash-image'
+2025-12-08 23:57:53,048 - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-image:predict "HTTP/1.1 404 Not Found"
+2025-12-08 23:57:53,074 - ERROR - Imagen Generation Error: 404 NOT_FOUND. {'error': {'code': 404, 'message': 'models/gemini-2.5-flash-image is not found for API version v1beta, or is not supported for predict. Call ListModels to see the list of available models and their supported methods.', 'status': 'NOT_FOUND'}}
+2025-12-08 23:57:53,082 - INFO - Received SVG Request: prompt='A simple, clean puzzle page background, white paper texture.' style='editorial_pro'
+2025-12-09 08:05:36,159 - INFO - Using API Key from Environment
+2025-12-09 08:05:36,513 - INFO - Using API Key from Environment
+2025-12-09 08:05:39,776 - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=AIzaSyDRnzXWN3zCmVnzQHoQE4IG_e78NHIpe9w "HTTP/1.1 200 OK"
+2025-12-09 08:05:43,423 - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=AIzaSyDRnzXWN3zCmVnzQHoQE4IG_e78NHIpe9w "HTTP/1.1 200 OK"
+2025-12-09 08:06:21,998 - WARNING - PyTorch no instalado. Instalar con: pip install torch torchvision
+2025-12-09 08:06:54,346 - INFO - Received Image Request: prompt='A simple, clean puzzle page background, white paper texture.' style='editorial_pro' model='gemini-2.5-flash-image'
+2025-12-09 08:06:55,167 - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-image:predict "HTTP/1.1 404 Not Found"
+2025-12-09 08:06:55,175 - ERROR - Imagen Generation Error: 404 NOT_FOUND. {'error': {'code': 404, 'message': 'models/gemini-2.5-flash-image is not found for API version v1beta, or is not supported for predict. Call ListModels to see the list of available models and their supported methods.', 'status': 'NOT_FOUND'}}
+2025-12-09 08:06:55,182 - INFO - Received SVG Request: prompt='A simple, clean puzzle page background, white paper texture.' style='editorial_pro'
+2025-12-09 08:08:06,373 - INFO - Received Image Request: prompt='A simple, clean puzzle page background, white paper texture.' style='editorial_pro' model='gemini-2.5-flash-image'
+2025-12-09 08:08:07,122 - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-image:predict "HTTP/1.1 404 Not Found"
+2025-12-09 08:08:07,125 - ERROR - Imagen Generation Error: 404 NOT_FOUND. {'error': {'code': 404, 'message': 'models/gemini-2.5-flash-image is not found for API version v1beta, or is not supported for predict. Call ListModels to see the list of available models and their supported methods.', 'status': 'NOT_FOUND'}}
+2025-12-09 08:08:07,129 - INFO - Received SVG Request: prompt='A simple, clean puzzle page background, white paper texture.' style='editorial_pro'
+2025-12-09 08:22:11,526 - INFO - CUDA disponible: NVIDIA GeForce RTX 3060 Laptop GPU
+2025-12-09 08:22:16,872 - INFO - Received Image Request: prompt='A simple, clean puzzle page background, white paper texture.' style='editorial_pro' model='gemini-2.5-flash-image'
+2025-12-09 08:22:18,049 - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-image:predict "HTTP/1.1 404 Not Found"
+2025-12-09 08:22:18,258 - ERROR - Imagen Generation Error: 404 NOT_FOUND. {'error': {'code': 404, 'message': 'models/gemini-2.5-flash-image is not found for API version v1beta, or is not supported for predict. Call ListModels to see the list of available models and their supported methods.', 'status': 'NOT_FOUND'}}
+2025-12-09 08:22:18,272 - INFO - Received SVG Request: prompt='A simple, clean puzzle page background, white paper texture.' style='editorial_pro'
+2025-12-09 08:22:20,427 - WARNING - Gemini 2.0 Flash 429 (Resource Exhausted). Falling back to 1.5 Flash.
+2025-12-09 09:05:21,191 - INFO - Received Smart Design Request (Imagen 3 Mode)
+2025-12-09 09:05:21,191 - INFO - Prompt: Unicornio Galáctico
+2025-12-09 09:05:21,191 - INFO - Calling Imagen 3...
+2025-12-09 09:05:22,250 - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-001:predict "HTTP/1.1 404 Not Found"
+2025-12-09 09:05:22,251 - WARNING - Imagen 3 ClientError: 404 NOT_FOUND. {'error': {'code': 404, 'message': 'models/imagen-3.0-generate-001 is not found for API version v1beta, or is not supported for predict. Call ListModels to see the list of available models and their supported methods.', 'status': 'NOT_FOUND'}}
+2025-12-09 09:05:22,251 - INFO - Falling back to SVG generation via Gemini (Standard SDK)
+2025-12-09 09:08:21,581 - INFO - Received Smart Design Request (Imagen 3 Mode)
+2025-12-09 09:08:21,582 - INFO - Prompt: Prueba Imagen 4
+2025-12-09 09:08:21,582 - INFO - Calling Imagen 3...
+2025-12-09 09:08:22,386 - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-001:predict "HTTP/1.1 404 Not Found"
+2025-12-09 09:08:22,389 - WARNING - Imagen 3 ClientError: 404 NOT_FOUND. {'error': {'code': 404, 'message': 'models/imagen-3.0-generate-001 is not found for API version v1beta, or is not supported for predict. Call ListModels to see the list of available models and their supported methods.', 'status': 'NOT_FOUND'}}
+2025-12-09 09:08:22,389 - INFO - Falling back to SVG generation via Gemini (Standard SDK)
+2025-12-09 14:22:38,763 - WARNING - PyTorch no instalado. Instalar con: pip install torch torchvision
+2025-12-09 14:22:46,855 - INFO - Received Image Request: prompt='Enchanted forest illustration for a word search puzzle background. Lush foliage, friendly forest creatures, and magical elements. Central area empty for text grid. Forest details fade softly towards the center to keep text readable. Title area at top with enough contrast.' style='Illustration' model='imagen-4.0-generate-001preview'
+2025-12-09 14:22:47,752 - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/imagen-4.0-generate-001preview:predict "HTTP/1.1 404 Not Found"
+2025-12-09 14:22:47,776 - ERROR - Imagen Generation Error: 404 NOT_FOUND. {'error': {'code': 404, 'message': 'models/imagen-4.0-generate-001preview is not found for API version v1beta, or is not supported for predict. Call ListModels to see the list of available models and their supported methods.', 'status': 'NOT_FOUND'}}
+2025-12-09 14:22:47,784 - INFO - Received SVG Request: prompt='Enchanted forest illustration for a word search puzzle background. Lush foliage, friendly forest creatures, and magical elements. Central area empty for text grid. Forest details fade softly towards the center to keep text readable. Title area at top with enough contrast.' style='Illustration'
+2025-12-09 14:42:20,893 - WARNING - PyTorch no instalado. Instalar con: pip install torch torchvision
+2025-12-09 14:42:28,365 - INFO - Received Image Request: prompt='Enchanted forest background, soft lighting, whimsical creatures, glowing mushrooms, parchment style word box, central area empty for text and grid, painterly style.' style='Illustration' model='imagen-3.0-generate-001'
+2025-12-09 14:42:29,163 - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-001:predict "HTTP/1.1 404 Not Found"
+2025-12-09 14:42:29,169 - ERROR - Imagen Generation Error: 404 NOT_FOUND. {'error': {'code': 404, 'message': 'models/imagen-3.0-generate-001 is not found for API version v1beta, or is not supported for predict. Call ListModels to see the list of available models and their supported methods.', 'status': 'NOT_FOUND'}}
+2025-12-09 14:42:29,177 - INFO - Received SVG Request: prompt='Enchanted forest background, soft lighting, whimsical creatures, glowing mushrooms, parchment style word box, central area empty for text and grid, painterly style.' style='Illustration'
+2025-12-09 14:51:44,017 - INFO - Received Image Request: prompt='Enchanted forest background illustration, whimsical creatures, twisted vines, glowing mushrooms, muted earthy tones, central area empty for text, parchment background.' style='Illustration with a touch of fantasy' model='imagen-3.0-generate-001'
+2025-12-09 14:51:44,740 - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-001:predict "HTTP/1.1 404 Not Found"
+2025-12-09 14:51:44,744 - ERROR - Imagen Generation Error: 404 NOT_FOUND. {'error': {'code': 404, 'message': 'models/imagen-3.0-generate-001 is not found for API version v1beta, or is not supported for predict. Call ListModels to see the list of available models and their supported methods.', 'status': 'NOT_FOUND'}}
+2025-12-09 14:51:44,750 - INFO - Received SVG Request: prompt='Enchanted forest background illustration, whimsical creatures, twisted vines, glowing mushrooms, muted earthy tones, central area empty for text, parchment background.' style='Illustration with a touch of fantasy'

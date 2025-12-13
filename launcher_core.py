@@ -597,6 +597,77 @@ class ResourceManager:
 resource_manager = ResourceManager()
 
 
+
+# === Settings Management ===
+class SettingsManager:
+    """Manejo de configuración y variables de entorno (.env)"""
+    def __init__(self, env_path=".env"):
+        self.env_path = env_path
+        self.cache = {}
+        self.load()
+
+    def load(self):
+        """Carga variables del archivo .env"""
+        if os.path.exists(self.env_path):
+            with open(self.env_path, "r", encoding="utf-8") as f:
+                for line in f:
+                    if "=" in line and not line.strip().startswith("#"):
+                        key, val = line.strip().split("=", 1)
+                        self.cache[key.strip()] = val.strip().strip('"').strip("'")
+
+    def get(self, key, default=None):
+        return self.cache.get(key, os.environ.get(key, default))
+
+    def set(self, key, value):
+        """Establece una variable y actualiza el archivo .env"""
+        self.cache[key] = value
+        # Update .env file preserving comments and structure
+        lines = []
+        if os.path.exists(self.env_path):
+            with open(self.env_path, "r", encoding="utf-8") as f:
+                lines = f.readlines()
+        
+        found = False
+        new_lines = []
+        for line in lines:
+            if line.strip().startswith(f"{key}="):
+                new_lines.append(f"{key}={value}\n")
+                found = True
+            else:
+                new_lines.append(line)
+        
+        if not found:
+            if new_lines and not new_lines[-1].endswith("\n"):
+                new_lines.append("\n")
+            new_lines.append(f"{key}={value}\n")
+            
+        with open(self.env_path, "w", encoding="utf-8") as f:
+            f.writelines(new_lines)
+
+# === Dependency Checker ===
+class DependencyChecker:
+    """Verifica dependencias críticas"""
+    REQUIRED_PACKAGES = [
+        "fastapi", "uvicorn", "jinja2", "python-multipart", "google-genai", "requests", "psutil"
+    ]
+
+    @staticmethod
+    def check_all() -> List[str]:
+        missing = []
+        import importlib.util
+        for pkg in DependencyChecker.REQUIRED_PACKAGES:
+            # Map package name to import name if different
+            import_name = pkg.replace("-", "_")
+            if pkg == "python-multipart": import_name = "multipart" # approximate check
+            
+            if not importlib.util.find_spec(import_name):
+                # Try simple import for some edge cases
+                try:
+                    __import__(import_name)
+                except ImportError:
+                    missing.append(pkg)
+        return missing
+
 class LauncherCore:
     """Core launcher business logic"""
     

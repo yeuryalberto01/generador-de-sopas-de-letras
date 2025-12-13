@@ -1,0 +1,11 @@
+{
+  "prompt": "Style Example: Cyberpunk City. Neon lights, futuristic buildings, glitch effect borders, dark blue and pink palette. Center area faint grid texture.",
+  "image_path": "1765389147_LIKE_tech_cyberpunk.png",
+  "style": "tech_cyberpunk",
+  "rating": 1,
+  "timestamp": 1765389147.8391619,
+  "meta": {
+    "type": "style_guide",
+    "theme": "tech"
+  }
+}

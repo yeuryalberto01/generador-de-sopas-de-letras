@@ -1,0 +1,11 @@
+{
+  "prompt": "GENESIS_RULE_01: Safe Zone Layout. The center must remain clean for text visibility. Decorations only on margins.",
+  "image_path": "1765389141_LIKE_universal_rule.png",
+  "style": "universal_rule",
+  "rating": 1,
+  "timestamp": 1765389141.7150362,
+  "meta": {
+    "type": "axiom",
+    "rule": "layout_safety"
+  }
+}
