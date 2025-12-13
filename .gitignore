@@ -3,6 +3,7 @@ dist/
 build/
 .env
 .env.local
+.env.*
 __pycache__/
 *.pyc
 .DS_Store
@@ -11,3 +12,17 @@ __pycache__/
 .idea/
 *.log
 coverage/
+
+# Sensitive/Debug files - No subir a GitHub
+**/temp_debug_log.txt
+**/debug*.txt
+**/test_result.txt
+**/last_test_response.txt
+**/last_gen_provider.txt
+**/models_output.txt
+**/models_full.txt
+**/full_models.txt
+**/image_test_output.txt
+**/*_output.txt
+backend/.env
+backend/**/*.env
