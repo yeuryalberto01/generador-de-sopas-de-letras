@@ -5,6 +5,7 @@ Template Engine Router - API endpoints para el módulo de plantillas avanzado.
 from fastapi import APIRouter, HTTPException
 from typing import Dict, Any
 import logging
+import os
 
 from .gpu_manager import get_gpu_status_dict, get_gpu_manager
 
@@ -36,7 +37,14 @@ async def get_gpu_status() -> Dict[str, Any]:
     Incluye: nombre, VRAM total/libre, soporte CUDA, etc.
     """
     try:
-        status = get_gpu_status_dict()
+        manager = get_gpu_manager()
+        # Use new async method directly
+        status_obj = await manager.get_status_async()
+        
+        # Convert dataclass to dict safely
+        from dataclasses import asdict
+        status = asdict(status_obj)
+
         return {
             "success": True,
             "data": status
@@ -96,8 +104,9 @@ async def check_gpu_memory(required_gb: float):
 
 # === ComfyUI Integration ===
 
-from .comfy_client import get_comfy_client, create_txt2img_workflow, create_img2img_workflow
+# Imports consolidados abajo
 from pydantic import BaseModel
+
 from typing import Optional
 import base64
 
@@ -110,7 +119,10 @@ class ComfyGenerateRequest(BaseModel):
     steps: int = 20
     cfg_scale: float = 7.0
     seed: int = -1
-    checkpoint: str = "v1-5-pruned-emaonly.safetensors"
+    checkpoint: str = "v1-5-pruned-emaonly-fp16.safetensors"
+    # Hybrid Mode Config
+    smart_provider: str = "gemini" 
+    smart_model: Optional[str] = None
 
 
 class ComfyImg2ImgRequest(BaseModel):
@@ -121,14 +133,28 @@ class ComfyImg2ImgRequest(BaseModel):
     steps: int = 20
     cfg_scale: float = 7.0
     seed: int = -1
-    checkpoint: str = "v1-5-pruned-emaonly.safetensors"
+    checkpoint: str = "v1-5-pruned-emaonly-fp16.safetensors"
 
+
+from .comfy_client import (
+    ComfyUIClient, 
+    create_txt2img_workflow, 
+    create_img2img_workflow, 
+    create_background_workflow
+)
+
+def get_comfy_client() -> ComfyUIClient:
+    """Factory para obtener cliente configurado desde entorno"""
+    host = os.environ.get("COMFYUI_HOST", "127.0.0.1")
+    port = int(os.environ.get("COMFYUI_PORT", 8188))
+    return ComfyUIClient(host=host, port=port)
 
 @router.get("/comfy/status")
 async def get_comfy_status():
     """
     Verifica si ComfyUI está corriendo y disponible.
     """
+    logger.info("Checking ComfyUI status...")
     client = get_comfy_client()
     is_available = await client.is_available()
     
@@ -170,10 +196,10 @@ async def comfy_generate_image(request: ComfyGenerateRequest):
             checkpoint=request.checkpoint
         )
         
-        image_bytes = await client.generate_image(workflow, timeout=120.0)
+        image_bytes = await client.generate_image(workflow, timeout=600.0)
         
         if image_bytes:
-            image_base64 = base64.b64encode(image_bytes).decode('utf-8')
+            image_base64 = "data:image/png;base64," + base64.b64encode(image_bytes).decode('utf-8')
             return {
                 "success": True,
                 "image": image_base64
@@ -212,10 +238,10 @@ async def comfy_decorate_puzzle(request: ComfyImg2ImgRequest):
             checkpoint=request.checkpoint
         )
         
-        image_bytes = await client.generate_image(workflow, timeout=120.0)
+        image_bytes = await client.generate_image(workflow, timeout=600.0)
         
         if image_bytes:
-            image_base64 = base64.b64encode(image_bytes).decode('utf-8')
+            image_base64 = "data:image/png;base64," + base64.b64encode(image_bytes).decode('utf-8')
             return {
                 "success": True,
                 "image": image_base64
@@ -225,4 +251,164 @@ async def comfy_decorate_puzzle(request: ComfyImg2ImgRequest):
             
     except Exception as e:
         logger.error(f"Error decorando puzzle con ComfyUI: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@router.post("/comfy/background")
+async def comfy_generate_background(request: ComfyGenerateRequest):
+    """
+    Genera un FONDO optimizado (con espacio central) usando ComfyUI.
+    """
+    client = get_comfy_client()
+    
+    if not await client.is_available():
+        raise HTTPException(
+            status_code=503,
+            detail="ComfyUI no está disponible."
+        )
+    
+    try:
+        workflow = create_background_workflow(
+            prompt=request.prompt,
+            negative_prompt=request.negative_prompt,
+            width=request.width,
+            height=request.height,
+            steps=request.steps,
+            cfg_scale=request.cfg_scale,
+            seed=request.seed,
+            checkpoint=request.checkpoint
+        )
+        
+        image_bytes = await client.generate_image(workflow, timeout=600.0)
+        
+        if image_bytes:
+            image_base64 = "data:image/png;base64," + base64.b64encode(image_bytes).decode('utf-8')
+            return {
+                "success": True,
+                "image": image_base64
+            }
+        else:
+            raise HTTPException(status_code=500, detail="No se pudo generar el fondo")
+            
+    except Exception as e:
+        logger.error(f"Error generando fondo con ComfyUI: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+# === AI Integration (Internal) ===
+from routers.ai import call_gemini, AIRequest
+
+@router.post("/comfy/generate-smart")
+async def comfy_smart_generate(request: ComfyGenerateRequest):
+    """
+    Generación Híbrida Inteligente:
+    1. Gemini: Optimiza el prompt (Prompt Engineering).
+    2. ComfyUI: Genera la imagen con settings avanzados (CLIP Skip, Samplers).
+    """
+    client = get_comfy_client()
+    
+    if not await client.is_available():
+        raise HTTPException(status_code=503, detail="ComfyUI no está disponible.")
+        
+    try:
+        # A. FASE DE PENSAMIENTO (Gemini)
+        logger.info(f"Smart Generation: Optimizing prompt '{request.prompt}'...")
+        
+        system_instruction = (
+            "You are an elite Stable Diffusion Prompt Engineer. "
+            "Transform the user's simple concept into a professional photography prompt for Realistic Vision V6. "
+            "Analyze the concept and also generate a specific NEGATIVE prompt to avoid frequent artifacts for this specific subject."
+            "Output STRICTLY valid JSON with this format:"
+            '{"positive": "YOUR_DETAILED_PROMPT", "negative": "YOUR_NEGATIVE_PROMPT"}'
+        )
+        
+        gemini_req = AIRequest(
+            provider=request.smart_provider, 
+            model=request.smart_model, 
+            prompt=f"{system_instruction}\n\nConcept: {request.prompt}",
+            json_mode=True
+        )
+        
+        optimized_prompt = request.prompt
+        optimized_negative = request.negative_prompt
+        
+        try:
+            # Llamada dinámica al proveedor seleccionado
+            from routers.ai import call_openai_compatible
+            
+            if request.smart_provider == 'gemini':
+                ai_response = await call_gemini(gemini_req, None)
+            else:
+                ai_response = await call_openai_compatible(gemini_req, None)
+
+            text_response = ai_response["text"].strip()
+            
+            # Limpieza básica de markdown json
+            if text_response.startswith("```json"):
+                text_response = text_response[7:]
+            if text_response.endswith("```"):
+                text_response = text_response[:-3]
+                
+            import json
+            smart_data = json.loads(text_response)
+            
+            optimized_prompt = smart_data.get("positive", request.prompt)
+            # Merge smart negative with user negative if provided, or use smart one
+            smart_neg = smart_data.get("negative", "")
+            base_neg = request.negative_prompt or "cartoon, anime, 3d, sketch, bad quality, watermark, text"
+            optimized_negative = f"{base_neg}, {smart_neg}" if smart_neg else base_neg
+            
+            logger.info(f"[{request.smart_provider}] Optimized Positive: {optimized_prompt}")
+            
+        except Exception as e:
+            logger.error(f"Smart Optimization Failed ({request.smart_provider}): {e}. Using raw prompts.")
+            # optimized_prompt y optimized_negative ya tienen valores fallback
+
+        # B. FASE DE EJECUCIÓN (ComfyUI)
+        # Determinar si necesitamos CLIP Skip (Standard para Realistic Vision)
+        use_clip_skip = 2 if "Realistic" in request.checkpoint else None
+        
+        workflow = create_txt2img_workflow(
+            prompt=optimized_prompt,
+            negative_prompt=optimized_negative,
+            width=request.width,
+            height=request.height,
+            steps=25, # Un poco más de calidad por defecto
+            cfg_scale=6.0, # CFG más bajo para realismo
+            seed=request.seed,
+            checkpoint=request.checkpoint,
+            clip_skip=use_clip_skip
+        )
+        
+        image_bytes = await client.generate_image(workflow, timeout=600.0)
+        
+        if image_bytes:
+            image_base64 = "data:image/png;base64," + base64.b64encode(image_bytes).decode('utf-8')
+            
+            # [LOGGING] Guardar en memoria de entrenamiento
+            try:
+                from modules.art_studio.training_memory import get_training_memory
+                training = get_training_memory()
+                training.save_generation(
+                    puzzle_title="Smart Generation",
+                    puzzle_theme=optimized_prompt, 
+                    words=[],
+                    target_audience="General",
+                    design_plan={"engine": "smart_gen", "original_prompt": request.prompt},
+                    prompts={"final": optimized_prompt},
+                    images_b64={"final": base64.b64encode(image_bytes).decode('utf-8')}
+                )
+            except Exception as e:
+                logger.error(f"Failed to save training example: {e}")
+
+            return {
+                "success": True,
+                "image": image_base64,
+                "optimized_prompt": optimized_prompt,
+                "engine": "Gemini + ComfyUI"
+            }
+        else:
+            raise HTTPException(status_code=500, detail="Fallo en generación ComfyUI")
+            
+    except Exception as e:
+        logger.error(f"Smart Gen Error: {e}")
         raise HTTPException(status_code=500, detail=str(e))

@@ -1,0 +1,32 @@
+{
+    "version": "1.0",
+    "last_updated": "2025-12-15T01:00:00",
+    "global_preferences": {
+        "preferred_style_keywords": [
+            "fantasy digital art",
+            "vibrant color",
+            "masterpiece",
+            "full color",
+            "high saturation"
+        ],
+        "negative_prompt_keywords": [
+            "opaque",
+            "washed out",
+            "low contrast",
+            "text",
+            "watermark",
+            "realistic photo",
+            "boring"
+        ],
+        "generation_rules": {
+            "force_opacity": 1.0,
+            "best_of_n_candidates": 2,
+            "auto_retry_qc": false,
+            "use_reference_style_if_available": true
+        },
+        "model_preferences": {
+            "fantasy": "dreamshaper_8.safetensors",
+            "editorial": "Realistic_Vision_V6.0_NV_B1.safetensors"
+        }
+    }
+}

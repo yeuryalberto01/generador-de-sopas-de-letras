@@ -8,3 +8,7 @@ requests
 customtkinter
 google-generativeai
 google-genai
+# ML Dependencies for Smart Brain
+sentence-transformers
+scikit-learn
+aiohttp

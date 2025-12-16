@@ -27,11 +27,9 @@ COMFYUI_PORT = 8188
 BACKEND_CMD = [sys.executable, "-m", "uvicorn", "main:app", "--reload", "--host", "0.0.0.0", "--port", str(BACKEND_PORT)]
 FRONTEND_CMD = ["npm", "run", "dev", "--", "--port", str(FRONTEND_PORT)]
 
-# ComfyUI Configuration
-COMFYUI_DIR = os.path.join(os.environ.get("LOCALAPPDATA", ""), "Programs", "ComfyUI")
-COMFYUI_EXE = os.path.join(COMFYUI_DIR, "ComfyUI.exe")
-# Alternative: use run_nvidia_gpu.bat if available
-COMFYUI_CMD = [COMFYUI_EXE] if os.path.exists(COMFYUI_EXE) else None
+# ComfyUI Configuration (Default)
+DEFAULT_COMFYUI_DIR = os.path.join(os.environ.get("LOCALAPPDATA", ""), "Programs", "ComfyUI")
+
 
 
 class LogLevel(Enum):
@@ -60,6 +58,11 @@ class LogQueue:
         self.queue = queue.Queue()
         self.history: List[Dict[str, Any]] = []
         self.max_history = 1000
+        
+        # Setup File Logging
+        self.log_dir = os.path.join(os.getcwd(), "logs")
+        os.makedirs(self.log_dir, exist_ok=True)
+        self.log_file = os.path.join(self.log_dir, f"launcher_{datetime.now().strftime('%Y%m%d')}.log")
     
     def write(self, level: LogLevel, message: str, source: str = "SYSTEM"):
         """Write a log message with level"""
@@ -79,6 +82,13 @@ class LogQueue:
         # Trim history if too long
         if len(self.history) > self.max_history:
             self.history = self.history[-self.max_history:]
+            
+        # Write to file immediately (for crash safety)
+        try:
+            with open(self.log_file, "a", encoding="utf-8") as f:
+                f.write(f"[{timestamp}] [{level.value[0]}] [{source}] {message}\n")
+        except Exception:
+            pass
     
     def get_formatted(self, entry: Dict[str, Any]) -> str:
         """Format log entry as string"""
@@ -99,7 +109,15 @@ def enqueue_output(process, source):
         try:
             line_str = line.decode('utf-8').strip()
             if line_str:
-                log_queue.write(LogLevel.INFO, line_str, source)
+                # Heuristic for log level
+                level = LogLevel.INFO
+                lower = line_str.lower()
+                if "error" in lower or "exception" in lower or "failed" in lower:
+                     level = LogLevel.ERROR
+                elif "warning" in lower:
+                     level = LogLevel.WARNING
+                
+                log_queue.write(level, line_str, source)
         except:
             pass
     process.stdout.close()
@@ -130,24 +148,31 @@ class SmartService:
             return True
         
         if self.check_port_in_use():
-            log_queue.write(LogLevel.WARNING, f"Puerto {self.port} ocupado. Intentando liberar...", self.name)
-            for i in range(3):
-                self.force_kill_port()
-                time.sleep(1)
-                if not self.check_port_in_use():
-                    log_queue.write(LogLevel.INFO, f"Puerto {self.port} liberado exitosamente.", self.name)
-                    break
+            log_queue.write(LogLevel.WARNING, f"Puerto {self.port} ocupado. Iniciando protocolo limpieza...", self.name)
+            self.force_kill_port()
             
             if self.check_port_in_use():
-                log_queue.write(LogLevel.ERROR, f"No se pudo liberar el puerto {self.port} tras 3 intentos.", self.name)
+                log_queue.write(LogLevel.ERROR, f"ABORTADO: El puerto {self.port} sigue bloqueado tras intentos de limpieza.", self.name)
                 return False
         
         try:
             log_queue.write(LogLevel.INFO, f"Iniciando {self.name}...", self.name)
             
+            # Prepare Environment Variables
+            env_vars = os.environ.copy()
+            env_vars["BACKEND_PORT"] = str(BACKEND_PORT)
+            env_vars["FRONTEND_PORT"] = str(FRONTEND_PORT)
+            env_vars["COMFYUI_PORT"] = str(COMFYUI_PORT)
+            env_vars["COMFYUI_HOST"] = "localhost" # Explicit localhost to avoid 127.0.0.1 issues
+            
+            # Additional Sync for ComfyUI
+            if "COMFYUI_PATH" in self.command[0] or self.name == "COMFYUI":
+                pass # Comfy handles its own config usually
+
             self.process = subprocess.Popen(
                 self.command,
                 cwd=self.cwd,
+                env=env_vars, # Inject sync vars
                 shell=True if "npm" in self.command[0] else False,
                 stdout=subprocess.PIPE,
                 stderr=subprocess.STDOUT,
@@ -161,7 +186,29 @@ class SmartService:
             t.daemon = True
             t.start()
             
-            log_queue.write(LogLevel.INFO, f"{self.name} iniciado con PID {self.process.pid}", self.name)
+            # Initial Stability Check (0.5s)
+            time.sleep(1)
+            if self.process.poll() is not None:
+                 rc = self.process.returncode
+                 log_queue.write(LogLevel.ERROR, f"CRITICAL: El proceso finalizó inmediatamente (Código {rc}). Revise los logs.", self.name)
+                 return False
+            
+            # Wait for Service Ready (Smart Health Check)
+            if self.check_url:
+                log_queue.write(LogLevel.INFO, f"Esperando respuesta de {self.name}...", self.name)
+                ready = False
+                for i in range(15): # Wait up to 15 seconds
+                    if self.check_health():
+                        ready = True
+                        break
+                    time.sleep(1)
+                
+                if ready:
+                     log_queue.write(LogLevel.INFO, f"✅ {self.name} está ONLINE y respondiendo.", self.name)
+                else:
+                     log_queue.write(LogLevel.WARNING, f"⚠️ {self.name} inició, pero no responde al Health Check (Timeout).", self.name)
+
+            log_queue.write(LogLevel.INFO, f"{self.name} iniciado correctamente con PID {self.process.pid}", self.name)
             return True
         except Exception as e:
             log_queue.write(LogLevel.ERROR, f"Fallo al iniciar {self.name}: {e}", self.name)
@@ -190,81 +237,86 @@ class SmartService:
         self._invalidate_cache()
     
     def force_kill_port(self):
-        """Force kill any process on the service port"""
+        """Force kill any process on the service port with verification (Windows Optimized)"""
         log_queue.write(LogLevel.DEBUG, f"Escaneando puerto {self.port} para liberar...", self.name)
         killed = False
-        pids_to_kill = []
         
-        try:
-            # Method 1: psutil
-            for proc in psutil.process_iter(['pid', 'name']):
-                try:
-                    for conn in proc.net_connections(kind='inet'):
-                        if conn.laddr.port == self.port:
-                            pid = proc.pid
-                            name = proc.name()
-                            log_queue.write(LogLevel.DEBUG, f"Encontrado proceso {name} (PID: {pid}) en puerto {self.port}", self.name)
-                            pids_to_kill.append(pid)
-                except (psutil.NoSuchProcess, psutil.AccessDenied, psutil.ZombieProcess):
-                    pass
+        # Try up to 3 times to clear the port
+        for attempt in range(3):
+            if not self.check_port_in_use():
+                if attempt > 0:
+                     log_queue.write(LogLevel.INFO, f"✅ Puerto {self.port} verificado libre.", self.name)
+                return
+
+            pids_to_kill = set()
             
-            # Method 2: netstat (Windows)
+            # Method 1: Netstat (Windows Native - Most Reliable)
             if sys.platform == 'win32':
                 try:
+                    # Run netstat to find PID listening on port
                     cmd = f"netstat -ano | findstr :{self.port}"
                     process = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
                     stdout, _ = process.communicate()
                     
                     if stdout:
-                        output = stdout.decode(errors='ignore')
-                        lines = output.strip().split('\n')
-                        for line in lines:
+                        for line in stdout.decode(errors='ignore').strip().split('\n'):
                             parts = line.strip().split()
-                            if len(parts) >= 5:
-                                port_part = parts[1]
-                                pid_str = parts[-1]
-                                if f":{self.port}" in port_part and pid_str.isdigit():
-                                    pid = int(pid_str)
-                                    if pid > 0 and pid not in pids_to_kill:
-                                        log_queue.write(LogLevel.DEBUG, f"Netstat detectó PID {pid} en puerto {self.port}", self.name)
-                                        pids_to_kill.append(pid)
-                except Exception:
-                    pass
-            
-            # Kill all detected PIDs
-            for pid in pids_to_kill:
-                log_queue.write(LogLevel.INFO, f"Terminando PID {pid}...", self.name)
-                
-                try:
-                    result = subprocess.run(
-                        f"taskkill /F /T /PID {pid}",
-                        shell=True,
-                        stdout=subprocess.PIPE,
-                        stderr=subprocess.PIPE,
-                        timeout=5
-                    )
-                    if result.returncode == 0:
-                        log_queue.write(LogLevel.INFO, f"✅ PID {pid} terminado", self.name)
-                        killed = True
-                        continue
-                except Exception:
-                    pass
-                
-                try:
-                    proc = psutil.Process(pid)
-                    proc.kill()
-                    log_queue.write(LogLevel.INFO, f"✅ PID {pid} terminado con psutil", self.name)
-                    killed = True
-                except Exception:
-                    pass
-            
+                            # Line format: TCP    0.0.0.0:8000    0.0.0.0:0    LISTENING    1234
+                            if len(parts) >= 5 and f":{self.port}" in parts[1]:
+                                try:
+                                    pid = int(parts[-1])
+                                    if pid > 0:
+                                        pids_to_kill.add(pid)
+                                        log_queue.write(LogLevel.DEBUG, f"Detectado PID {pid} usando puerto {self.port}", self.name)
+                                except ValueError:
+                                    pass
+                except Exception as e:
+                    log_queue.write(LogLevel.WARNING, f"Fallo al leer netstat: {e}", self.name)
+
+            # Method 2: Psutil (Cross-platform backup)
+            try:
+                for proc in psutil.process_iter(['pid', 'name']):
+                    try:
+                        for conn in proc.net_connections(kind='inet'):
+                            if conn.laddr.port == self.port:
+                                pids_to_kill.add(proc.pid)
+                    except (psutil.NoSuchProcess, psutil.AccessDenied, psutil.ZombieProcess):
+                        pass
+            except Exception:
+                pass
+
             if not pids_to_kill:
-                log_queue.write(LogLevel.DEBUG, f"No se encontraron procesos en puerto {self.port}", self.name)
-            elif killed:
-                log_queue.write(LogLevel.INFO, f"✅ Puerto {self.port} liberado", self.name)
+                 # Last Resort: If we know the likely process name, try to kill by name if port is still stuck
+                 # Only do this on last attempt
+                 if attempt == 2:
+                     if "uvicorn" in self.command[2] or "python" in self.command[0]:
+                         log_queue.write(LogLevel.WARNING, "Puerto bloqueado sin PID visible. Intentando matar procesos python/uvicorn huérfanos...", self.name)
+                         subprocess.run("taskkill /F /IM uvicorn.exe", shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+                         subprocess.run("taskkill /F /IM python.exe", shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+                     
+                 time.sleep(1)
+                 continue
+
+            # Kill detected PIDs
+            for pid in pids_to_kill:
+                log_queue.write(LogLevel.INFO, f"Terminando PID {pid} (Intento {attempt+1})...", self.name)
+                try:
+                    if sys.platform == 'win32':
+                        subprocess.run(f"taskkill /F /PID {pid}", shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+                    else:
+                        os.kill(pid, 9)
+                    killed = True
+                except Exception as e:
+                    log_queue.write(LogLevel.WARNING, f"Error matando PID {pid}: {e}", self.name)
+            
+            # Wait for release
+            time.sleep(2)
         
-        except Exception as e:
-            log_queue.write(LogLevel.ERROR, f"Error limpiando puerto {self.port}: {e}", self.name)
+        # Final check
+        if self.check_port_in_use():
+             log_queue.write(LogLevel.ERROR, f"❌ NO se pudo liberar el puerto {self.port}. El sistema puede requerir permisos de administrador.", self.name)
+        elif killed:
+             log_queue.write(LogLevel.INFO, f"✅ Puerto {self.port} liberado exitosamente.", self.name)
     
     def is_running(self) -> bool:
         """Check if service is running"""
@@ -601,7 +653,7 @@ resource_manager = ResourceManager()
 # === Settings Management ===
 class SettingsManager:
     """Manejo de configuración y variables de entorno (.env)"""
-    def __init__(self, env_path=".env"):
+    def __init__(self, env_path="backend/.env"):
         self.env_path = env_path
         self.cache = {}
         self.load()
@@ -648,7 +700,7 @@ class SettingsManager:
 class DependencyChecker:
     """Verifica dependencias críticas"""
     REQUIRED_PACKAGES = [
-        "fastapi", "uvicorn", "jinja2", "python-multipart", "google-genai", "requests", "psutil"
+        "fastapi", "uvicorn", "jinja2", "python-multipart", "google-genai", "requests", "psutil", "aiohttp"
     ]
 
     @staticmethod
@@ -668,23 +720,60 @@ class DependencyChecker:
                     missing.append(pkg)
         return missing
 
+    @staticmethod
+    def install_packages(packages: List[str]) -> bool:
+        if not packages: return True
+        log_queue.write(LogLevel.SYSTEM, f"Instalando dependencias faltantes: {', '.join(packages)}...")
+        try:
+            subprocess.check_call([sys.executable, "-m", "pip", "install"] + packages)
+            log_queue.write(LogLevel.INFO, "Dependencias instaladas correctamente.")
+            return True
+        except subprocess.CalledProcessError as e:
+            log_queue.write(LogLevel.ERROR, f"Fallo al instalar dependencias: {e}")
+            return False
+
 class LauncherCore:
     """Core launcher business logic"""
     
     def __init__(self):
+        # Auto-Repair Dependencies
+        missing = DependencyChecker.check_all()
+        if missing:
+             DependencyChecker.install_packages(missing)
+
         self.backend = SmartService("BACKEND", BACKEND_CMD, BACKEND_DIR, BACKEND_PORT, f"http://localhost:{BACKEND_PORT}/")
         self.frontend = SmartService("FRONTEND", FRONTEND_CMD, FRONTEND_DIR, FRONTEND_PORT, f"http://localhost:{FRONTEND_PORT}/")
         
         # ComfyUI - Optional service for GPU Boost
+        self.settings = SettingsManager()
         self.comfyui = None
-        if COMFYUI_CMD:
+        
+        # Determine ComfyUI Path
+        custom_path = self.settings.get("COMFYUI_PATH")
+        base_dir = custom_path if custom_path and os.path.exists(custom_path) else DEFAULT_COMFYUI_DIR
+        
+        # Detect executable (Priority: run_nvidia_gpu.bat > ComfyUI.exe)
+        exe_path = os.path.join(base_dir, "ComfyUI.exe")
+        bat_path = os.path.join(base_dir, "run_nvidia_gpu.bat")
+        
+        cmd = None
+        if os.path.exists(bat_path):
+            cmd = [bat_path]
+        elif os.path.exists(exe_path):
+            cmd = [exe_path]
+            
+        if cmd:
             self.comfyui = SmartService(
                 "COMFYUI", 
-                COMFYUI_CMD, 
-                COMFYUI_DIR, 
+                cmd, 
+                base_dir, 
                 COMFYUI_PORT, 
                 f"http://localhost:{COMFYUI_PORT}/system_stats"
             )
+            # Log successful detection
+            log_queue.write(LogLevel.DEBUG, f"ComfyUI detectado en: {base_dir}")
+        else:
+            log_queue.write(LogLevel.WARNING, f"No se encontró ComfyUI en: {base_dir}")
         
         self.services = {
             "backend": self.backend,
@@ -703,6 +792,23 @@ class LauncherCore:
         if not self.comfyui:
             log_queue.write(LogLevel.WARNING, "ComfyUI no está configurado")
             return False
+        
+        # Verificar si ComfyUI ya está corriendo (externamente o por nosotros)
+        if self.comfyui.check_port_in_use():
+            log_queue.write(LogLevel.INFO, "⚠️ Puerto 8188 ocupado. Verificando si es ComfyUI...", "COMFYUI")
+            
+            # Verificación INTELIGENTE: ¿Es realmente ComfyUI respondiendo?
+            if self.comfyui.check_health():
+                log_queue.write(LogLevel.INFO, "✅ ComfyUI detectado ONLINE (Instancia Externa). Conectando...", "COMFYUI")
+                # Importante: Marcar process como "externo" o similar si quisiéramos no matarlo al cerrar,
+                # pero por ahora lo tratamos como "corriendo" para que la UI se actualice.
+                return True
+            else:
+                log_queue.write(LogLevel.WARNING, "❌ Puerto 8188 ocupado por proceso desconocido o ComfyUI colgado.", "COMFYUI")
+                log_queue.write(LogLevel.WARNING, "Intentando liberar puerto para reinicio limpio...", "COMFYUI")
+                # Si no responde health check, asumimos zombie y tratamos de liberar
+                self.comfyui.force_kill_port()
+        
         return self.comfyui.start()
     
     def stop_gpu_boost(self) -> bool:
@@ -753,12 +859,19 @@ class LauncherCore:
             log_queue.write(LogLevel.INFO, "Iniciando Backend...", "BACKEND")
             if self.backend.start():
                 # Wait for health check
-                for i in range(10):
-                    log_queue.write(LogLevel.DEBUG, f"Esperando Backend (Intento {i+1}/10)...", "BACKEND")
+                backend_healthy = False
+                for i in range(15):
+                    log_queue.write(LogLevel.DEBUG, f"Esperando Backend (Intento {i+1}/15)...", "BACKEND")
                     if self.backend.check_health():
                         log_queue.write(LogLevel.INFO, "Backend ONLINE y respondiendo!", "BACKEND")
+                        backend_healthy = True
                         break
                     time.sleep(1)
+                
+                if not backend_healthy:
+                    log_queue.write(LogLevel.ERROR, "Backend inició pero no responde. Abortando inicio.", "BACKEND")
+                    self.backend.stop()
+                    return False
             else:
                 return False
         

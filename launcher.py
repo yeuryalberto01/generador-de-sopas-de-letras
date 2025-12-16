@@ -25,17 +25,19 @@ ctk.set_default_color_theme("blue")
 
 # Paleta de Colores Moderna
 COLORS = {
-    "primary": "#2CC985",      # Green
-    "secondary": "#3498DB",    # Blue
-    "danger": "#E74C3C",       # Red
-    "warning": "#F39C12",      # Orange
-    "info": "#9B59B6",         # Purple
-    "success": "#27AE60",      # Dark Green
-    "text_primary": "#FFFFFF", # White
-    "text_secondary": "#B0B0B0", # Gray
-    "bg_dark": "#1a1a1a",      # Dark background
-    "bg_card": "#2d2d2d",      # Card background
-    "bg_hoover": "#3d3d3d"     # Hover state
+    "primary": "#00E676",      # Bright Green (High energy)
+    "secondary": "#2979FF",    # Bright Blue
+    "danger": "#FF1744",       # Bright Red
+    "warning": "#FFC400",      # Amber
+    "info": "#D500F9",         # Bright Purple
+    "success": "#00C853",      # Darker Green for text
+    "text_primary": "#FAFAFA", # Almost White
+    "text_secondary": "#B0BEC5", # Blue Grey
+    "bg_dark": "#121212",      # Material Dark
+    "bg_card": "#1E1E1E",      # Slightly lighter card
+    "bg_hover": "#2C2C2C",     # Hover state
+    "border": "#333333",       # Subtle borders
+    "accent_glow": "#00E676"   # For active states
 }
 
 # === Performance Profiler ===
@@ -102,6 +104,7 @@ class ModernLauncherApp(ctk.CTk):
         self.after(1000, self.update_stats)        # Stats Servicios: Medio (1s)
         self.after(2000, self.update_system_health) # Salud Sistema: Lento (2s)
         self.after(3000, self.update_graphs)       # Gráficos: Muy Lento (3s)
+        self.after(1500, self.detect_running_gpu_service) # Auto-detect GPU Wait
         
         # Bindings
         self.protocol("WM_DELETE_WINDOW", self.on_close)
@@ -195,152 +198,258 @@ class ModernLauncherApp(ctk.CTk):
         # Panel de GPU Boost
         self.create_gpu_panel(self.tab_dashboard)
         
+        # Panel de API Gateway (Diagnostic)
+        self.create_api_panel(self.tab_dashboard)
+        
         # Panel de Salud del Sistema
         self.create_system_health_panel(self.tab_dashboard)
 
     def create_service_card(self, parent, title, subtitle, service, column):
-        """Crea una tarjeta de servicio moderna"""
-        card = ctk.CTkFrame(parent, corner_radius=15, fg_color=COLORS["bg_card"])
+        """Crea una tarjeta de servicio moderna con indicador de estado visual"""
+        # Contenedor principal con borde para indicar estado
+        card = ctk.CTkFrame(parent, corner_radius=15, fg_color=COLORS["bg_card"], border_width=2, border_color=COLORS["border"])
         card.grid(row=0, column=column, sticky="nsew", padx=10, pady=10)
+        
+        # Guardar referencia al card frame para cambiar el borde dinámicamente
+        service.card_frame = card
         
         # Header
         header = ctk.CTkFrame(card, fg_color="transparent")
-        header.pack(fill="x", padx=15, pady=15)
+        header.pack(fill="x", padx=20, pady=(20, 10))
         
-        # LED y Título
-        led_canvas = ctk.CTkCanvas(header, width=15, height=15, bg=COLORS["bg_card"], highlightthickness=0)
-        led_circle = led_canvas.create_oval(2, 2, 13, 13, fill=COLORS["danger"], outline="")
-        led_canvas.pack(side="left", padx=(0, 10))
+        # Status Indicator (LED style but bigger)
+        led_canvas = ctk.CTkCanvas(header, width=12, height=12, bg=COLORS["bg_card"], highlightthickness=0)
+        led_circle = led_canvas.create_oval(0, 0, 12, 12, fill=COLORS["border"], outline="")
+        led_canvas.pack(side="left", padx=(0, 15))
         
-        # Guardar referencias en objeto servicio para actualización fácil
         service.led_canvas = led_canvas
         service.led_circle = led_circle
         
         titles = ctk.CTkFrame(header, fg_color="transparent")
-        titles.pack(side="left")
-        ctk.CTkLabel(titles, text=title, font=("Arial", 16, "bold")).pack(anchor="w")
-        ctk.CTkLabel(titles, text=subtitle, font=("Arial", 12), text_color="gray").pack(anchor="w")
+        titles.pack(side="left", fill="x", expand=True)
         
-        # info puerto
-        ctk.CTkLabel(header, text=f"Port: {service.port}", font=("Mono", 11), text_color=COLORS["secondary"]).pack(side="right")
+        ctk.CTkLabel(titles, text=title, font=("Segoe UI", 18, "bold"), text_color=COLORS["text_primary"]).pack(anchor="w")
+        ctk.CTkLabel(titles, text=subtitle, font=("Segoe UI", 12), text_color=COLORS["text_secondary"]).pack(anchor="w")
+        
+        # Port pill
+        port_frame = ctk.CTkFrame(header, fg_color=COLORS["bg_dark"], corner_radius=10)
+        port_frame.pack(side="right", padx=5)
+        ctk.CTkLabel(port_frame, text=f":{service.port}", font=("Consolas", 12, "bold"), text_color=COLORS["secondary"]).pack(padx=10, pady=2)
 
         # Contenido (Métricas)
         content = ctk.CTkFrame(card, fg_color="transparent")
-        content.pack(fill="both", expand=True, padx=15, pady=5)
+        content.pack(fill="both", expand=True, padx=20, pady=10)
         
-        # CPU
-        ctk.CTkLabel(content, text="CPU Usage", font=("Arial", 11)).pack(anchor="w")
-        service.cpu_progress = ctk.CTkProgressBar(content, height=10, progress_color=COLORS["primary"])
-        service.cpu_progress.pack(fill="x", pady=(0, 5))
+        # CPU Row
+        cpu_row = ctk.CTkFrame(content, fg_color="transparent")
+        cpu_row.pack(fill="x", pady=(0, 8))
+        ctk.CTkLabel(cpu_row, text="CPU", font=("Segoe UI", 11, "bold"), width=40, anchor="w", text_color=COLORS["text_secondary"]).pack(side="left")
+        service.cpu_progress = ctk.CTkProgressBar(cpu_row, height=6, progress_color=COLORS["primary"])
+        service.cpu_progress.pack(side="left", fill="x", expand=True, padx=10)
+        service.cpu_value = ctk.CTkLabel(cpu_row, text="0%", font=("Consolas", 11), width=40, anchor="e")
+        service.cpu_value.pack(side="right")
         service.cpu_progress.set(0)
         
-        # RAM
-        ctk.CTkLabel(content, text="RAM Usage", font=("Arial", 11)).pack(anchor="w", pady=(5,0))
-        service.ram_progress = ctk.CTkProgressBar(content, height=10, progress_color=COLORS["info"])
-        service.ram_progress.pack(fill="x", pady=(0, 5))
+        # RAM Row
+        ram_row = ctk.CTkFrame(content, fg_color="transparent")
+        ram_row.pack(fill="x")
+        ctk.CTkLabel(ram_row, text="RAM", font=("Segoe UI", 11, "bold"), width=40, anchor="w", text_color=COLORS["text_secondary"]).pack(side="left")
+        service.ram_progress = ctk.CTkProgressBar(ram_row, height=6, progress_color=COLORS["info"])
+        service.ram_progress.pack(side="left", fill="x", expand=True, padx=10)
+        service.ram_value = ctk.CTkLabel(ram_row, text="0 MB", font=("Consolas", 11), width=40, anchor="e")
+        service.ram_value.pack(side="right")
         service.ram_progress.set(0)
         
-        # Valores numéricos
-        stats_line = ctk.CTkFrame(content, fg_color="transparent")
-        stats_line.pack(fill="x", pady=5)
-        service.cpu_value = ctk.CTkLabel(stats_line, text="0%", font=("Mono", 10))
-        service.cpu_value.pack(side="left")
-        service.ram_value = ctk.CTkLabel(stats_line, text="0 MB", font=("Mono", 10))
-        service.ram_value.pack(side="right")
-        
-        service.uptime_label = ctk.CTkLabel(content, text="Uptime: --", font=("Arial", 11, "italic"), text_color="gray")
-        service.uptime_label.pack(pady=5)
+        service.uptime_label = ctk.CTkLabel(content, text="• Offline", font=("Segoe UI", 11), text_color=COLORS["text_secondary"])
+        service.uptime_label.pack(pady=(15, 0), anchor="w")
 
         # Botones de Acción (Footer)
         footer = ctk.CTkFrame(card, fg_color="transparent")
-        footer.pack(fill="x", padx=15, pady=15, side="bottom")
+        footer.pack(fill="x", padx=20, pady=20, side="bottom")
         
-        ctk.CTkButton(
-            footer, text="▶ Start", width=60, height=25, fg_color=COLORS["success"],
+        start_btn = ctk.CTkButton(
+            footer, text="INICIAR", width=90, height=32,
+            fg_color=COLORS["bg_dark"], hover_color="#111", 
+            border_width=1, border_color=COLORS["success"], text_color=COLORS["success"],
+            font=("Segoe UI", 12, "bold"),
             command=lambda: self.safe_start_service(service)
-        ).pack(side="left", padx=2)
+        )
+        start_btn.pack(side="left", padx=(0, 5))
         
-        ctk.CTkButton(
-            footer, text="⏹ Stop", width=60, height=25, fg_color=COLORS["danger"],
+        restart_btn = ctk.CTkButton(
+            footer, text="REINICIAR", width=90, height=32,
+            fg_color=COLORS["bg_dark"], hover_color=COLORS["info"],
+            border_width=1, border_color=COLORS["info"], text_color=COLORS["text_primary"],
+            font=("Segoe UI", 12, "bold"),
+            command=lambda: self.safe_restart_service(service)
+        )
+        restart_btn.pack(side="left", padx=(0, 5))
+        
+        stop_btn = ctk.CTkButton(
+            footer, text="DETENER", width=90, height=32,
+            fg_color=COLORS["bg_dark"], hover_color="#111",
+            border_width=1, border_color=COLORS["danger"], text_color=COLORS["danger"],
+             font=("Segoe UI", 12, "bold"),
             command=lambda: self.safe_stop_service(service)
-        ).pack(side="left", padx=2)
+        )
+        stop_btn.pack(side="left")
         
-        ctk.CTkButton(
-            footer, text="⚡ Kill", width=50, height=25, fg_color="#555",
+        # Icon button for kill
+        kill_btn = ctk.CTkButton(
+            footer, text="☠", width=32, height=32, fg_color=COLORS["bg_dark"], hover_color=COLORS["danger"],
             command=lambda: self.force_kill_service(service)
-        ).pack(side="right")
+        )
+        kill_btn.pack(side="right")
 
     def create_gpu_panel(self, parent):
-        """Crea el panel de GPU Boost"""
-        frame = ctk.CTkFrame(parent, fg_color=COLORS["bg_card"], corner_radius=10)
-        frame.grid(row=3, column=0, sticky="ew", padx=10, pady=5)
+        """Crea el panel de GPU Boost con diseño destacado"""
+        # Frame principal con borde dinámico
+        self.gpu_frame = ctk.CTkFrame(parent, fg_color=COLORS["bg_card"], corner_radius=15, border_width=2, border_color=COLORS["border"])
+        self.gpu_frame.grid(row=3, column=0, sticky="ew", padx=10, pady=10)
         
-        header = ctk.CTkFrame(frame, fg_color="transparent")
-        header.pack(fill="x", padx=10, pady=5)
+        inner = ctk.CTkFrame(self.gpu_frame, fg_color="transparent")
+        inner.pack(padx=20, pady=15, fill="x")
         
-        ctk.CTkLabel(header, text="🎮 GPU Boost (ComfyUI)", font=("Arial", 14, "bold")).pack(side="left")
+        # Left: Icon & Text
+        left_box = ctk.CTkFrame(inner, fg_color="transparent")
+        left_box.pack(side="left")
         
-        self.gpu_status_label = ctk.CTkLabel(header, text="OFFLINE", font=("Arial", 12, "bold"), text_color="gray")
-        self.gpu_status_label.pack(side="right")
+        ctk.CTkLabel(left_box, text="🚀 GPU BOOST", font=("Segoe UI", 16, "bold"), text_color=COLORS["primary"]).pack(anchor="w")
+        ctk.CTkLabel(left_box, text="ComfyUI Node Engine", font=("Segoe UI", 12), text_color=COLORS["text_secondary"]).pack(anchor="w")
+
+        # Center: Status Pill
+        self.gpu_status_pill = ctk.CTkLabel(
+            inner, text="OFFLINE", 
+            font=("Segoe UI", 11, "bold"), 
+            text_color=COLORS["text_secondary"],
+            fg_color=COLORS["bg_dark"],
+            corner_radius=8,
+            width=100, height=24
+        )
+        self.gpu_status_pill.pack(side="left", padx=20)
+        self.gpu_status_label = self.gpu_status_pill # Alias for compatibility
+
+        # Right: Controls
+        right_box = ctk.CTkFrame(inner, fg_color="transparent")
+        right_box.pack(side="right")
         
-        # Controles
-        controls = ctk.CTkFrame(frame, fg_color="transparent")
-        controls.pack(fill="x", padx=10, pady=5)
+        self.open_comfy_btn = ctk.CTkButton(
+            right_box, text="Abrir Editor ↗", width=110, height=30,
+            fg_color=COLORS["bg_dark"], text_color=COLORS["text_primary"],
+            state="disabled", border_width=1, border_color=COLORS["border"],
+            command=lambda: webbrowser.open(f"http://localhost:8188")
+        )
+        self.open_comfy_btn.pack(side="right", padx=(10, 0))
         
         self.gpu_toggle = ctk.CTkSwitch(
-            controls, text="Habilitar Aceleración", 
+            right_box, text="", width=40, height=20,
+            progress_color=COLORS["primary"],
             command=self.toggle_gpu_boost,
             onvalue="on", offvalue="off"
         )
-        self.gpu_toggle.pack(side="left")
-        
-        self.open_comfy_btn = ctk.CTkButton(
-            controls, text="Abrir Editor Nodos", width=100, height=25,
-            state="disabled",
-            command=lambda: webbrowser.open(f"http://localhost:8188")
-        )
-        self.open_comfy_btn.pack(side="right")
+        self.gpu_toggle.pack(side="right")
+
 
     def create_system_health_panel(self, parent):
         """Crea el panel de monitoreo de salud del sistema"""
+        frame = ctk.CTkFrame(parent, fg_color=COLORS["bg_card"], corner_radius=15, border_width=1, border_color=COLORS["border"])
+        frame.grid(row=3, column=1, sticky="nsew", padx=10, pady=10)
+        
+        header = ctk.CTkFrame(frame, fg_color="transparent")
+        header.pack(fill="x", padx=15, pady=15)
+        
+        ctk.CTkLabel(header, text="🏥 Salud de Sistema", font=("Segoe UI", 14, "bold")).pack(side="left")
+        self.health_label = ctk.CTkLabel(header, text="ANALIZANDO...", font=("Segoe UI", 11, "bold"), text_color="gray")
+        self.health_label.pack(side="right")
+        
+        content = ctk.CTkFrame(frame, fg_color="transparent")
+        content.pack(fill="both", expand=True, padx=15, pady=5)
+        
+        # Helper para barras
+        def create_sys_bar(label, color):
+            row = ctk.CTkFrame(content, fg_color="transparent")
+            row.pack(fill="x", pady=4)
+            ctk.CTkLabel(row, text=label, width=60, anchor="w", font=("Segoe UI", 11), text_color=COLORS["text_secondary"]).pack(side="left")
+            bar = ctk.CTkProgressBar(row, height=8, progress_color=color)
+            bar.pack(side="left", fill="x", expand=True, padx=10)
+            val = ctk.CTkLabel(row, text="0%", width=35, font=("Consolas", 11))
+            val.pack(side="right")
+            return bar, val
+            
+        self.sys_cpu_bar, self.sys_cpu_val = create_sys_bar("CPU", COLORS["primary"])
+        self.sys_ram_bar, self.sys_ram_val = create_sys_bar("RAM", COLORS["secondary"])
+
+        # Neural Memory Status (Footer)
+        footer = ctk.CTkFrame(frame, fg_color="transparent")
+        footer.pack(fill="x", padx=15, pady=10, side="bottom")
+        
+        ctk.CTkLabel(footer, text="Neural Brain:", font=("Segoe UI", 11, "bold"), text_color=COLORS["text_secondary"]).pack(side="left", padx=(0,5))
+        self.brain_status_label = ctk.CTkLabel(footer, text="Checking...", font=("Segoe UI", 11))
+        self.brain_status_label.pack(side="left")
+
+
+    def create_api_panel(self, parent):
+        """Crea el panel de diagnóstico de APIs"""
         frame = ctk.CTkFrame(parent, fg_color=COLORS["bg_card"], corner_radius=10)
         frame.grid(row=3, column=1, sticky="ew", padx=10, pady=5)
         
         header = ctk.CTkFrame(frame, fg_color="transparent")
         header.pack(fill="x", padx=10, pady=5)
         
-        ctk.CTkLabel(header, text="🏥 Salud del Sistema", font=("Arial", 14, "bold")).pack(side="left")
-        self.health_label = ctk.CTkLabel(header, text="✅ NORMAL", font=("Arial", 12, "bold"), text_color=COLORS["success"])
-        self.health_label.pack(side="right")
+        ctk.CTkLabel(header, text="📡 API Gateway", font=("Arial", 14, "bold")).pack(side="left")
+        self.api_status_label = ctk.CTkLabel(header, text="IDLE", font=("Arial", 12, "bold"), text_color="gray")
+        self.api_status_label.pack(side="right")
         
-        content = ctk.CTkFrame(frame, fg_color="transparent")
-        content.pack(fill="x", padx=10, pady=5)
+        # Info Grid
+        info = ctk.CTkFrame(frame, fg_color="transparent")
+        info.pack(fill="x", padx=10, pady=5)
         
-        # CPU Global
-        row1 = ctk.CTkFrame(content, fg_color="transparent")
-        row1.pack(fill="x")
-        ctk.CTkLabel(row1, text="CPU Global:", width=80, anchor="w").pack(side="left")
-        self.sys_cpu_bar = ctk.CTkProgressBar(row1, height=8)
-        self.sys_cpu_bar.pack(side="left", fill="x", expand=True, padx=5)
-        self.sys_cpu_val = ctk.CTkLabel(row1, text="0%", width=40)
-        self.sys_cpu_val.pack(side="right")
+        # Provider
+        ctk.CTkLabel(info, text="Provider:", font=("Arial", 11, "bold")).grid(row=0, column=0, sticky="w", padx=5)
+        self.api_provider_val = ctk.CTkLabel(info, text="--", font=("Mono", 11), text_color=COLORS["secondary"])
+        self.api_provider_val.grid(row=0, column=1, sticky="w")
         
-        # RAM Global
-        row2 = ctk.CTkFrame(content, fg_color="transparent")
-        row2.pack(fill="x")
-        ctk.CTkLabel(row2, text="RAM Global:", width=80, anchor="w").pack(side="left")
-        self.sys_ram_bar = ctk.CTkProgressBar(row2, height=8)
-        self.sys_ram_bar.pack(side="left", fill="x", expand=True, padx=5)
-        self.sys_ram_val = ctk.CTkLabel(row2, text="0%", width=40)
-        self.sys_ram_val.pack(side="right")
+        # Endpoint
+        ctk.CTkLabel(info, text="Last Call:", font=("Arial", 11, "bold")).grid(row=0, column=2, sticky="w", padx=(15, 5))
+        self.api_endpoint_val = ctk.CTkLabel(info, text="--", font=("Mono", 11))
+        self.api_endpoint_val.grid(row=0, column=3, sticky="w")
+        
+        # Latency
+        ctk.CTkLabel(info, text="Latency:", font=("Arial", 11, "bold")).grid(row=0, column=4, sticky="w", padx=(15, 5))
+        self.api_latency_val = ctk.CTkLabel(info, text="-- ms", font=("Mono", 11))
+        self.api_latency_val.grid(row=0, column=5, sticky="w")
 
-        # Neural Memory Status
-        row3 = ctk.CTkFrame(content, fg_color="transparent")
-        row3.pack(fill="x", pady=(10, 0))
-        ctk.CTkLabel(row3, text="Neural Brain:", width=80, anchor="w").pack(side="left")
-        
-        self.brain_status_label = ctk.CTkLabel(row3, text="🔍 Checking...", font=("Arial", 11, "bold"))
-        self.brain_status_label.pack(side="left", padx=5)
+    def parse_api_log(self, log_line: str):
+        """Parsea logs de tráfico API"""
+        # Formato esperado: API_TRAFFIC: icon [PROVIDER] endpoint | duration | json
+        try:
+            if "API_TRAFFIC:" in log_line:
+                clean_line = log_line.split("API_TRAFFIC:", 1)[1].strip()
+                # Remove icon
+                parts = clean_line.split("|")
+                if len(parts) >= 3:
+                    # Parse Provider
+                    header = parts[0].strip() # 🟢 [GEMINI] /generate
+                    status_icon = header[0]
+                    provider_info = header[2:].strip()
+                    provider = provider_info.split("]")[0].replace("[", "")
+                    endpoint = provider_info.split("]")[1].strip()
+                    
+                    duration = parts[1].strip()
+                    
+                    # Update UI
+                    self.api_status_label.configure(
+                        text="ACTIVE ⚡" if status_icon == "🟢" else "ERROR ❌",
+                        text_color=COLORS["success"] if status_icon == "🟢" else COLORS["danger"]
+                    )
+                    self.api_provider_val.configure(text=provider)
+                    self.api_endpoint_val.configure(text=endpoint)
+                    self.api_latency_val.configure(text=duration)
+                    
+                    # Reset status after 3 seconds
+                    self.after(3000, lambda: self.api_status_label.configure(text="IDLE", text_color="gray"))
+        except Exception:
+            pass
 
     # --------------------------------------------------------------------------
     # TERMINAL UI
@@ -435,6 +544,36 @@ class ModernLauncherApp(ctk.CTk):
         
         ctk.CTkLabel(brain_frame, text="Carpeta donde se guardará el aprendizaje de la IA (RAG)", font=("Arial", 11), text_color="gray").pack(anchor="w", padx=15, pady=(0, 15))
 
+        # --- ComfyUI Configuration ---
+        comfy_frame = ctk.CTkFrame(container, fg_color=COLORS["bg_card"], corner_radius=10)
+        comfy_frame.pack(fill="x", pady=10)
+        
+        ctk.CTkLabel(comfy_frame, text="🎨 ComfyUI Path (Optional)", font=("Arial", 14, "bold")).pack(anchor="w", padx=15, pady=(15, 5))
+        
+        comfy_row = ctk.CTkFrame(comfy_frame, fg_color="transparent")
+        comfy_row.pack(fill="x", padx=15, pady=5)
+        
+        self.comfy_path_entry = ctk.CTkEntry(comfy_row, placeholder_text=r"C:\Useers\...\ComfyUI_windows_portable\ComfyUI")
+        self.comfy_path_entry.pack(side="left", fill="x", expand=True, padx=(0, 10))
+        
+        current_comfy = self.settings.get("COMFYUI_PATH", "")
+        if current_comfy:
+            self.comfy_path_entry.insert(0, current_comfy)
+        
+        def browse_comfy():
+            try:
+                from tkinter import filedialog
+                path = filedialog.askdirectory()
+                if path:
+                    self.comfy_path_entry.delete(0, "end")
+                    self.comfy_path_entry.insert(0, path)
+            except:
+                pass
+
+        ctk.CTkButton(comfy_row, text="Browse", width=80, command=browse_comfy, fg_color=COLORS["secondary"]).pack(side="right")
+        
+        ctk.CTkLabel(comfy_frame, text="Ruta a la carpeta base de ComfyUI (donde está run_nvidia_gpu.bat o ComfyUI.exe)", font=("Arial", 11), text_color="gray").pack(anchor="w", padx=15, pady=(0, 15))
+
         # --- Save Button ---
         ctk.CTkButton(
             container, 
@@ -455,6 +594,14 @@ class ModernLauncherApp(ctk.CTk):
         
         if new_path:
             self.settings.set("TRAINING_PATH", new_path)
+
+        new_comfy = self.comfy_path_entry.get().strip()
+        if new_comfy:
+            self.settings.set("COMFYUI_PATH", new_comfy)
+        else:
+            # If empty, maybe clear it? For now let's just ignore or set empty
+            # self.settings.set("COMFYUI_PATH", "")
+            pass
             
         messagebox.showinfo("Configuración", "Ajustes guardados correctamente. \nReinicia los servicios para aplicar cambios.")
 
@@ -484,6 +631,11 @@ class ModernLauncherApp(ctk.CTk):
             while not log_queue.queue.empty():
                 try:
                     entry = log_queue.queue.get_nowait()
+                    
+                    # Parse for API Panel
+                    if "message" in entry:
+                        self.parse_api_log(entry["message"])
+                        
                     formatted = log_queue.get_formatted(entry)
                     updates.append(formatted)
                     # Limit processing per frame to avoid lag
@@ -512,8 +664,16 @@ class ModernLauncherApp(ctk.CTk):
             # Use cached stats from service logic
             stats = service.get_stats()
             
-            # LED Update
-            color = COLORS["success"] if service.is_running() else COLORS["danger"]
+            # LED & Border Update
+            if service.is_running():
+                color = COLORS["success"]
+                service.card_frame.configure(border_color=COLORS["success"])
+                service.uptime_label.configure(text=f"• RUNNING ({stats.uptime_seconds}s)", text_color=COLORS["success"])
+            else:
+                color = COLORS["danger"]
+                service.card_frame.configure(border_color=COLORS["border"]) # Reset border when off
+                service.uptime_label.configure(text="• OFFLINE", text_color=COLORS["text_secondary"])
+
             service.led_canvas.itemconfig(service.led_circle, fill=color)
             
             # CPU Update
@@ -530,13 +690,7 @@ class ModernLauncherApp(ctk.CTk):
             service.ram_progress.set(min(ram_val / limit, 1.0))
             service.ram_value.configure(text=f"{ram_val:.0f} MB")
             
-            # Uptime
-            if stats.uptime_seconds > 0:
-                mins, secs = divmod(stats.uptime_seconds, 60)
-                hours, mins = divmod(mins, 60)
-                service.uptime_label.configure(text=f"Uptime: {int(hours)}h {int(mins)}m {int(secs)}s")
-            else:
-                service.uptime_label.configure(text="Uptime: --")
+            # Uptime (Formatted better inside logic if needed, but simple string above is fine)
                 
         self.after(1000, self.update_stats)
 
@@ -629,12 +783,65 @@ class ModernLauncherApp(ctk.CTk):
             self.gpu_status_label.configure(text="OFFLINE", text_color="gray")
             self.open_comfy_btn.configure(state="disabled")
 
+    def detect_running_gpu_service(self):
+        """Detección automática robusta de ComfyUI (incluso instancias externas)"""
+        def _check():
+            log_queue.write(LogLevel.DEBUG, "🔍 Buscando ComfyUI en puerto 8188...", "GPU_DETECT")
+            
+            found = False
+            # 1. Verificar usando objeto configurado (si existe)
+            if self.launcher.comfyui and self.launcher.comfyui.check_port_in_use():
+                if self.launcher.comfyui.check_health():
+                    found = True
+            
+            # 2. Si falla, verificar directamente por HTTP (fallback)
+            if not found:
+                try:
+                    response = requests.get("http://localhost:8188/system_stats", timeout=2)
+                    if response.status_code == 200:
+                        found = True
+                except:
+                    pass
+
+            if found:
+                self.after(0, self._enable_gpu_ui_auto)
+            else:
+                log_queue.write(LogLevel.DEBUG, "❌ ComfyUI no detectado al inicio.", "GPU_DETECT")
+
+        threading.Thread(target=_check, daemon=True).start()
+
+    def _enable_gpu_ui_auto(self):
+        """Activa la UI visualmente si se detecta el servicio corriendo"""
+        if self.gpu_toggle.get() == "off":
+            self.gpu_toggle.select()
+        
+        # Update Visuals
+        self.gpu_status_pill.configure(text="ONLINE (Auto)", text_color=COLORS["primary"], fg_color=COLORS["bg_hover"])
+        self.gpu_frame.configure(border_color=COLORS["primary"]) # Visual Glow
+        self.open_comfy_btn.configure(state="normal", border_color=COLORS["primary"], fg_color=COLORS["bg_hover"])
+        
+        # Opcional: Notificar en logs
+        log_queue.write(LogLevel.INFO, "ComfyUI detectado automáticamente. Aceleración activada.", "SYSTEM")
+
+
+
     def safe_start_service(self, service):
         can_start, msg = resource_manager.can_start_service(service.name)
         if can_start:
             threading.Thread(target=service.start, daemon=True).start()
         else:
             messagebox.showwarning("Recursos Insuficientes", msg)
+
+    def safe_restart_service(self, service):
+        """Reinicia un servicio de forma segura"""
+        def _restart():
+            log_queue.write(LogLevel.INFO, f"🔄 Reiniciando {service.name}...", service.name)
+            service.stop()
+            time.sleep(2) # Give it a moment to release ports fully
+            self.safe_start_service(service)
+            
+        if messagebox.askyesno("Reiniciar", f"¿Reiniciar {service.name}?"):
+            threading.Thread(target=_restart, daemon=True).start()
 
     def safe_stop_service(self, service):
         service.stop()

@@ -1,0 +1,28 @@
+{
+  "rules": [
+    {
+      "id": "final-check",
+      "type": "global",
+      "content": "Final Local Check",
+      "active": true
+    },
+    {
+      "id": "46a8cd18-3868-4c35-8d00-3c78fd767213",
+      "type": "global",
+      "content": "Usar colores brillantes y alegres para puzzles infantiles",
+      "active": true
+    },
+    {
+      "id": "404628e4-fd0e-4e10-8e4e-74286f32fd19",
+      "type": "global",
+      "content": "los colores deben ser armonicos y si hay confucion se debe preguntar al usuario",
+      "active": true
+    },
+    {
+      "id": "bcfcf458-d9ee-4b9e-9a26-3b2101fe6a51",
+      "type": "visual",
+      "content": "su vas ha tranfirnar la grilla, la caja de palabras y el titulo deben ser de forma armonica y todo legible, colores que hagan contraste en todo las sopas de letras",
+      "active": true
+    }
+  ]
+}

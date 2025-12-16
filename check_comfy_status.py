@@ -1,23 +1,23 @@
 import requests
-import time
+import sys
 
-def check_connection():
+def check_backend_comfy_status():
+    url = "http://localhost:8000/api/template-engine/comfy/status"
+    print(f"Checking {url}...")
     try:
-        print("Checking Backend...")
-        response = requests.get("http://localhost:8000/")
-        print(f"Backend Status: {response.status_code}")
-        
-        print("Checking ComfyUI via Backend...")
-        comfy_response = requests.get("http://localhost:8000/api/template-engine/comfy/status")
-        if comfy_response.status_code == 200:
-            data = comfy_response.json()
-            print(f"ComfyUI Available: {data.get('available')}")
-            print(f"ComfyUI URL: {data.get('url')}")
+        response = requests.get(url, timeout=5)
+        if response.status_code == 200:
+            data = response.json()
+            print("Response JSON:", data)
+            if data.get("available"):
+                print("✅ Backend reports ComfyUI is AVAILABLE")
+            else:
+                print("❌ Backend reports ComfyUI is UNAVAILABLE")
         else:
-            print(f"ComfyUI Interface Error: {comfy_response.status_code}")
-            
+            print(f"❌ Backend returned status {response.status_code}")
+            print(response.text)
     except Exception as e:
-        print(f"Connection Failed: {e}")
+        print(f"❌ Connection failed: {e}")
 
 if __name__ == "__main__":
-    check_connection()
+    check_backend_comfy_status()

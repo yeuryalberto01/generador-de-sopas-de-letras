@@ -3,6 +3,7 @@ import json
 import glob
 import shutil
 from typing import List, Optional
+from pathlib import Path
 from fastapi import APIRouter, HTTPException, Body
 from pydantic import BaseModel
 import time
@@ -36,7 +37,9 @@ def get_active_path(config: dict) -> tuple[str, bool]:
     # Check if configured path is valid
     if not path or not os.path.exists(path):
         # Fallback to local
-        path = os.path.join(os.getcwd(), "brain_backup")
+        # Use centralized brain data location
+        base_dir = Path(__file__).resolve().parent.parent.parent
+        path = str(base_dir / "backend" / "data" / "brain" / "memory")
         os.makedirs(path, exist_ok=True)
         using_fallback = True
         

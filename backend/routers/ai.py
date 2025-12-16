@@ -11,17 +11,29 @@ from google.genai.errors import ClientError
 import logging
 import asyncio
 
-# Configure logging
-logging.basicConfig(
-    filename='backend_debug.log',
-    level=logging.INFO,
-    format='%(asctime)s - %(levelname)s - %(message)s',
-    force=True
-)
+import sys
 
+# Configure logging to both File and Console
+logger = logging.getLogger()
+logger.setLevel(logging.INFO)
+
+# File Handler
+file_handler = logging.FileHandler('backend_debug.log')
+file_handler.setFormatter(logging.Formatter('%(asctime)s - %(levelname)s - %(message)s'))
+logger.addHandler(file_handler)
+
+# Console Handler (Stdout) - Critical for Launcher to capture it
+console_handler = logging.StreamHandler(sys.stdout)
+console_handler.setFormatter(logging.Formatter('%(message)s'))
+logger.addHandler(console_handler)
+
+# Initialize Router
 router = APIRouter()
 
 def log_api_event(provider: str, endpoint: str, status: str, duration: float, meta: Dict[str, Any]):
+    # Formato visual para el Launcher
+    icon = "🟢" if status == "SUCCESS" else "🔴"
+    print(f"API_TRAFFIC: {icon} [{provider.upper()}] {endpoint} | {duration:.0f}ms | {json.dumps(meta)}")
     logging.info(f"API Event: {provider} {endpoint} - {status} ({duration:.2f}ms) - {json.dumps(meta)}")
 
 class AIRequest(BaseModel):
@@ -36,6 +48,7 @@ class ImageRequest(BaseModel):
     prompt: str
     style: str  # 'bw' or 'color'
     model: Optional[str] = None
+    print_quality: bool = False  # If True, upscale to print resolution (3072x4096)
 
 class SVGRequest(BaseModel):
     prompt: str
@@ -56,7 +69,7 @@ async def call_gemini(request: AIRequest, header_key: Optional[str]):
     if not api_key:
         raise HTTPException(status_code=500, detail="API Key not found (Header or Env)")
 
-    model_name = request.model or "gemini-2.5-flash" # UPGRADE TO GEMINI 2.5
+    model_name = request.model or "gemini-2.0-flash" # User-specified default
     url = f"https://generativelanguage.googleapis.com/v1beta/models/{model_name}:generateContent?key={api_key}"
     
     headers = {"Content-Type": "application/json"}
@@ -70,7 +83,7 @@ async def call_gemini(request: AIRequest, header_key: Optional[str]):
          generation_config["responseMimeType"] = "application/json"
          if request.schema_type:
              # If schema is provided, use it (Generic JSON enforcement)
-             pass 
+             generation_config["responseSchema"] = request.schema_type 
 
     parts = [{"text": request.prompt}]
 
@@ -114,7 +127,8 @@ async def call_gemini(request: AIRequest, header_key: Optional[str]):
             logging.error(f"Gemini API Error: {e.response.text}")
             raise HTTPException(status_code=e.response.status_code, detail=f"Gemini API Error: {e.response.text}")
         except Exception as e:
-            logging.error(f"Gemini Client Error: {e}")
+            import traceback
+            logging.error(f"Gemini Client Error: {e}\n{traceback.format_exc()}")
             raise HTTPException(status_code=500, detail=f"Internal Server Error: {str(e)}")
 
 async def call_openai_compatible(request: AIRequest, header_key: Optional[str]):
@@ -129,18 +143,9 @@ async def call_openai_compatible(request: AIRequest, header_key: Optional[str]):
             'url': 'https://api.x.ai/v1/chat/completions',
             'env_key': 'GROK_API_KEY',
             'default_model': 'grok-2-latest'
-        },
-        'openai': {
-            'url': 'https://api.openai.com/v1/chat/completions',
-            'env_key': 'OPENAI_API_KEY',
-            'default_model': 'gpt-4o'
-        },
-        'openrouter': {
-            'url': 'https://openrouter.ai/api/v1/chat/completions',
-            'env_key': 'OPENROUTER_API_KEY',
-            'default_model': 'google/gemini-2.5-flash:free'
         }
     }
+
 
     provider_config = configs.get(request.provider)
     if not provider_config:
@@ -156,11 +161,6 @@ async def call_openai_compatible(request: AIRequest, header_key: Optional[str]):
         "Content-Type": "application/json",
         "Authorization": f"Bearer {api_key}"
     }
-    
-    # Custom headers for OpenRouter
-    if request.provider == 'openrouter':
-        headers["HTTP-Referer"] = "http://localhost:3000"
-        headers["X-Title"] = "SopaCreator AI"
 
     model = request.model or provider_config['default_model']
 
@@ -183,7 +183,15 @@ async def call_openai_compatible(request: AIRequest, header_key: Optional[str]):
             response = await client.post(provider_config['url'], json=payload, headers=headers, timeout=60.0)
             response.raise_for_status()
             data = response.json()
-            return {"text": data['choices'][0]['message']['content']}
+            
+            # Smart Reasoning Extraction (DeepSeek R1)
+            content = data['choices'][0]['message'].get('content', "")
+            reasoning = data['choices'][0]['message'].get('reasoning_content', None)
+            
+            if reasoning:
+                content = f"<thinking>\n{reasoning}\n</thinking>\n\n{content}"
+                
+            return {"text": content}
         except Exception as e:
             logging.error(f"Provider {request.provider} Error: {e}")
             raise HTTPException(status_code=500, detail=str(e))
@@ -219,100 +227,94 @@ async def generate_text(request: AIRequest, x_api_key: Optional[str] = Header(No
 @router.post("/generate-image")
 async def generate_image(request: ImageRequest):
     """
-    Generates an image using Imagen 3 with fallback to DALL-E 3 or SVG.
+    Generates an image using Gemini 2.0 Flash Image Generation with fallback to DALL-E 3 or SVG.
     """
     print(f"Generating image for prompt: {request.prompt}")
     start_time = time.time()
     
-    # 1. Try Imagen 3 (Correct Endpoint)
+    # 1. Try Gemini 2.0 Flash Image Generation (Available on user's API key)
     try:
         api_key = os.getenv("GEMINI_API_KEY")
         if not api_key:
             raise ValueError("GEMINI_API_KEY not found")
 
-        # Use the correct predict endpoint for Imagen
-        model_name = "imagen-3.0-generate-001"
-        url = f"https://generativelanguage.googleapis.com/v1beta/models/{model_name}:predict?key={api_key}"
+        # Use Gemini 2.0 Flash experimental image generation
+        model_name = "gemini-2.0-flash-exp-image-generation"
+        url = f"https://generativelanguage.googleapis.com/v1beta/models/{model_name}:generateContent?key={api_key}"
         
         headers = {"Content-Type": "application/json"}
         
-        # Correct Payload for Imagen
+        # Payload for Gemini 2.0 Flash Image Generation
+        # Must include responseModalities with both TEXT and IMAGE
         payload = {
-            "instances": [
-                {"prompt": request.prompt}
-            ],
-            "parameters": {
-                "sampleCount": 1,
-                "aspectRatio": "3:4" # Portrait for puzzles
+            "contents": [{
+                "parts": [{
+                    "text": f"Generate an image: {request.prompt}. Style: {request.style}. High quality, detailed."
+                }]
+            }],
+            "generationConfig": {
+                "responseModalities": ["TEXT", "IMAGE"],
+                "temperature": 0.9
             }
         }
 
         async with httpx.AsyncClient() as client:
-            response = await client.post(url, json=payload, headers=headers, timeout=45.0)
+            response = await client.post(url, json=payload, headers=headers, timeout=90.0)
             
             if response.status_code == 404:
-                # If Imagen 3 not found/enabled, try standard gemini-pro-vision or fallback? 
-                # Actually 404 means model doesn't exist on this key/region.
-                raise ValueError(f"Imagen Model {model_name} Not Found (404) - Check API Key permissions")
+                raise ValueError(f"Model {model_name} Not Found (404)")
             
             response.raise_for_status()
             data = response.json()
             
-            # Extract image from Imagen response
-            # Structure: { "predictions": [ { "bytesBase64Encoded": "..." } ] }
+            # Extract image from Gemini response
+            # Structure: { "candidates": [{ "content": { "parts": [{ "inlineData": { "mimeType": "...", "data": "..." } }] } }] }
             b64_image = None
+            mime_type = "image/png"
+            
             try:
-                if "predictions" in data and len(data["predictions"]) > 0:
-                    b64_image = data["predictions"][0].get("bytesBase64Encoded")
-                    mime_type = data["predictions"][0].get("mimeType", "image/png")
-            except (KeyError, IndexError):
-                raise ValueError("Invalid response structure from Imagen 3")
+                candidates = data.get("candidates", [])
+                if candidates:
+                    parts = candidates[0].get("content", {}).get("parts", [])
+                    for part in parts:
+                        if "inlineData" in part:
+                            b64_image = part["inlineData"].get("data")
+                            mime_type = part["inlineData"].get("mimeType", "image/png")
+                            break
+            except (KeyError, IndexError) as e:
+                logging.error(f"Error parsing Gemini image response: {e}")
+                raise ValueError("Invalid response structure from Gemini Image Gen")
 
             if not b64_image:
-                 raise ValueError("No image data found in Imagen response")
+                raise ValueError("No image data found in Gemini response")
+
+            # Upscale for print quality if requested
+            final_image = f"data:{mime_type};base64,{b64_image}"
+            
+            if request.print_quality:
+                try:
+                    from upscaler import upscale_for_print, get_image_dimensions
+                    logging.info("Upscaling image for print quality (3072x4096)...")
+                    
+                    original_dims = get_image_dimensions(final_image)
+                    final_image = upscale_for_print(final_image, target_size=(3072, 4096), aspect_ratio="3:4")
+                    new_dims = get_image_dimensions(final_image)
+                    
+                    logging.info(f"Upscaled: {original_dims} -> {new_dims}")
+                    model_name += "-print-quality"
+                except Exception as upscale_error:
+                    logging.warning(f"Upscaling failed, returning original: {upscale_error}")
 
             duration = (time.time() - start_time) * 1000
             log_api_event("gemini", "/generate-image", "SUCCESS", duration, {"model": model_name})
             
             return {
-                "image": f"data:{mime_type};base64,{b64_image}",
+                "image": final_image,
                 "provider": model_name
             }
 
     except Exception as e:
         logging.warning(f"Imagen 3 generation failed: {e}. Attempting fallbacks...")
-        
-        # 2. Fallback: DALL-E 3 (if key exists)
-        openai_key = os.getenv("OPENAI_API_KEY")
-        if openai_key:
-            try:
-                logging.info("Fallback: Attempting DALL-E 3")
-                async with httpx.AsyncClient() as client:
-                    resp = await client.post(
-                        "https://api.openai.com/v1/images/generations",
-                        headers={"Authorization": f"Bearer {openai_key}"},
-                        json={
-                            "model": "dall-e-3",
-                            "prompt": request.prompt,
-                            "n": 1,
-                            "size": "1024x1024",
-                            "response_format": "b64_json"
-                        },
-                        timeout=40.0
-                    )
-                    resp.raise_for_status()
-                    dalle_data = resp.json()
-                    b64 = dalle_data['data'][0]['b64_json']
-                    
-                    duration = (time.time() - start_time) * 1000
-                    log_api_event("openai", "/generate-image", "SUCCESS-FALLBACK", duration, {"model": "dall-e-3"})
-                    
-                    return {
-                        "image": f"data:image/png;base64,{b64}",
-                        "provider": "dall-e-3"
-                    }
-            except Exception as dalle_e:
-                logging.error(f"DALL-E 3 Fallback failed: {dalle_e}")
 
         # 3. Last Resort: Gemini SVG Generation
         try:
@@ -379,7 +381,7 @@ async def generate_smart_design(request: SVGRequest):
             
             ai_req = AIRequest(
                 provider="gemini",
-                model="gemini-2.5-flash", 
+                model="gemini-2.0-flash", 
                 prompt=variation_prompt
             )
             tasks.append(call_gemini(ai_req, None))

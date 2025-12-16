@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verificación de Conectividad - Sopa de Letras AI</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background: #0f172a;
+            color: #f8fafc;
+            padding: 2rem;
+        }
+
+        .card {
+            background: #1e293b;
+            padding: 2rem;
+            border-radius: 1rem;
+            border: 1px solid #334155;
+            max-width: 600px;
+            margin: 0 auto;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+
+        h1 {
+            margin-top: 0;
+            color: #38bdf8;
+        }
+
+        .status-item {
+            margin-bottom: 1rem;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            background: #0f172a;
+            border: 1px solid #334155;
+        }
+
+        .status-item.success {
+            border-color: #22c55e;
+            color: #22c55e;
+            background: rgba(34, 197, 94, 0.1);
+        }
+
+        .status-item.error {
+            border-color: #ef4444;
+            color: #ef4444;
+            background: rgba(239, 68, 68, 0.1);
+        }
+
+        .status-item.loading {
+            border-color: #eab308;
+            color: #eab308;
+            background: rgba(234, 179, 8, 0.1);
+        }
+
+        code {
+            font-family: monospace;
+            background: #000;
+            padding: 0.2rem 0.4rem;
+            rounded: 0.25rem;
+        }
+
+        button {
+            background: #3b82f6;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            font-weight: bold;
+            margin-top: 1rem;
+        }
+
+        button:hover {
+            background: #2563eb;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="card">
+        <h1>🔍 Verificador de Conectividad</h1>
+        <p>Probando conexión directa desde el navegador al Backend y ComfyUI...</p>
+
+        <div id="backend-status" class="status-item loading">
+            Conectando con Backend...
+        </div>
+
+        <div id="comfy-status" class="status-item loading">
+            Consultando estado de ComfyUI (vía Backend)...
+        </div>
+
+        <button onclick="runTests()">Re-intentar Pruebas</button>
+
+        <div style="margin-top: 2rem; font-size: 0.8rem; opacity: 0.7;">
+            <p><strong>Configuración esperada:</strong></p>
+            <ul>
+                <li>Backend: http://localhost:8000</li>
+                <li>ComfyUI: http://127.0.0.1:8188</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:8000/api/template-engine';
+
+        async function runTests() {
+            const backendEl = document.getElementById('backend-status');
+            const comfyEl = document.getElementById('comfy-status');
+
+            backendEl.className = 'status-item loading';
+            backendEl.innerHTML = '⏳ Conectando con Backend (localhost:8000)...';
+
+            comfyEl.className = 'status-item loading';
+            comfyEl.innerHTML = '⏳ Esperando conexión backend...';
+
+            try {
+                // TEST 1: Backend Connection
+                const statusRes = await fetch(`${API_BASE}/status`);
+                if (statusRes.ok) {
+                    const data = await statusRes.json();
+                    backendEl.className = 'status-item success';
+                    backendEl.innerHTML = `✅ Backend ONLINE (v${data.version})`;
+                } else {
+                    throw new Error(`Estado ${statusRes.status}`);
+                }
+
+                // TEST 2: ComfyUI Status
+                comfyEl.innerHTML = '⏳ Verificando ComfyUI...';
+                const comfyRes = await fetch(`${API_BASE}/comfy/status`);
+                if (comfyRes.ok) {
+                    const data = await comfyRes.json();
+                    if (data.available) {
+                        comfyEl.className = 'status-item success';
+                        comfyEl.innerHTML = `✅ ComfyUI DETECTADO y LISTO<br><small>${data.url}</small>`;
+                    } else {
+                        comfyEl.className = 'status-item error';
+                        comfyEl.innerHTML = `❌ ComfyUI NO DETECTADO por el Backend<br><small>El backend funciona, pero no ve a ComfyUI en el puerto 8188.</small>`;
+                    }
+                } else {
+                    throw new Error(`Error API: ${comfyRes.status}`);
+                }
+
+            } catch (error) {
+                if (backendEl.className.includes('loading')) {
+                    backendEl.className = 'status-item error';
+                    backendEl.innerHTML = `❌ Error de Conexión: ${error.message}<br><small>Verifique que el launcher está corriendo.</small>`;
+                    comfyEl.innerHTML = '⚠️ Cancelado por fallo en backend';
+                } else {
+                    comfyEl.className = 'status-item error';
+                    comfyEl.innerHTML = `❌ Error consultando ComfyUI: ${error.message}`;
+                }
+            }
+        }
+
+        // Run automatically
+        runTests();
+    </script>
+</body>
+
+</html>
