@@ -1,7 +1,7 @@
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from routers import ai, ml
+from routers import ai, ml, puzzle
 from modules.template_engine.router import router as template_engine_router
 from modules.brain.learning_engine import router as brain_router
 from modules.brain.smart_brain import router as smart_brain_router
@@ -50,6 +50,7 @@ app.include_router(template_engine_router, prefix="/api", tags=["Template Engine
 app.include_router(brain_router)
 app.include_router(smart_brain_router)  # Smart Brain ML endpoints
 app.include_router(art_studio_router)  # Art Studio layer generation
+app.include_router(puzzle.router)
 
 
 @app.get("/")

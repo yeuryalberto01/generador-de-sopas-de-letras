@@ -23,6 +23,102 @@
       "type": "visual",
       "content": "su vas ha tranfirnar la grilla, la caja de palabras y el titulo deben ser de forma armonica y todo legible, colores que hagan contraste en todo las sopas de letras",
       "active": true
+    },
+    {
+      "id": "heuristic_science_precision_35ef0c28",
+      "type": "logic",
+      "content": "HEURISTIC (WHY YES): IF topic IS 'Science', 'Academic', or 'Expert' THEN ENFORCE 'Vector Overlay' AND 'Difficulty.HARD'. REASONING: Academic audiences demand high information density and absolute legibility. Generative text (diffusion) introduces chaotic artifacts unacceptable for this context.",
+      "active": true
+    },
+    {
+      "id": "heuristic_stability_preservation_18789860",
+      "type": "global",
+      "content": "HEURISTIC (WHY NO): DO NOT hardcode 'Expert/Hard Mode' presets directly into Frontend Components (React). REASONING: Hardcoding logic in UI creates fragility and requires code reverts to fix. Intelligence must reside in Data/Rules (JSON), allowing flexible updates without breaking the build.",
+      "active": true
+    },
+    {
+      "id": "golden_rule_no_text_diffusion_v1",
+      "type": "global",
+      "content": "REGLA DE ORO: NUNCA generar texto, letras, n\u00fameros, ni el tablero de la grilla con el difusor (ComfyUI). El texto y la grilla son SIEMPRE vectoriales (SVG/PIL) y se superponen DESPU\u00c9S de generar el fondo. ComfyUI solo genera fondos decorativos.",
+      "active": true
+    },
+    {
+      "id": "pro_separation_v1",
+      "type": "global",
+      "content": "SEPARACI\u00d3N PRO: 1) comfy.generate_background = Fondo ilustrado con \u00e1rea VAC\u00cdA. 2) layout.make_grid_svg = Grilla vectorial. 3) layout.compose_pdf = Composici\u00f3n final. 4) qa.check_legibility = Validaci\u00f3n. Estas 4 herramientas NO SE MEZCLAN.",
+      "active": true
+    },
+    {
+      "id": "pro_mask_required_v1",
+      "type": "visual",
+      "content": "M\u00c1SCARAS OBLIGATORIAS: Al generar fondo, incluir mask_rects[] para definir \u00e1reas que DEBEN quedar limpias (zona de grilla, zona de palabras). Usar ControlNet (lineart/scribble) con la m\u00e1scara. Prompt debe incluir 'empty rectangular panel centered'.",
+      "active": true
+    },
+    {
+      "id": "pro_negative_prompts_v1",
+      "type": "visual",
+      "content": "NEGATIVOS OBLIGATORIOS: SIEMPRE incluir en negative prompt: 'text, letters, numbers, grid, watermark, clutter'. Esto evita que el difusor genere cualquier cosa que interfiera con el texto vectorial.",
+      "active": true
+    },
+    {
+      "id": "pro_quality_params_v1",
+      "type": "visual",
+      "content": "PAR\u00c1METROS DE CALIDAD: 1) Resoluci\u00f3n LETTER 300DPI = 2550x3300px. 2) CFG: 4.5-6.5 (bajo para menos ruido). 3) Steps: 25-35. 4) Sampler: DPM++ 2M Karras. 5) Tiled=true si >1600px. 6) Upscale: real_esrgan si se genera menor.",
+      "active": true
+    },
+    {
+      "id": "pro_qa_required_v1",
+      "type": "logic",
+      "content": "QA AUTOM\u00c1TICO: Antes de aprobar, verificar: 1) Contraste texto-fondo \u22657:1. 2) Sin ruido en \u00e1rea reservada (varianza < umbral). 3) DPI efectivo \u2265300. Si falla: bajar CFG, subir steps, reforzar negative, o usar inpaint.",
+      "active": true
+    },
+    {
+      "id": "pro_vector_typography_v1",
+      "type": "visual",
+      "content": "TIPOGRAF\u00cdA VECTORIAL: Usar fuentes legibles (Inter, Source Serif). T\u00edtulo: 36-44pt. Subt\u00edtulo: 24-28pt. Grid: 18-28pt. Lista palabras: 18-22pt. Color texto oscuro (#1F1F1F) sobre fondo claro. M\u00e1rgenes: 0.5 pulgadas.",
+      "active": true
+    },
+    {
+      "id": "pro_reproducibility_v1",
+      "type": "logic",
+      "content": "REPRODUCIBILIDAD: Usar seeds fijas y loguear todos los par\u00e1metros. Cada generaci\u00f3n debe poder reproducirse exactamente con los mismos inputs.",
+      "active": true
+    },
+    {
+      "id": "image_gen_authorization_v1",
+      "type": "global",
+      "content": "AUTORIZACI\u00d3N DE APIs EXTERNAS: NO usar Gemini, DALL-E, ni ninguna API externa para generaci\u00f3n de im\u00e1genes SIN autorizaci\u00f3n expl\u00edcita del usuario. ComfyUI (Local) es el \u00fanico generador autorizado por defecto.",
+      "active": true
+    },
+    {
+      "id": "comfyui_primary_v1",
+      "type": "visual",
+      "content": "GENERADOR PRIMARIO: ComfyUI (http://127.0.0.1:8188) es el motor de generaci\u00f3n de im\u00e1genes. Usar ArtStudioComfyClient para fondos, placas de grilla, decoraciones, y cualquier asset visual.",
+      "active": true
+    },
+    {
+      "id": "hybrid_render_strategy_v1",
+      "type": "visual",
+      "content": "ESTRATEGIA H\u00cdBRIDA: Para temas complejos (Jungle, Stone, Space), usar Mimetismo (Fondo IA) + Texto Digital Vectorial (Overlay). Nunca confiar en texto generado por IA. Aplicar Stroke negro (3px) para contraste.",
+      "active": true
+    },
+    {
+      "id": "layout_standards_v1",
+      "type": "logic",
+      "content": "EST\u00c1NDARES DE LAYOUT: Grilla ocupa 75% del \u00e1rea de contenido. Celda m\u00ednima 45px. M\u00e1rgenes estrictos. Wordlist centrada. Footer con barra de contraste y QR visible (dibujado DESPU\u00c9S de la barra).",
+      "active": true
+    },
+    {
+      "id": "dark_glass_style_v1",
+      "type": "visual",
+      "content": "ESTILO DARK GLASS: Para contenedores sobre fondos oscuros, usar fondo semitransparente (0,10,20,160), borde dorado opaco (180,160,100,180), radio 35px, texto claro con stroke negro.",
+      "active": true
+    },
+    {
+      "id": "footer_data_standard_v1",
+      "type": "logic",
+      "content": "DATOS DE PIE DE P\u00c1GINA: Izquierda='CENECOMPUC EDITORIAL', Centro=T\u00edtulo del Puzzle, Derecha='P\u00e1g X', QR=URL del puzzle. Escaneabilidad garantizada.",
+      "active": true
     }
   ]
 }

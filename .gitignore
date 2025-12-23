@@ -26,3 +26,8 @@ coverage/
 **/*_output.txt
 backend/.env
 backend/**/*.env
+
+# Large/Generated folders
+ComfyUI_copy/
+generated_assets/
+temp_models/
